@@ -1,0 +1,7 @@
+{
+  "name": "MediApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
