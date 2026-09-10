@@ -150,7 +150,8 @@ const selectedUrl = computed(
 
 .app-menu__content {
 	--background: var(--mt-surface);
-	--padding-top: 0;
+	--padding-top: var(--ion-safe-area-top, 0px);
+	--padding-bottom: var(--ion-safe-area-bottom, 0px);
 }
 
 .app-menu__content::part(scroll) {
@@ -209,31 +210,31 @@ const selectedUrl = computed(
 .app-menu__link {
 	display: flex;
 	align-items: center;
-	gap: 12px;
-	min-height: 48px;
-	padding: 0 14px;
-	border-radius: 13px;
+	gap: 14px;
+	min-height: 56px;
+	padding: 0 16px;
+	border-radius: 15px;
 	text-decoration: none;
 	transition: background 0.15s ease;
 }
 
 .app-menu__link ion-icon {
-	font-size: 21px;
+	font-size: 24px;
 	color: var(--mt-ink-2);
 	flex-shrink: 0;
 }
 
 .app-menu__link-label {
 	flex: 1;
-	font-size: 15.5px;
-	font-weight: 500;
+	font-size: 16.5px;
+	font-weight: 600;
 	letter-spacing: -0.01em;
 	color: var(--mt-ink);
 }
 
 .app-menu__link-dot {
-	width: 6px;
-	height: 6px;
+	width: 8px;
+	height: 8px;
 	border-radius: 999px;
 	background: transparent;
 }
@@ -268,12 +269,12 @@ const selectedUrl = computed(
 .app-menu__theme-btn {
 	display: flex;
 	align-items: center;
-	gap: 12px;
+	gap: 14px;
 	width: 100%;
-	min-height: 48px;
-	padding: 0 14px;
+	min-height: 54px;
+	padding: 0 16px;
 	border: none;
-	border-radius: 13px;
+	border-radius: 15px;
 	background: transparent;
 	cursor: pointer;
 	font-family: var(--font-sans);
@@ -294,14 +295,14 @@ const selectedUrl = computed(
 }
 
 .app-menu__theme-icon ion-icon {
-	font-size: 21px;
+	font-size: 23px;
 }
 
 .app-menu__theme-label {
 	flex: 1;
 	text-align: left;
-	font-size: 15.5px;
-	font-weight: 500;
+	font-size: 16.5px;
+	font-weight: 600;
 	letter-spacing: -0.01em;
 	color: var(--mt-ink);
 }
