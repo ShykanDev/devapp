@@ -66,6 +66,61 @@ const routes: Array<RouteRecordRaw> = [
     path: '/examenes/:examId',
     name: 'examen-view',
     component: () => import ('../views/ExamenDetalle.vue')
+  },
+  {
+    path: '/ai-practitioner',
+    name: 'aif-overview',
+    component: () => import ('../views/aifC01/AifOverview.vue')
+  },
+  {
+    path: '/ai-practitioner/dominio/:domainId',
+    name: 'aif-domain',
+    component: () => import ('../views/aifC01/AifDomain.vue')
+  },
+  {
+    path: '/ai-practitioner/task/:taskId',
+    name: 'aif-task',
+    component: () => import ('../views/aifC01/AifTask.vue')
+  },
+  {
+    path: '/ai-practitioner/comparaciones',
+    name: 'aif-comparisons',
+    component: () => import ('../views/aifC01/AifComparisons.vue')
+  },
+  {
+    path: '/ai-practitioner/debiles',
+    name: 'aif-weak',
+    component: () => import ('../views/aifC01/AifWeak.vue')
+  },
+  {
+    path: '/ai-practitioner/repaso',
+    name: 'aif-review',
+    component: () => import ('../views/aifC01/AifReview.vue')
+  },
+  {
+    path: '/ai-practitioner/practica/:scope',
+    name: 'aif-practice',
+    component: () => import ('../views/aifC01/AifPractice.vue')
+  },
+  {
+    path: '/ai-practitioner/glosario',
+    name: 'aif-glossary',
+    component: () => import ('../views/aifC01/AifGlossary.vue')
+  },
+  {
+    path: '/ai-practitioner/servicios',
+    name: 'aif-services',
+    component: () => import ('../views/aifC01/AifServices.vue')
+  },
+  {
+    path: '/ai-practitioner/buscar',
+    name: 'aif-search',
+    component: () => import ('../views/aifC01/AifSearch.vue')
+  },
+  {
+    path: '/ai-practitioner/cobertura',
+    name: 'aif-coverage',
+    component: () => import ('../views/aifC01/AifCoverage.vue')
   }
 ]
 

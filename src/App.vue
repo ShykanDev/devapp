@@ -83,6 +83,7 @@ import {
 	clipboardOutline,
 	libraryOutline,
 	moon,
+	ribbonOutline,
 	sunny,
 } from 'ionicons/icons';
 import AppIcon from './components/ui/AppIcon.vue';
@@ -98,6 +99,7 @@ const appPages = [
 	{ title: 'Chat', url: '/folder/chat', icon: chatbubbleOutline },
 	{ title: 'Enciclopedia', url: '/enciclopedia', icon: bookOutline },
 	{ title: 'Exámenes', url: '/examenes', icon: clipboardOutline },
+	{ title: 'AI Practitioner', url: '/ai-practitioner', icon: ribbonOutline },
 	{ title: 'Mis secciones', url: '/mis-secciones', icon: libraryOutline },
 ];
 

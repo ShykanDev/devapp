@@ -31,3 +31,10 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
