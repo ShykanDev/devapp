@@ -132,4 +132,72 @@ export const preguntasTask22: PreguntaAifC01[] = [
 		explanation:
 			'Mejorar la exactitud suele implicar más tokens, más latencia o modelos mayores, y por tanto más coste. La decisión se toma cruzando esa mejora con el valor de negocio (ROI, eficiencia, conversión) y no por la exactitud aislada.',
 	},
+	{
+		id: '2.2-q9',
+		taskId: '2.2',
+		objetivos: ['2.2#1'],
+		tipo: 'casoDeUso',
+		question:
+			'Un asistente debe reaccionar a las aclaraciones del cliente y entregar un borrador alternativo en pocos segundos, sin que el equipo desarrolle un modelo distinto para cada tema. ¿Qué ventaja de GenAI se está aprovechando?',
+		options: [
+			'La exactitud garantizada de todos los datos incluidos en el borrador.',
+			'La rapidez de respuesta y la adaptabilidad a instrucciones cambiantes, junto con la capacidad de generar contenido.',
+			'La interpretabilidad total de las decisiones del modelo.',
+			'El determinismo de las respuestas entre ejecuciones idénticas.',
+		],
+		correctAnswer: 1,
+		explanation:
+			'La responsividad y la adaptabilidad permiten reutilizar un mismo modelo para varios temas y responder a cambios de instrucción en el momento, mientras la generación produce el contenido. GenAI no garantiza exactitud, interpretabilidad ni determinismo.',
+	},
+	{
+		id: '2.2-q10',
+		taskId: '2.2',
+		objetivos: ['2.2#2'],
+		tipo: 'escenario',
+		question:
+			'Un comité debe aprobar un sistema que deniega solicitudes de forma automática, pero el modelo no puede explicar por qué rechazó un caso concreto y el equipo no encuentra forma de auditar el criterio aplicado. ¿Qué desventaja de GenAI describe esta situación?',
+		options: [
+			'La no determinación de la generación entre llamadas.',
+			'La alucinación de contenido inexistente.',
+			'La inexactitud al copiar datos reales.',
+			'La falta de interpretabilidad, porque no se puede explicar ni auditar cómo llegó el modelo a su decisión.',
+		],
+		correctAnswer: 3,
+		explanation:
+			'La falta de interpretabilidad impide justificar y auditar una decisión, algo crítico en procesos regulados. La no determinación se refiere a la variación entre llamadas, y la alucinación y la inexactitud afectan al contenido de la respuesta, no a la capacidad de explicarla.',
+	},
+	{
+		id: '2.2-q11',
+		taskId: '2.2',
+		objetivos: ['2.2#3'],
+		tipo: 'escenario',
+		question:
+			'Un equipo necesita un modelo que procese texto y documentos escaneados con imágenes, debe cumplir una normativa de residencia de datos y opera con un presupuesto ajustado. ¿Qué conjunto de factores está evaluando para elegir el modelo?',
+		options: [
+			'Solo el tamaño del modelo, porque determina los demás factores.',
+			'La temperatura y el número de tokens de salida esperados.',
+			'El tipo de modelo y sus capacidades, como el soporte multimodal, junto con los requisitos de cumplimiento y las restricciones de coste.',
+			'El número de usuarios de la aplicación y el idioma de la interfaz.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'La selección de un modelo se decide cruzando capacidades (por ejemplo, multimodalidad), requisitos de cumplimiento y límites de coste y latencia. Ningún factor aislado, como el tamaño, resuelve la decisión.',
+	},
+	{
+		id: '2.2-q12',
+		taskId: '2.2',
+		objetivos: ['2.2#4'],
+		tipo: 'metrica',
+		question:
+			'Un mismo asistente se usa en atención al cliente, ventas internas y soporte técnico. La dirección quiere saber si el resultado es bueno en todos esos frentes y no solo en el caso de prueba inicial. ¿Qué métrica debe incorporar?',
+		options: [
+			'El rendimiento entre dominios, midiendo la calidad en cada tipo de tarea y no únicamente en un caso aislado.',
+			'La latencia media del endpoint.',
+			'El número de parámetros del modelo fundacional.',
+			'El coste de almacenamiento del índice documental.',
+		],
+		correctAnswer: 0,
+		explanation:
+			'El rendimiento entre dominios comprueba que la solución funciona en cada contexto de uso y no solo en el escenario de la prueba inicial. La latencia o el tamaño del modelo son parámetros técnicos que no responden por sí solos al valor en cada dominio.',
+	},
 ];

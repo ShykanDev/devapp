@@ -137,4 +137,72 @@ export const preguntasTask33: PreguntaAifC01[] = [
 		explanation:
 			'La gobernanza del dato precede al entrenamiento: clasificar, depurar o enmascarar información personal, limitar el acceso con controles de identidad y cifrado, y dejar trazabilidad de la procedencia y de la retención. Documentos y conversaciones sensibles requieren además controles de acceso y cifrado con servicios como AWS IAM y AWS Key Management Service (AWS KMS).',
 	},
+	{
+		id: '3.3-q9',
+		taskId: '3.3',
+		objetivos: ['3.3#2'],
+		tipo: 'tradeoff',
+		question:
+			'El catálogo de productos y las condiciones comerciales cambian cada semana, y el equipo debate entre reajustar el modelo con cada actualización o servir esa información desde una base de conocimiento consultada en el momento de la respuesta. ¿Qué afirmación describe mejor el intercambio?',
+		options: [
+			'El fine-tuning es siempre preferible porque el conocimiento queda fijado en los pesos del modelo y no hay que recuperarlo.',
+			'La recuperación en el momento evita reajustar por cada cambio y mantiene la información vigente, a cambio de construir y mantener la búsqueda y de verificar que los fragmentos recuperados sean correctos.',
+			'Las dos opciones son equivalentes porque el modelo consulta la web por defecto durante la inferencia.',
+			'La recuperación exige reajustar el modelo cada vez que cambia un documento.',
+		],
+		correctAnswer: 1,
+		explanation:
+			'Para hechos que cambian con frecuencia, recuperar el contexto en tiempo de inferencia es más barato y más actual que reajustar el modelo en cada cambio; a cambio hay que montar la tubería de recuperación y vigilar la calidad de los fragmentos. El fine-tuning encaja mejor para fijar comportamiento, tono o formato que para datos volátiles.',
+	},
+	{
+		id: '3.3-q10',
+		taskId: '3.3',
+		objetivos: ['3.3#2'],
+		tipo: 'escenario',
+		question:
+			'Un equipo ajusta un modelo de propósito general con un conjunto muy específico de informes legales. Tras el ajuste acierta en ese dominio, pero empeora en tareas generales que antes resolvía bien, como resumir correos internos. ¿Qué conviene revisar?',
+		options: [
+			'Nada, porque el ajuste siempre mejora todas las capacidades del modelo a la vez.',
+			'El tamaño del prompt few-shot usado durante la inferencia.',
+			'El número de tokens de salida configurado en la inferencia.',
+			'El ajuste excesivo sobre un dominio estrecho puede degradar capacidades generales; conviene reducir épocas o tasa de aprendizaje, mezclar ejemplos generales y medir la regresión.',
+		],
+		correctAnswer: 3,
+		explanation:
+			'Un ajuste demasiado agresivo o demasiado estrecho puede provocar olvido y degradar capacidades generales del modelo. La mitigación pasa por ajustar hiperparámetros como épocas y tasa de aprendizaje, mezclar datos generales y evaluar la regresión en tareas no objetivo antes de publicar.',
+	},
+	{
+		id: '3.3-q11',
+		taskId: '3.3',
+		objetivos: ['3.3#3'],
+		tipo: 'escenario',
+		question:
+			'En un proyecto de RLHF los revisores tienden a puntuar mejor las respuestas más largas, aunque no sean más útiles. Tras el ajuste, el asistente responde con textos extensos y repetitivos. ¿Qué explica mejor el resultado?',
+		options: [
+			'El modelo de recompensa aprendió un sesgo de los revisores y el ajuste optimizó esa señal en lugar de la utilidad real.',
+			'La gobernanza de datos eliminó los ejemplos cortos del conjunto de preferencias.',
+			'El pre-training se ejecutó con documentos sin etiquetar de origen desconocido.',
+			'La temperatura de inferencia se configuró demasiado baja.',
+		],
+		correctAnswer: 0,
+		explanation:
+			'En RLHF el modelo se orienta hacia lo que premia el modelo de recompensa; si los revisores confunden longitud con calidad, el ajuste explota ese sesgo. Se corrige con rúbricas claras, calibración y formación de los anotadores y control de calidad de las preferencias recogidas.',
+	},
+	{
+		id: '3.3-q12',
+		taskId: '3.3',
+		objetivos: ['3.3#1'],
+		tipo: 'conocimiento',
+		question:
+			'¿Qué secuencia describe mejor cómo se construye y se alinea un modelo fundacional?',
+		options: [
+			'Instruction tuning, después pre-training con datos sin etiquetar y por último RLHF.',
+			'RLHF, después pre-training con datos sin etiquetar y por último instruction tuning.',
+			'Pre-training con datos sin etiquetar, después instruction tuning con pares de instrucción y respuesta y por último la alineación con retroalimentación humana.',
+			'Pre-training, después despliegue en producción y por último recolección de preferencias de los usuarios.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'El modelo adquiere capacidad general en el pre-training, aprende a seguir instrucciones y formatos con el instruction tuning y se alinea con las preferencias humanas mediante RLHF. El orden importa porque cada etapa parte de los pesos de la anterior.',
+	},
 ];

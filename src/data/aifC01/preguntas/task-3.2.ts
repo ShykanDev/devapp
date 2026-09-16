@@ -205,4 +205,89 @@ export const preguntasTask32: PreguntaAifC01[] = [
 		explanation:
 			'La gestión centralizada gana en velocidad de iteración, trazabilidad y rollback, pero introduce dependencia del servicio y exige gobierno del acceso. La calidad depende del contenido y de la evaluación, no de dónde se guarde el texto.',
 	},
+	{
+		id: '3.2-q13',
+		taskId: '3.2',
+		objetivos: ['3.2#1'],
+		tipo: 'escenario',
+		question:
+			'Un equipo pide a un modelo que revise contratos: debe actuar como abogado, usar el texto del contrato adjunto y no emitir opiniones. El modelo responde correctamente el formato, pero nunca utiliza el contrato. ¿Qué elemento del prompt está faltando o mal colocado?',
+		options: [
+			'La temperatura, que debería ser más alta para explorar el documento.',
+			'El prompt negativo, porque las restricciones impiden leer el contrato.',
+			'El contexto, porque el texto del contrato no se está aportando como información al modelo.',
+			'La plantilla de prompt, porque falta duplicarla en cada llamada.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'El contexto es la sección que aporta la información que el modelo no conoce por sí solo, como el texto del contrato. Si no se incluye o se separa mal de las instrucciones, el modelo redacta sin él; el rol y las restricciones no sustituyen al contexto.',
+	},
+	{
+		id: '3.2-q14',
+		taskId: '3.2',
+		objetivos: ['3.2#2'],
+		tipo: 'tradeoff',
+		question:
+			'Un equipo debe enseñar al modelo un formato de salida propio con reglas de negocio estables y duda entre incluir muchos ejemplos en el prompt o ajustar el modelo. ¿Qué afirmación describe mejor el intercambio?',
+		options: [
+			'Añadir ejemplos en el prompt no ocupa tokens y por eso siempre es la opción más barata.',
+			'El ajuste interioriza el formato sin ocupar contexto en cada llamada, pero exige datos y entrenamiento; los ejemplos son inmediatos y flexibles, pero consumen tokens en cada petición.',
+			'Ambos enfoques son idénticos en coste y esfuerzo, así que la elección es indiferente.',
+			'Los ejemplos en el prompt cambian los pesos del modelo y evitan todo mantenimiento.',
+		],
+		correctAnswer: 1,
+		explanation:
+			'El few-shot enseña con ejemplos dentro del prompt: rápido de iterar, pero con un coste de tokens que se repite. El ajuste interioriza el formato y libera contexto, a cambio de preparar datos y volver a entrenar cuando cambie la regla.',
+	},
+	{
+		id: '3.2-q15',
+		taskId: '3.2',
+		objetivos: ['3.2#3'],
+		tipo: 'escenario',
+		question:
+			'Un equipo cambia a la vez el rol, el formato de salida y el número de ejemplos de su prompt, y publica la nueva versión. El resultado mejora, pero no saben qué cambio fue responsable ni pueden reproducirlo. ¿Qué práctica no se respetó?',
+		options: [
+			'No se añadió un prompt negativo que prohibiera las respuestas malas.',
+			'No se subió la temperatura para aumentar la variedad.',
+			'No se aumentó la longitud máxima de salida del modelo.',
+			'No se experimentó de forma controlada, cambiando una sola variable y evaluando con un conjunto de casos de prueba.',
+		],
+		correctAnswer: 3,
+		explanation:
+			'La experimentación controlada modifica una variable a la vez y compara resultados sobre un conjunto de pruebas reproducible. Cambiar varias cosas a la vez impide atribuir la mejora y repetirla.',
+	},
+	{
+		id: '3.2-q16',
+		taskId: '3.2',
+		objetivos: ['3.2#4'],
+		tipo: 'tradeoff',
+		question:
+			'El equipo quiere añadir un filtro que bloquee el contenido no permitido y los datos sensibles en las respuestas del modelo. ¿Qué afirmación describe mejor el intercambio de aplicar esa restricción?',
+		options: [
+			'Reduce el riesgo de fuga de información y de respuestas no permitidas, a cambio de posibles falsos positivos y latencia adicional que hay que validar.',
+			'Elimina por completo el riesgo de prompt injection sin ninguna contrapartida.',
+			'Sustituye la necesidad de revisar el contenido de las fuentes de conocimiento.',
+			'Solo funciona si el modelo se ejecuta con temperatura cero.',
+		],
+		correctAnswer: 0,
+		explanation:
+			'Un filtro de salida baja la probabilidad de exposure y de contenido no deseado, pero puede bloquear respuestas legítimas y añadir latencia, que deben medirse y ajustarse. No elimina la inyección ni exime de curar las fuentes.',
+	},
+	{
+		id: '3.2-q17',
+		taskId: '3.2',
+		objetivos: ['3.2#5'],
+		tipo: 'escenario',
+		question:
+			'Una empresa publica una nueva versión de su plantilla de prompt y detecta que algunas respuestas empeoraron. Necesita volver a la redacción anterior de inmediato, sin desplegar la aplicación. ¿Qué uso de Amazon Bedrock Prompt Management resuelve el problema?',
+		options: [
+			'Reentrenar el modelo con la plantilla anterior.',
+			'Eliminar el alias y dejar que el modelo elija la plantilla.',
+			'Cambiar el alias para que apunte a la versión anterior y conservar la trazabilidad de cada versión.',
+			'Aumentar la temperatura hasta que las respuestas recuperen su calidad.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'Prompt Management versiona cada plantilla y las aplicaciones la consumen por alias, de modo que apuntar el alias a la versión estable revierte el cambio sin tocar el código. La temperatura no corrige un cambio de redacción.',
+	},
 ];

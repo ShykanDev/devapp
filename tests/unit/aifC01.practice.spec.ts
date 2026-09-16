@@ -24,21 +24,23 @@ function idsUnicos(preguntas: Array<{ id: string }>): boolean {
 }
 
 describe('aifC01 · práctica por task y dominio', () => {
-	it('construye la práctica de 3.2 con sus 12 preguntas sin repetidos', () => {
+	it('construye la práctica de 3.2 con todo su banco y sin repetidos', () => {
+		const banco32 = TODAS_LAS_PREGUNTAS.filter((pregunta) => pregunta.taskId === '3.2');
 		const resultado = construirPracticaTask('3.2', { rng: rng() });
 		expect(resultado.ok).toBe(true);
 		if (!resultado.ok) return;
-		expect(resultado.preguntas).toHaveLength(12);
+		expect(resultado.preguntas).toHaveLength(banco32.length);
 		expect(idsUnicos(resultado.preguntas)).toBe(true);
 		expect(resultado.preguntas.every((pregunta) => pregunta.taskId === '3.2')).toBe(true);
 		expect(resultado.avisos).toContain(AVISO_ORIENTATIVO);
 	});
 
 	it('avisa cuando se piden más preguntas que las disponibles', () => {
-		const resultado = construirPracticaTask('3.2', { n: 30, rng: rng() });
+		const banco32 = TODAS_LAS_PREGUNTAS.filter((pregunta) => pregunta.taskId === '3.2');
+		const resultado = construirPracticaTask('3.2', { n: banco32.length + 18, rng: rng() });
 		expect(resultado.ok).toBe(true);
 		if (!resultado.ok) return;
-		expect(resultado.preguntas).toHaveLength(12);
+		expect(resultado.preguntas).toHaveLength(banco32.length);
 		expect(resultado.avisos.some((aviso) => aviso.includes('Banco incompleto'))).toBe(true);
 	});
 

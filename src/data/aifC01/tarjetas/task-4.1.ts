@@ -91,4 +91,44 @@ export const tarjetasTask41: TarjetaAifC01[] = [
 		reverso:
 			'La sostenibilidad y el coste: el modelo mayor consume más energía y recursos sin garantizar una mejora medible. Se elige el modelo más pequeño que supere el criterio de calidad.',
 	},
+	{
+		id: '4.1-t10',
+		taskId: '4.1',
+		objetivos: ['4.1#6'],
+		tipo: 'diferencia',
+		frente:
+			'Un modelo acierta el 99 % con los datos que usó para entrenarse y solo el 60 % con casos nuevos. ¿Qué es el overfitting, en palabras simples, y con qué imagen lo explicarías?',
+		reverso:
+			'Overfitting: el modelo se «aprendió de memoria» los ejemplos de entrenamiento, incluido su ruido, en lugar de entender el patrón. Es como memorizar las respuestas de un examen: perfecto con lo ya visto, malo ante una pregunta nueva. Se delata por la brecha entre entrenamiento (error bajo) y validación (error alto).',
+	},
+	{
+		id: '4.1-t11',
+		taskId: '4.1',
+		objetivos: ['4.1#6'],
+		tipo: 'diferencia',
+		frente:
+			'Un modelo usa solo dos variables y se equivoca casi igual con los datos de entrenamiento que con los casos nuevos. ¿Qué es el underfitting y cómo se corrige?',
+		reverso:
+			'Underfitting: el modelo es demasiado simple y no captura la relación real, por eso falla en los dos conjuntos. Es como presentarse al examen sin haber estudiado: mal en todo. Se corrige con un modelo más capaz, mejores variables o menos regularización; añadir más datos de los mismos no ayuda.',
+	},
+	{
+		id: '4.1-t12',
+		taskId: '4.1',
+		objetivos: ['4.1#6'],
+		tipo: 'metrica',
+		frente:
+			'Tienes el error de entrenamiento y el de validación de un modelo. ¿Cómo distingues overfitting de underfitting con esos dos números y qué haces en cada caso?',
+		reverso:
+			'Mira la brecha entre los dos: si el error es alto y parecido en ambos, hay underfitting (falta de capacidad) y se sube la complejidad; si es bajo en entrenamiento y alto en validación, hay overfitting (memoriza el ruido) y se añaden datos o regularización. Nunca se decide mirando solo el error de entrenamiento.',
+	},
+	{
+		id: '4.1-t13',
+		taskId: '4.1',
+		objetivos: ['4.1#1', '4.1#6'],
+		tipo: 'diferencia',
+		frente:
+			'En una reunión alguien dice «este modelo tiene mucho sesgo» y dos personas entienden cosas distintas. ¿A qué dos significados puede referirse «sesgo» y en qué se diferencian?',
+		reverso:
+			'Al sesgo social (fairness): el modelo trata peor a un grupo de personas y se corrige revisando los datos y midiendo por subgrupo. Y al sesgo estadístico (bias-variance): el modelo es demasiado simple y no captura la relación, que es el underfitting. Uno hace daño a personas; el otro hace que el modelo prediga mal en general.',
+	},
 ];

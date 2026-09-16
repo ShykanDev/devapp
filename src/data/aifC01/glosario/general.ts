@@ -19,7 +19,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'contexto',
-		termino: 'Contexto',
+		termino: 'Context («contexto»)',
 		definicion:
 			'Información de apoyo que se aporta al modelo porque no puede conocerla por sí sola, como políticas internas o fragmentos recuperados.',
 		dominios: ['dominio-3'],
@@ -27,7 +27,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'instruccion',
-		termino: 'Instrucción',
+		termino: 'Instruction («instrucción»)',
 		definicion:
 			'Parte del prompt que describe la tarea que debe realizar el modelo y el criterio con el que se juzgará el resultado.',
 		dominios: ['dominio-3'],
@@ -35,7 +35,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'prompt-negativo',
-		termino: 'Prompt negativo',
+		termino: 'Negative prompt («prompt negativo»)',
 		definicion:
 			'Indicación explícita de lo que el modelo no debe hacer ni incluir: formato, tono, temas o datos sensibles.',
 		dominios: ['dominio-3'],
@@ -75,7 +75,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'plantilla-de-prompt',
-		termino: 'Plantilla de prompt',
+		termino: 'Prompt template («plantilla de prompt»)',
 		definicion:
 			'Texto de prompt con partes fijas y variables que se reutiliza en varias llamadas o aplicaciones.',
 		dominios: ['dominio-3'],
@@ -91,7 +91,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'version-de-prompt',
-		termino: 'Versión de prompt',
+		termino: 'Prompt version («versión de prompt»)',
 		definicion:
 			'Instantánea inmutable de un prompt gestionado que permite saber qué texto produjo cada respuesta.',
 		dominios: ['dominio-3'],
@@ -99,7 +99,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'alias-de-prompt',
-		termino: 'Alias de prompt',
+		termino: 'Prompt alias («alias de prompt»)',
 		definicion:
 			'Puntero con nombre que las aplicaciones consumen y que se puede reasignar a otra versión del prompt sin desplegar.',
 		dominios: ['dominio-3'],
@@ -123,7 +123,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'hijacking',
-		termino: 'Hijacking (secuestro)',
+		termino: 'Hijacking («secuestro»)',
 		definicion:
 			'Consecuencia de una inyección exitosa: el modelo abandona la tarea original y sigue las instrucciones del atacante.',
 		dominios: ['dominio-3'],
@@ -131,7 +131,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'poisoning',
-		termino: 'Poisoning (envenenamiento)',
+		termino: 'Poisoning («envenenamiento»)',
 		definicion:
 			'Manipulación del contenido del que se alimenta el modelo —datos de entrenamiento o fuentes de conocimiento— para sesgar sus respuestas.',
 		dominios: ['dominio-3'],
@@ -139,7 +139,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'exposure',
-		termino: 'Exposure (exposición)',
+		termino: 'Exposure («exposición»)',
 		definicion:
 			'Filtración de información sensible incluida en el prompt, como instrucciones internas, credenciales o datos personales.',
 		dominios: ['dominio-3'],
@@ -155,7 +155,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'especificidad',
-		termino: 'Especificidad',
+		termino: 'Specificity («especificidad»)',
 		definicion:
 			'Cualidad de un prompt que declara con precisión la tarea, el público y el criterio de éxito, sin ambigüedad.',
 		dominios: ['dominio-3'],
@@ -163,7 +163,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'concision',
-		termino: 'Concisión',
+		termino: 'Conciseness («concisión»)',
 		definicion:
 			'Cualidad de un prompt que elimina la información redundante para no diluir la instrucción ni encarecer la inferencia.',
 		dominios: ['dominio-3'],
@@ -171,7 +171,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'experimentacion',
-		termino: 'Experimentación',
+		termino: 'Experimentation («experimentación»)',
 		definicion:
 			'Práctica de cambiar una variable del prompt por iteración y comparar resultados sobre un conjunto de casos de prueba.',
 		dominios: ['dominio-3'],
@@ -179,7 +179,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'salida-verificable',
-		termino: 'Salida verificable',
+		termino: 'Verifiable output («salida verificable»)',
 		definicion:
 			'Respuesta con formato comprobable (por ejemplo, campos fijos) que la aplicación puede validar antes de usarla.',
 		dominios: ['dominio-3'],
@@ -203,7 +203,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'inteligencia-artificial',
-		termino: 'Inteligencia artificial (IA)',
+		termino: 'Artificial intelligence (AI) («inteligencia artificial»)',
 		definicion:
 			'Campo que agrupa los sistemas capaces de realizar tareas asociadas a la inteligencia humana, como percibir, decidir o generar contenido.',
 		dominios: ['dominio-1'],
@@ -219,7 +219,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'ia-generativa',
-		termino: 'IA generativa (GenAI)',
+		termino: 'Generative AI (GenAI) («IA generativa»)',
 		definicion:
 			'Rama del ML que produce contenido nuevo —texto, imagen, audio o código— a partir de un modelo entrenado con grandes volúmenes de datos.',
 		dominios: ['dominio-1'],
@@ -227,7 +227,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'modelo-fundacional',
-		termino: 'Modelo fundacional (FM)',
+		termino: 'Foundation model (FM) («modelo fundacional»)',
 		definicion:
 			'Modelo de gran tamaño entrenado con datos amplios y diversos que se adapta a muchas tareas con ajuste o prompting, sin reentrenarse desde cero.',
 		dominios: ['dominio-1'],
@@ -235,7 +235,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'entrenamiento',
-		termino: 'Entrenamiento',
+		termino: 'Training («entrenamiento»)',
 		definicion:
 			'Proceso en el que el modelo ajusta sus parámetros a partir de datos para aprender el comportamiento que se espera de él.',
 		dominios: ['dominio-1', 'dominio-3'],
@@ -243,7 +243,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'inferencia',
-		termino: 'Inferencia',
+		termino: 'Inference («inferencia»)',
 		definicion:
 			'Uso de un modelo ya entrenado para obtener una predicción o una respuesta; es la fase que consume cómputo en producción.',
 		dominios: ['dominio-1'],
@@ -251,7 +251,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'metricas-de-modelo',
-		termino: 'Métricas de modelo',
+		termino: 'Model metrics («métricas de modelo»)',
 		definicion:
 			'Medidas cuantitativas del desempeño del modelo (accuracy, precision, recall, F1) que permiten comparar versiones y detectar regresiones.',
 		dominios: ['dominio-1', 'dominio-3'],
@@ -283,7 +283,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'precio-por-tokens',
-		termino: 'Precio por tokens',
+		termino: 'Price per token («precio por tokens»)',
 		definicion:
 			'Modelo de coste en el que se paga por el volumen de tokens de entrada y de salida procesados en cada llamada al modelo.',
 		dominios: ['dominio-2'],
@@ -291,7 +291,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'agente-ia',
-		termino: 'Agente de IA',
+		termino: 'AI agent («agente de IA»)',
 		definicion:
 			'Sistema que, además de generar texto, planifica y ejecuta acciones con herramientas externas para cumplir un objetivo.',
 		dominios: ['dominio-2'],
@@ -307,7 +307,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'alucinacion',
-		termino: 'Alucinación',
+		termino: 'Hallucination («alucinación»)',
 		definicion:
 			'Respuesta plausible pero incorrecta o inventada que el modelo presenta con seguridad y sin base en una fuente.',
 		dominios: ['dominio-2', 'dominio-5'],
@@ -323,7 +323,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'base-de-conocimiento',
-		termino: 'Base de conocimiento',
+		termino: 'Knowledge base («base de conocimiento»)',
 		definicion:
 			'Colección indexada de documentos que un sistema de IA generativa consulta para responder con información propia y actualizada.',
 		dominios: ['dominio-3'],
@@ -331,7 +331,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'base-de-datos-vectorial',
-		termino: 'Base de datos vectorial',
+		termino: 'Vector database («base de datos vectorial»)',
 		definicion:
 			'Almacén optimizado para guardar embeddings y recuperar por similitud los vectores más cercanos a una consulta.',
 		dominios: ['dominio-3'],
@@ -347,7 +347,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'preentrenamiento',
-		termino: 'Pre-entrenamiento',
+		termino: 'Pre-training («preentrenamiento»)',
 		definicion:
 			'Fase inicial en la que un modelo aprende representaciones generales del lenguaje a partir de grandes corpus sin etiquetar.',
 		dominios: ['dominio-3'],
@@ -355,7 +355,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'ia-responsable',
-		termino: 'IA responsable',
+		termino: 'Responsible AI («IA responsable»)',
 		definicion:
 			'Conjunto de principios —fairness, robustez, seguridad, inclusividad y veracidad— que guían el diseño y el uso de sistemas de IA.',
 		dominios: ['dominio-4'],
@@ -363,7 +363,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'sesgo',
-		termino: 'Sesgo (bias)',
+		termino: 'Bias («sesgo»)',
 		definicion:
 			'Desviación sistemática de los resultados del modelo que perjudica a determinados grupos o refleja prejuicios de los datos.',
 		dominios: ['dominio-4'],
@@ -379,7 +379,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'varianza',
-		termino: 'Varianza (variance)',
+		termino: 'Variance («varianza»)',
 		definicion:
 			'Sensibilidad del modelo a las particularidades de los datos de entrenamiento; una varianza alta produce sobreajuste.',
 		dominios: ['dominio-4'],
@@ -387,7 +387,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'sobreajuste',
-		termino: 'Sobreajuste (overfitting)',
+		termino: 'Overfitting («sobreajuste»)',
 		definicion:
 			'El modelo memoriza el conjunto de entrenamiento y pierde capacidad de generalizar ante datos nuevos.',
 		dominios: ['dominio-4'],
@@ -395,7 +395,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'subajuste',
-		termino: 'Subajuste (underfitting)',
+		termino: 'Underfitting («subajuste»)',
 		definicion:
 			'El modelo es demasiado simple para capturar el patrón de los datos, por lo que falla tanto en entrenamiento como en producción.',
 		dominios: ['dominio-4'],
@@ -403,7 +403,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'transparencia',
-		termino: 'Transparencia',
+		termino: 'Transparency («transparencia»)',
 		definicion:
 			'Grado en que se conocen y se documentan los datos, el diseño y las limitaciones de un modelo.',
 		dominios: ['dominio-4'],
@@ -411,7 +411,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'explicabilidad',
-		termino: 'Explicabilidad',
+		termino: 'Explainability («explicabilidad»)',
 		definicion:
 			'Capacidad de justificar de forma comprensible por qué el modelo produjo una decisión concreta.',
 		dominios: ['dominio-4'],
@@ -427,7 +427,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'veracidad',
-		termino: 'Veracidad',
+		termino: 'Truthfulness («veracidad»)',
 		definicion:
 			'Cualidad de una respuesta que se corresponde con hechos o fuentes comprobables y no con invenciones del modelo.',
 		dominios: ['dominio-4', 'dominio-5'],
@@ -435,7 +435,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'gobernanza',
-		termino: 'Gobernanza de IA',
+		termino: 'AI governance («gobernanza de IA»)',
 		definicion:
 			'Marco de políticas, roles y revisiones que dirige cómo se construyen, despliegan y supervisan los sistemas de IA.',
 		dominios: ['dominio-5'],
@@ -443,7 +443,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'cumplimiento',
-		termino: 'Cumplimiento (compliance)',
+		termino: 'Compliance («cumplimiento»)',
 		definicion:
 			'Adecuación del sistema y de sus procesos a las normas, contratos y requisitos regulatorios aplicables.',
 		dominios: ['dominio-5'],
@@ -451,7 +451,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'auditoria',
-		termino: 'Auditoría',
+		termino: 'Audit («auditoría»)',
 		definicion:
 			'Revisión sistemática y trazable de las operaciones y decisiones del sistema para verificar que cumplen las políticas.',
 		dominios: ['dominio-5'],
@@ -459,7 +459,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'registro-de-actividad',
-		termino: 'Registro de actividad (logging)',
+		termino: 'Activity logging («registro de actividad»)',
 		definicion:
 			'Historial de eventos y llamadas que permite reconstruir quién hizo qué y cuándo sobre un sistema o recurso.',
 		dominios: ['dominio-5'],
@@ -467,7 +467,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'residencia-de-datos',
-		termino: 'Residencia de datos',
+		termino: 'Data residency («residencia de datos»)',
 		definicion:
 			'Requisito de que los datos se almacenen y procesen en una región geográfica o jurisdicción determinada.',
 		dominios: ['dominio-5'],
@@ -475,7 +475,7 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'retencion-de-datos',
-		termino: 'Retención de datos',
+		termino: 'Data retention («retención de datos»)',
 		definicion:
 			'Plazo durante el cual se conserva la información antes de archivarla o eliminarla según la política vigente.',
 		dominios: ['dominio-5'],
@@ -483,10 +483,714 @@ export const glosarioGeneralAifC01: TerminoAifC01[] = [
 	},
 	{
 		id: 'cifrado',
-		termino: 'Cifrado (encryption)',
+		termino: 'Encryption («cifrado»)',
 		definicion:
 			'Protección de los datos transformándolos para que solo puedan leerse con la clave autorizada, en reposo o en tránsito.',
 		dominios: ['dominio-5'],
 		relacionados: ['gobernanza', 'registro-de-actividad'],
+	},
+	{
+		id: 'deep-learning',
+		termino: 'Deep learning («aprendizaje profundo»)',
+		definicion:
+			'Subcampo del machine learning basado en redes neuronales con muchas capas que aprenden representaciones jerárquicas de los datos.',
+		dominios: ['dominio-1'],
+		relacionados: ['neural-networks', 'machine-learning', 'entrenamiento'],
+	},
+	{
+		id: 'neural-networks',
+		termino: 'Neural networks («redes neuronales»)',
+		definicion:
+			'Arquitectura de cómputo formada por capas de nodos conectados que ajustan sus pesos durante el entrenamiento para modelar patrones.',
+		dominios: ['dominio-1'],
+		relacionados: ['deep-learning', 'entrenamiento', 'transformer'],
+	},
+	{
+		id: 'computer-vision',
+		termino: 'Computer vision («visión por computadora»)',
+		definicion:
+			'Área de la IA que permite a los sistemas interpretar y analizar imágenes o vídeo, por ejemplo para clasificar objetos o detectar rostros.',
+		dominios: ['dominio-1'],
+		relacionados: ['deep-learning', 'neural-networks', 'multimodal-model'],
+	},
+	{
+		id: 'nlp',
+		termino: 'Natural language processing (NLP) («procesamiento de lenguaje natural»)',
+		definicion:
+			'Área de la IA que estudia cómo los sistemas procesan y comprenden el lenguaje humano, tanto escrito como hablado.',
+		dominios: ['dominio-1'],
+		relacionados: ['llm', 'token', 'transformer'],
+	},
+	{
+		id: 'supervised-learning',
+		termino: 'Supervised learning («aprendizaje supervisado»)',
+		definicion:
+			'Enfoque de entrenamiento en el que el modelo aprende a partir de ejemplos que ya incluyen la respuesta correcta.',
+		dominios: ['dominio-1'],
+		relacionados: ['labeled-data', 'classification', 'regression'],
+	},
+	{
+		id: 'unsupervised-learning',
+		termino: 'Unsupervised learning («aprendizaje no supervisado»)',
+		definicion:
+			'Enfoque de entrenamiento en el que el modelo busca patrones o estructura en datos que no tienen etiquetas.',
+		dominios: ['dominio-1'],
+		relacionados: ['unlabeled-data', 'clustering', 'embeddings'],
+	},
+	{
+		id: 'reinforcement-learning',
+		termino: 'Reinforcement learning («aprendizaje por refuerzo»)',
+		definicion:
+			'Enfoque en el que un agente aprende por prueba y error maximizando las recompensas que obtiene de sus acciones en un entorno.',
+		dominios: ['dominio-1'],
+		relacionados: ['agente-ia', 'rlhf'],
+	},
+	{
+		id: 'classification',
+		termino: 'Classification («clasificación»)',
+		definicion:
+			'Tarea supervisada que asigna cada ejemplo a una de un conjunto finito de categorías predefinidas.',
+		dominios: ['dominio-1'],
+		relacionados: ['supervised-learning', 'labeled-data', 'accuracy'],
+	},
+	{
+		id: 'regression',
+		termino: 'Regression («regresión»)',
+		definicion:
+			'Tarea supervisada que predice un valor numérico continuo a partir de las variables de entrada.',
+		dominios: ['dominio-1'],
+		relacionados: ['supervised-learning', 'labeled-data', 'precision'],
+	},
+	{
+		id: 'clustering',
+		termino: 'Clustering («agrupamiento»)',
+		definicion:
+			'Tarea no supervisada que agrupa ejemplos similares según su proximidad, sin categorías definidas de antemano.',
+		dominios: ['dominio-1'],
+		relacionados: ['unsupervised-learning', 'embeddings', 'vector'],
+	},
+	{
+		id: 'labeled-data',
+		termino: 'Labeled data («datos etiquetados»)',
+		definicion:
+			'Conjunto de ejemplos que incluye la respuesta o categoría correcta y sirve para entrenar o evaluar modelos supervisados.',
+		dominios: ['dominio-1'],
+		relacionados: ['unlabeled-data', 'supervised-learning', 'data-curation'],
+	},
+	{
+		id: 'unlabeled-data',
+		termino: 'Unlabeled data («datos sin etiquetar»)',
+		definicion:
+			'Conjunto de ejemplos sin respuesta asociada que se usa en aprendizaje no supervisado o en el preentrenamiento de modelos.',
+		dominios: ['dominio-1'],
+		relacionados: ['labeled-data', 'unsupervised-learning', 'preentrenamiento'],
+	},
+	{
+		id: 'batch-inference',
+		termino: 'Batch inference («inferencia por lotes»)',
+		definicion:
+			'Ejecución de inferencias agrupadas en un único trabajo sobre un gran volumen de datos, sin respuesta inmediata.',
+		dominios: ['dominio-1'],
+		relacionados: ['inferencia', 'real-time-inference', 'asynchronous-inference'],
+	},
+	{
+		id: 'real-time-inference',
+		termino: 'Real-time inference («inferencia en tiempo real»)',
+		definicion:
+			'Inferencia que devuelve la respuesta en el momento de la petición, con latencia baja y capacidad siempre disponible.',
+		dominios: ['dominio-1'],
+		relacionados: ['inferencia', 'latency', 'throughput'],
+	},
+	{
+		id: 'asynchronous-inference',
+		termino: 'Asynchronous inference («inferencia asíncrona»)',
+		definicion:
+			'Inferencia en la que la petición se encola y el resultado se recupera más tarde, útil para cargas largas o variables.',
+		dominios: ['dominio-1'],
+		relacionados: ['inferencia', 'batch-inference', 'real-time-inference'],
+	},
+	{
+		id: 'serverless-inference',
+		termino: 'Serverless inference («inferencia sin servidor»)',
+		definicion:
+			'Modalidad de inferencia en la que el proveedor gestiona la infraestructura y solo se paga por uso, sin aprovisionar capacidad.',
+		dominios: ['dominio-1'],
+		relacionados: ['inferencia', 'provisioned-throughput', 'amazon-bedrock'],
+	},
+	{
+		id: 'mlops',
+		termino: 'MLOps («operaciones de machine learning»)',
+		definicion:
+			'Conjunto de prácticas y herramientas para automatizar el ciclo de vida de los modelos: despliegue, monitoreo, versionado y reentrenamiento.',
+		dominios: ['dominio-1'],
+		relacionados: ['model-monitoring', 'entrenamiento', 'inferencia'],
+	},
+	{
+		id: 'model-monitoring',
+		termino: 'Model monitoring («monitoreo de modelos»)',
+		definicion:
+			'Seguimiento continuo del desempeño de un modelo en producción para detectar degradación, errores o comportamientos anómalos.',
+		dominios: ['dominio-1'],
+		relacionados: ['mlops', 'data-drift', 'metricas-de-modelo'],
+	},
+	{
+		id: 'data-drift',
+		termino: 'Data drift («deriva de datos»)',
+		definicion:
+			'Cambio en la distribución de los datos de entrada respecto a los usados en entrenamiento, que degrada el desempeño del modelo.',
+		dominios: ['dominio-1', 'dominio-5'],
+		relacionados: ['model-monitoring', 'mlops', 'metricas-de-modelo'],
+	},
+	{
+		id: 'accuracy',
+		termino: 'Accuracy («exactitud»)',
+		definicion:
+			'Métrica que mide la proporción de predicciones correctas sobre el total de casos evaluados.',
+		dominios: ['dominio-1'],
+		relacionados: ['precision', 'recall', 'metricas-de-modelo'],
+	},
+	{
+		id: 'precision',
+		termino: 'Precision («precisión»)',
+		definicion:
+			'Métrica que indica qué proporción de los casos marcados como positivos por el modelo lo son realmente.',
+		dominios: ['dominio-1'],
+		relacionados: ['recall', 'accuracy', 'f1-score'],
+	},
+	{
+		id: 'recall',
+		termino: 'Recall («exhaustividad o sensibilidad»)',
+		definicion:
+			'Métrica que indica qué proporción de los casos positivos reales fue detectada correctamente por el modelo.',
+		dominios: ['dominio-1'],
+		relacionados: ['precision', 'f1-score', 'accuracy'],
+	},
+	{
+		id: 'f1-score',
+		termino: 'F1 score («puntuación F1»)',
+		definicion:
+			'Media armónica de precision y recall que resume el equilibrio entre ambas en una sola métrica.',
+		dominios: ['dominio-1'],
+		relacionados: ['precision', 'recall', 'metricas-de-modelo'],
+	},
+	{
+		id: 'roi',
+		termino: 'Return on investment (ROI) («retorno de inversión»)',
+		definicion:
+			'Relación entre el beneficio obtenido y la inversión realizada, usada para justificar económicamente un proyecto de IA.',
+		dominios: ['dominio-1', 'dominio-2'],
+		relacionados: ['business-metrics', 'metricas-de-modelo'],
+	},
+	{
+		id: 'business-metrics',
+		termino: 'Business metrics («métricas de negocio»)',
+		definicion:
+			'Indicadores ligados a objetivos de negocio, como ahorro de coste o conversión, con los que se mide el impacto real de la IA.',
+		dominios: ['dominio-1', 'dominio-2'],
+		relacionados: ['roi', 'metricas-de-modelo'],
+	},
+	{
+		id: 'transformer',
+		termino: 'Transformer («transformador»)',
+		definicion:
+			'Arquitectura de red neuronal basada en atención que procesa secuencias en paralelo y sustenta los modelos de lenguaje modernos.',
+		dominios: ['dominio-2'],
+		relacionados: ['attention', 'llm', 'neural-networks'],
+	},
+	{
+		id: 'attention',
+		termino: 'Attention mechanism («mecanismo de atención»)',
+		definicion:
+			'Mecanismo que permite al modelo ponderar qué partes de la entrada son más relevantes para cada elemento que genera.',
+		dominios: ['dominio-2'],
+		relacionados: ['transformer', 'llm', 'contexto'],
+	},
+	{
+		id: 'chunking',
+		termino: 'Chunking («fragmentación»)',
+		definicion:
+			'División de documentos largos en fragmentos manejables antes de generar embeddings y recuperarlos en un sistema RAG.',
+		dominios: ['dominio-2', 'dominio-3'],
+		relacionados: ['rag', 'embeddings', 'base-de-conocimiento'],
+	},
+	{
+		id: 'vector',
+		termino: 'Vector («vector»)',
+		definicion:
+			'Lista ordenada de números que representa un dato en un espacio multidimensional y permite calcular la similitud entre elementos.',
+		dominios: ['dominio-2'],
+		relacionados: ['embeddings', 'base-de-datos-vectorial'],
+	},
+	{
+		id: 'multimodal-model',
+		termino: 'Multi-modal model («modelo multimodal»)',
+		definicion:
+			'Modelo capaz de procesar y relacionar más de un tipo de dato, como texto, imagen o audio, en una misma tarea.',
+		dominios: ['dominio-2'],
+		relacionados: ['modelo-fundacional', 'computer-vision', 'transformer'],
+	},
+	{
+		id: 'diffusion-model',
+		termino: 'Diffusion model («modelo de difusión»)',
+		definicion:
+			'Modelo generativo que crea imágenes u otros datos partiendo de ruido y refinándolo en pasos sucesivos.',
+		dominios: ['dominio-2'],
+		relacionados: ['ia-generativa', 'modelo-fundacional', 'multimodal-model'],
+	},
+	{
+		id: 'context-engineering',
+		termino: 'Context engineering («ingeniería de contexto»)',
+		definicion:
+			'Práctica de diseñar y organizar todo lo que entra en la ventana de contexto del modelo para orientar su respuesta.',
+		dominios: ['dominio-2', 'dominio-3'],
+		relacionados: ['contexto', 'prompt-engineering', 'rag'],
+	},
+	{
+		id: 'nondeterminism',
+		termino: 'Nondeterminism («no determinismo»)',
+		definicion:
+			'Propiedad por la que el mismo prompt puede producir respuestas distintas en ejecuciones diferentes debido al muestreo.',
+		dominios: ['dominio-2'],
+		relacionados: ['temperature', 'inference-parameters', 'experimentacion'],
+	},
+	{
+		id: 'temperature',
+		termino: 'Temperature («temperatura»)',
+		definicion:
+			'Parámetro de inferencia que controla el azar del muestreo: valores bajos dan respuestas más predecibles y altos, más creativas.',
+		dominios: ['dominio-2', 'dominio-3'],
+		relacionados: ['inference-parameters', 'nondeterminism', 'alucinacion'],
+	},
+	{
+		id: 'inference-parameters',
+		termino: 'Inference parameters («parámetros de inferencia»)',
+		definicion:
+			'Conjunto de ajustes como temperatura, top-p o máximo de tokens que condicionan cómo genera el modelo cada respuesta.',
+		dominios: ['dominio-2', 'dominio-3'],
+		relacionados: ['temperature', 'nondeterminism', 'inferencia'],
+	},
+	{
+		id: 'latency',
+		termino: 'Latency («latencia»)',
+		definicion:
+			'Tiempo que transcurre entre la petición al modelo y la recepción de su respuesta.',
+		dominios: ['dominio-2'],
+		relacionados: ['throughput', 'real-time-inference', 'provisioned-throughput'],
+	},
+	{
+		id: 'throughput',
+		termino: 'Throughput («rendimiento o caudal»)',
+		definicion:
+			'Volumen de peticiones o tokens que un modelo puede procesar por unidad de tiempo.',
+		dominios: ['dominio-2'],
+		relacionados: ['latency', 'provisioned-throughput', 'token'],
+	},
+	{
+		id: 'provisioned-throughput',
+		termino: 'Provisioned throughput («capacidad aprovisionada»)',
+		definicion:
+			'Capacidad de cómputo reservada de antemano para garantizar un rendimiento y una latencia estables en cargas previsibles.',
+		dominios: ['dominio-2'],
+		relacionados: ['throughput', 'latency', 'amazon-bedrock'],
+	},
+	{
+		id: 'multi-agent',
+		termino: 'Multi-agent system («sistema multiagente»)',
+		definicion:
+			'Arquitectura en la que varios agentes de IA colaboran o se especializan para resolver una tarea compleja.',
+		dominios: ['dominio-2'],
+		relacionados: ['agente-ia', 'workflow-orchestration', 'tool-use'],
+	},
+	{
+		id: 'workflow-orchestration',
+		termino: 'Workflow orchestration («orquestación de flujos»)',
+		definicion:
+			'Coordinación del orden y las dependencias de los pasos que ejecutan modelos, herramientas y agentes.',
+		dominios: ['dominio-2'],
+		relacionados: ['multi-agent', 'tool-use', 'agente-ia'],
+	},
+	{
+		id: 'tool-use',
+		termino: 'Tool use («uso de herramientas»)',
+		definicion:
+			'Capacidad del modelo de invocar funciones o servicios externos para obtener datos o ejecutar acciones.',
+		dominios: ['dominio-2'],
+		relacionados: ['agente-ia', 'mcp', 'workflow-orchestration'],
+	},
+	{
+		id: 'memory-management',
+		termino: 'Memory management («gestión de memoria»)',
+		definicion:
+			'Gestión de la información que un agente conserva entre interacciones, decidiendo qué recordar y qué descartar.',
+		dominios: ['dominio-2'],
+		relacionados: ['agente-ia', 'contexto', 'multi-agent'],
+	},
+	{
+		id: 'prompt-caching',
+		termino: 'Prompt caching («caché de prompts»)',
+		definicion:
+			'Reutilización del cómputo de las partes repetidas del prompt para reducir coste y latencia en llamadas sucesivas.',
+		dominios: ['dominio-3'],
+		relacionados: ['prompt', 'latency', 'precio-por-tokens'],
+	},
+	{
+		id: 'model-distillation',
+		termino: 'Model distillation («destilación de modelos»)',
+		definicion:
+			'Técnica que entrena un modelo pequeño para imitar el comportamiento de uno grande, con menos coste y latencia.',
+		dominios: ['dominio-3'],
+		relacionados: ['fine-tuning', 'inferencia', 'latency'],
+	},
+	{
+		id: 'in-context-learning',
+		termino: 'In-context learning («aprendizaje en contexto»)',
+		definicion:
+			'Capacidad del modelo de aprender una tarea a partir de los ejemplos incluidos en el propio prompt, sin actualizar sus pesos.',
+		dominios: ['dominio-3'],
+		relacionados: ['few-shot', 'zero-shot', 'prompt'],
+	},
+	{
+		id: 'instruction-tuning',
+		termino: 'Instruction tuning («ajuste por instrucciones»)',
+		definicion:
+			'Ajuste del modelo con ejemplos de instrucciones y respuestas para que siga órdenes de forma fiable.',
+		dominios: ['dominio-3'],
+		relacionados: ['fine-tuning', 'instruccion', 'rlhf'],
+	},
+	{
+		id: 'continuous-pre-training',
+		termino: 'Continuous pre-training («preentrenamiento continuo»)',
+		definicion:
+			'Ampliación del preentrenamiento de un modelo con corpus nuevos para actualizar su conocimiento sin reentrenarlo desde cero.',
+		dominios: ['dominio-3'],
+		relacionados: ['preentrenamiento', 'fine-tuning', 'data-curation'],
+	},
+	{
+		id: 'transfer-learning',
+		termino: 'Transfer learning («aprendizaje por transferencia»)',
+		definicion:
+			'Reutilización del conocimiento aprendido en una tarea para resolver otra distinta con menos datos.',
+		dominios: ['dominio-3'],
+		relacionados: ['fine-tuning', 'preentrenamiento', 'modelo-fundacional'],
+	},
+	{
+		id: 'rlhf',
+		termino: 'RLHF («aprendizaje por refuerzo con retroalimentación humana»)',
+		definicion:
+			'Técnica de ajuste que usa valoraciones humanas como señal de recompensa para alinear las respuestas del modelo con las preferencias deseadas.',
+		dominios: ['dominio-3'],
+		relacionados: ['fine-tuning', 'instruction-tuning', 'sesgo'],
+	},
+	{
+		id: 'data-curation',
+		termino: 'Data curation («curaduría de datos»)',
+		definicion:
+			'Proceso de seleccionar, limpiar y documentar los datos que se usan para entrenar o evaluar un modelo.',
+		dominios: ['dominio-3', 'dominio-4'],
+		relacionados: ['labeled-data', 'entrenamiento', 'label-quality'],
+	},
+	{
+		id: 'rouge',
+		termino: 'ROUGE («métrica de resúmenes»)',
+		definicion:
+			'Familia de métricas que compara un resumen generado con uno de referencia midiendo el solapamiento de n-gramas y secuencias.',
+		dominios: ['dominio-3'],
+		relacionados: ['bleu', 'model-evaluation', 'llm-as-a-judge'],
+	},
+	{
+		id: 'bleu',
+		termino: 'BLEU («métrica de traducción»)',
+		definicion:
+			'Métrica que evalúa la calidad de una traducción automática comparando sus n-gramas con traducciones de referencia.',
+		dominios: ['dominio-3'],
+		relacionados: ['rouge', 'model-evaluation'],
+	},
+	{
+		id: 'bertscore',
+		termino: 'BERTScore («similitud semántica»)',
+		definicion:
+			'Métrica que mide la similitud semántica entre textos mediante embeddings contextuales, más allá del solapamiento literal.',
+		dominios: ['dominio-3'],
+		relacionados: ['embeddings', 'model-evaluation', 'rouge'],
+	},
+	{
+		id: 'llm-as-a-judge',
+		termino: 'LLM-as-a-judge («LLM como juez»)',
+		definicion:
+			'Uso de un modelo de lenguaje como evaluador para puntuar o comparar las salidas de otro modelo según un criterio.',
+		dominios: ['dominio-3'],
+		relacionados: ['model-evaluation', 'salida-verificable', 'llm'],
+	},
+	{
+		id: 'model-evaluation',
+		termino: 'Model evaluation («evaluación de modelos»)',
+		definicion:
+			'Conjunto de pruebas y métricas con las que se mide si un modelo cumple los requisitos de calidad antes y después de desplegarlo.',
+		dominios: ['dominio-3'],
+		relacionados: ['metricas-de-modelo', 'llm-as-a-judge', 'model-monitoring'],
+	},
+	{
+		id: 'inclusivity',
+		termino: 'Inclusivity («inclusividad»)',
+		definicion:
+			'Principio de diseñar sistemas que funcionen bien para personas de distintos idiomas, capacidades y contextos.',
+		dominios: ['dominio-4'],
+		relacionados: ['fairness', 'human-centered-design', 'ia-responsable'],
+	},
+	{
+		id: 'robustness',
+		termino: 'Robustness («robustez»)',
+		definicion:
+			'Capacidad del sistema de mantener un comportamiento correcto ante entradas inesperadas, ruidosas o adversarias.',
+		dominios: ['dominio-4'],
+		relacionados: ['adversarial-input', 'safety', 'ia-responsable'],
+	},
+	{
+		id: 'safety',
+		termino: 'Safety («seguridad frente a daño»)',
+		definicion:
+			'Conjunto de medidas que evitan que el sistema cause daño físico, psicológico, social o económico a las personas.',
+		dominios: ['dominio-4'],
+		relacionados: ['guardrail', 'ia-responsable', 'toxicity'],
+	},
+	{
+		id: 'adversarial-input',
+		termino: 'Adversarial input («entrada adversaria»)',
+		definicion:
+			'Entrada diseñada deliberadamente para engañar al modelo y provocar un resultado incorrecto o inseguro.',
+		dominios: ['dominio-4', 'dominio-5'],
+		relacionados: ['robustness', 'prompt-injection', 'safety'],
+	},
+	{
+		id: 'dataset-characteristics',
+		termino: 'Dataset characteristics («características del dataset»)',
+		definicion:
+			'Propiedades de un conjunto de datos, como tamaño, origen, cobertura e idioma, que condicionan el comportamiento del modelo.',
+		dominios: ['dominio-4'],
+		relacionados: ['data-curation', 'labeled-data', 'sesgo'],
+	},
+	{
+		id: 'label-quality',
+		termino: 'Label quality («calidad de las etiquetas»)',
+		definicion:
+			'Grado de corrección y consistencia de las etiquetas que se usan para entrenar o evaluar un modelo.',
+		dominios: ['dominio-4'],
+		relacionados: ['labeled-data', 'data-curation', 'human-audit'],
+	},
+	{
+		id: 'human-audit',
+		termino: 'Human audit («auditoría humana»)',
+		definicion:
+			'Revisión realizada por personas para comprobar el comportamiento, los sesgos o los errores de un sistema de IA.',
+		dominios: ['dominio-4'],
+		relacionados: ['auditoria', 'subgroup-analysis', 'human-centered-design'],
+	},
+	{
+		id: 'subgroup-analysis',
+		termino: 'Subgroup analysis («análisis por subgrupos»)',
+		definicion:
+			'Evaluación del desempeño del modelo separada por grupos de población para detectar diferencias injustas.',
+		dominios: ['dominio-4'],
+		relacionados: ['fairness', 'sesgo', 'human-audit'],
+	},
+	{
+		id: 'human-centered-design',
+		termino: 'Human-centered design («diseño centrado en las personas»)',
+		definicion:
+			'Enfoque de diseño que sitúa las necesidades y la experiencia de las personas en el centro del desarrollo del sistema.',
+		dominios: ['dominio-4'],
+		relacionados: ['inclusivity', 'human-audit', 'ia-responsable'],
+	},
+	{
+		id: 'ip-infringement',
+		termino: 'Intellectual property infringement («infracción de propiedad intelectual»)',
+		definicion:
+			'Uso de contenido protegido por derechos de autor o marcas en las salidas del modelo sin la autorización correspondiente.',
+		dominios: ['dominio-4'],
+		relacionados: ['cumplimiento', 'transparencia', 'gobernanza'],
+	},
+	{
+		id: 'shared-responsibility-model',
+		termino: 'Shared responsibility model («modelo de responsabilidad compartida»)',
+		definicion:
+			'Reparto de obligaciones de seguridad entre el proveedor del servicio en la nube y el cliente que lo utiliza.',
+		dominios: ['dominio-5'],
+		relacionados: ['gobernanza', 'cumplimiento', 'cifrado'],
+	},
+	{
+		id: 'encryption-at-rest',
+		termino: 'Encryption at rest («cifrado en reposo»)',
+		definicion:
+			'Cifrado de los datos cuando están almacenados, de modo que no sean legibles sin la clave correspondiente.',
+		dominios: ['dominio-5'],
+		relacionados: ['cifrado', 'data-integrity', 'data-lifecycle'],
+	},
+	{
+		id: 'encryption-in-transit',
+		termino: 'Encryption in transit («cifrado en tránsito»)',
+		definicion:
+			'Cifrado de los datos mientras viajan por la red entre el cliente y el servicio.',
+		dominios: ['dominio-5'],
+		relacionados: ['cifrado', 'encryption-at-rest', 'data-access-control'],
+	},
+	{
+		id: 'data-lineage',
+		termino: 'Data lineage («linaje de datos»)',
+		definicion:
+			'Trazabilidad del origen y de las transformaciones que ha sufrido un dato a lo largo de su ciclo de vida.',
+		dominios: ['dominio-5'],
+		relacionados: ['data-lifecycle', 'audit-trail', 'data-cataloging'],
+	},
+	{
+		id: 'data-cataloging',
+		termino: 'Data cataloging («catalogación de datos»)',
+		definicion:
+			'Registro e inventario organizado de los datos disponibles con metadatos que facilitan su localización y gobierno.',
+		dominios: ['dominio-5'],
+		relacionados: ['data-lineage', 'gobernanza', 'data-access-control'],
+	},
+	{
+		id: 'source-citation',
+		termino: 'Source citation («citación de fuentes»)',
+		definicion:
+			'Inclusión en la respuesta de las fuentes consultadas para que el usuario pueda verificarla.',
+		dominios: ['dominio-5'],
+		relacionados: ['grounding', 'veracidad', 'rag'],
+	},
+	{
+		id: 'data-access-control',
+		termino: 'Data access control («control de acceso a los datos»)',
+		definicion:
+			'Conjunto de reglas y permisos que determinan quién puede consultar o modificar cada dato.',
+		dominios: ['dominio-5'],
+		relacionados: ['cifrado', 'data-cataloging', 'gobernanza'],
+	},
+	{
+		id: 'data-integrity',
+		termino: 'Data integrity («integridad de los datos»)',
+		definicion:
+			'Garantía de que los datos permanecen completos, exactos y sin alteraciones no autorizadas.',
+		dominios: ['dominio-5'],
+		relacionados: ['data-lifecycle', 'encryption-at-rest', 'audit-trail'],
+	},
+	{
+		id: 'privacy-enhancing-technologies',
+		termino: 'Privacy-enhancing technologies («tecnologías de mejora de la privacidad»)',
+		definicion:
+			'Técnicas como el cifrado o la anonimización que permiten usar datos preservando la privacidad de las personas.',
+		dominios: ['dominio-5'],
+		relacionados: ['cifrado', 'data-access-control', 'cumplimiento'],
+	},
+	{
+		id: 'threat-detection',
+		termino: 'Threat detection («detección de amenazas»)',
+		definicion:
+			'Vigilancia y análisis para identificar de forma temprana accesos o comportamientos maliciosos sobre el sistema.',
+		dominios: ['dominio-5'],
+		relacionados: ['vulnerability-management', 'audit-trail', 'registro-de-actividad'],
+	},
+	{
+		id: 'vulnerability-management',
+		termino: 'Vulnerability management («gestión de vulnerabilidades»)',
+		definicion:
+			'Proceso continuo de identificar, priorizar y corregir fallos de seguridad en sistemas y dependencias.',
+		dominios: ['dominio-5'],
+		relacionados: ['threat-detection', 'cifrado', 'cumplimiento'],
+	},
+	{
+		id: 'output-filtering',
+		termino: 'Output filtering and validation («filtrado y validación de la salida»)',
+		definicion:
+			'Inspección y bloqueo automáticos de las respuestas del modelo que incumplen políticas o contienen contenido no permitido.',
+		dominios: ['dominio-5'],
+		relacionados: ['guardrail', 'toxicity', 'salida-verificable'],
+	},
+	{
+		id: 'audit-trail',
+		termino: 'Audit trail («rastro de auditoría»)',
+		definicion:
+			'Secuencia registrada e inalterable de acciones y eventos que permite reconstruir lo ocurrido y rendir cuentas.',
+		dominios: ['dominio-5'],
+		relacionados: ['registro-de-actividad', 'auditoria', 'data-lineage'],
+	},
+	{
+		id: 'toxicity',
+		termino: 'Toxicity («toxicidad»)',
+		definicion:
+			'Contenido ofensivo, discriminatorio o dañino que un modelo puede generar y que debe detectarse y filtrarse.',
+		dominios: ['dominio-5'],
+		relacionados: ['safety', 'output-filtering', 'guardrail'],
+	},
+	{
+		id: 'hallucination-detection',
+		termino: 'Hallucination detection («detección de alucinaciones»)',
+		definicion:
+			'Detección automática de afirmaciones inventadas o sin respaldo en las respuestas del modelo.',
+		dominios: ['dominio-5'],
+		relacionados: ['alucinacion', 'veracidad', 'grounding'],
+	},
+	{
+		id: 'confidence-scoring',
+		termino: 'Confidence scoring («puntuación de confianza»)',
+		definicion:
+			'Asignación de una puntuación de confianza a la respuesta del modelo para decidir si se acepta o se escala a revisión.',
+		dominios: ['dominio-5'],
+		relacionados: ['hallucination-detection', 'salida-verificable', 'human-audit'],
+	},
+	{
+		id: 'data-lifecycle',
+		termino: 'Data lifecycle («ciclo de vida del dato»)',
+		definicion:
+			'Conjunto de etapas por las que pasa un dato, desde su captura y uso hasta su archivado o eliminación.',
+		dominios: ['dominio-5'],
+		relacionados: ['data-retention', 'retencion-de-datos', 'data-lineage'],
+	},
+	{
+		id: 'data-residency',
+		termino: 'Data residency («residencia de datos»)',
+		definicion:
+			'Requisito de almacenar y procesar los datos dentro de una región o jurisdicción concreta.',
+		dominios: ['dominio-5'],
+		relacionados: ['residencia-de-datos', 'gobernanza', 'cumplimiento'],
+	},
+	{
+		id: 'data-retention',
+		termino: 'Data retention («retención de datos»)',
+		definicion:
+			'Reglas sobre cuánto tiempo se conservan los datos y cuándo deben eliminarse.',
+		dominios: ['dominio-5'],
+		relacionados: ['retencion-de-datos', 'data-lifecycle', 'cumplimiento'],
+	},
+	{
+		id: 'generative-ai-security-scoping-matrix',
+		termino: 'Generative AI Security Scoping Matrix («matriz de alcance de seguridad de IA generativa»)',
+		definicion:
+			'Marco que clasifica el alcance y las responsabilidades de seguridad de una aplicación de IA generativa según su arquitectura y uso.',
+		dominios: ['dominio-5'],
+		relacionados: ['shared-responsibility-model', 'gobernanza', 'safety'],
+	},
+	{
+		id: 'review-cadence',
+		termino: 'Review cadence («cadencia de revisión»)',
+		definicion:
+			'Frecuencia planificada con la que se revisan políticas, modelos y controles para mantenerlos vigentes.',
+		dominios: ['dominio-5'],
+		relacionados: ['gobernanza', 'auditoria', 'model-monitoring'],
+	},
+	{
+		id: 'transparency-standards',
+		termino: 'Transparency standards («estándares de transparencia»)',
+		definicion:
+			'Criterios sobre qué información debe publicarse y documentarse acerca de los datos, el modelo y sus límites.',
+		dominios: ['dominio-5'],
+		relacionados: ['transparencia', 'model-card', 'explicabilidad'],
+	},
+	{
+		id: 'team-training',
+		termino: 'Team training requirements («requisitos de formación del equipo»)',
+		definicion:
+			'Formación exigida al personal que diseña, opera o revisa sistemas de IA para cumplir las políticas y las buenas prácticas.',
+		dominios: ['dominio-5'],
+		relacionados: ['gobernanza', 'cumplimiento', 'ia-responsable'],
 	},
 ];

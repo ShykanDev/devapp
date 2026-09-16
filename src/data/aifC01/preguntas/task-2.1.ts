@@ -222,4 +222,106 @@ export const preguntasTask21: PreguntaAifC01[] = [
 		explanation:
 			'MCP define cómo se exponen y consumen capacidades externas, de modo que el agente reutiliza el mismo patrón con distintos servidores. No elimina las APIs ni los permisos, y no sustituye los controles que evitan acciones incorrectas.',
 	},
+	{
+		id: '2.1-q14',
+		taskId: '2.1',
+		objetivos: ['2.1#1'],
+		tipo: 'conocimiento',
+		question:
+			'Un modelo recibe una fotografía junto con un texto y devuelve una descripción combinada. Otro modelo parte de una instrucción de texto y genera una imagen nueva a partir de ruido. ¿Qué conceptos describen respectivamente a ambos modelos?',
+		options: [
+			'El primero es un modelo de difusión y el segundo un modelo multimodal.',
+			'Ambos son modelos multimodales, porque los dos procesan imágenes.',
+			'El primero es un modelo multimodal y el segundo un modelo de difusión.',
+			'El primero es un transformer de solo texto y el segundo un embedding.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'Un modelo multimodal procesa y combina más de una modalidad, como imagen y texto. Un modelo de difusión genera contenido nuevo, por ejemplo imágenes, partiendo de ruido guiado por la instrucción, y puede ser a su vez multimodal.',
+	},
+	{
+		id: '2.1-q15',
+		taskId: '2.1',
+		objetivos: ['2.1#2'],
+		tipo: 'casoDeUso',
+		question:
+			'Una empresa de comercio electrónico quiere traducir automáticamente las fichas de producto a diez idiomas y, además, devolver resultados de búsqueda acordes con la intención de cada consulta. ¿Qué casos de uso de GenAI cubren estas dos necesidades?',
+		options: [
+			'Traducción automática y búsqueda semántica.',
+			'Detección de fraude y segmentación de clientes.',
+			'Resumen de documentos y generación de código.',
+			'Clasificación de imágenes y auditoría contable.',
+		],
+		correctAnswer: 0,
+		explanation:
+			'La traducción y la búsqueda son casos de uso reconocidos de GenAI: la primera convierte contenido entre idiomas y la segunda interpreta la intención de la consulta. La detección de fraude o la auditoría contable se apoyan en enfoques distintos.',
+	},
+	{
+		id: '2.1-q16',
+		taskId: '2.1',
+		objetivos: ['2.1#3'],
+		tipo: 'escenario',
+		question:
+			'Un equipo recibe un modelo fundacional, lo ajusta con datos propios y lo publica de inmediato para cumplir una fecha. Semanas después no puede demostrar si las respuestas mejoraron ni compararlas con la versión anterior. ¿Qué etapa del ciclo de vida omitió y conviene formalizar?',
+		options: [
+			'La selección de datos, porque no había datos disponibles.',
+			'El pre-entrenamiento, porque el modelo base no estaba entrenado.',
+			'La retroalimentación de los usuarios finales.',
+			'La evaluación, que compara el modelo ajustado con una línea base antes de desplegarlo.',
+		],
+		correctAnswer: 3,
+		explanation:
+			'La evaluación es la etapa que mide si el ajuste mejora el resultado frente a una línea base y permite decidir con evidencia si se publica. Sin ella, el despliegue se hace a ciegas y no se puede atribuir ninguna mejora.',
+	},
+	{
+		id: '2.1-q17',
+		taskId: '2.1',
+		objetivos: ['2.1#4'],
+		tipo: 'tradeoff',
+		question:
+			'Un equipo limita los tokens de salida para reducir coste y latencia, pero las respuestas empiezan a cortarse antes de resolver el caso y obligan a repetir la petición. ¿Cómo se describe el intercambio?',
+		options: [
+			'El límite de tokens de salida no influye ni en el coste ni en la latencia.',
+			'Menos tokens de salida abaratan y aceleran la respuesta, pero pueden truncar el contenido y forzar llamadas adicionales que encarecen el total.',
+			'Ampliar el límite de salida reduce siempre el coste total.',
+			'La truncación se corrige aumentando únicamente los tokens de entrada.',
+		],
+		correctAnswer: 1,
+		explanation:
+			'Como la salida se factura por tokens, acortarla reduce el coste y suele mejorar la latencia, pero un límite demasiado bajo trunca la respuesta y provoca reintentos que elevan el gasto final. El ajuste debe medirse con la tarea completa.',
+	},
+	{
+		id: '2.1-q18',
+		taskId: '2.1',
+		objetivos: ['2.1#5'],
+		tipo: 'escenario',
+		question:
+			'Un asistente recibe en cada consulta veinte fragmentos recuperados, la ventana de contexto se llena y las respuestas citan información poco relevante mientras se ignoran las instrucciones. ¿Qué práctica de ingeniería de contexto conviene aplicar primero?',
+		options: [
+			'Aumentar la temperatura para que el modelo elija mejor entre los fragmentos.',
+			'Reentrenar el modelo con todos los documentos de la empresa.',
+			'Priorizar y recortar los fragmentos según su relevancia, dejando los más pertinentes en primer lugar y por delante del material secundario.',
+			'Eliminar las instrucciones del sistema para liberar espacio en la ventana.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'La ingeniería de contexto decide qué entra, en qué orden y con qué prioridad. Seleccionar y ordenar los fragmentos relevantes evita diluir la instrucción y mejora la respuesta sin reentrenar el modelo ni tocar la temperatura.',
+	},
+	{
+		id: '2.1-q19',
+		taskId: '2.1',
+		objetivos: ['2.1#6'],
+		tipo: 'tradeoff',
+		question:
+			'Un equipo debate entre un único agente con muchas herramientas o varios agentes especializados coordinados por un orquestador. ¿Qué intercambio describe mejor la decisión?',
+		options: [
+			'Varios agentes especializados simplifican siempre el sistema y reducen la latencia total.',
+			'Un único agente no puede invocar herramientas externas ni mantener memoria.',
+			'La memoria compartida solo existe en los sistemas multi-agente y no aporta nada al agente único.',
+			'Un agente único reduce la coordinación y el coste inicial, pero concentra responsabilidades; varios agentes separan dominios y afrontan mejor tareas complejas, a cambio de más latencia y de orquestación y memoria compartida.',
+		],
+		correctAnswer: 3,
+		explanation:
+			'Repartir el trabajo entre agentes especializados mejora la modularidad y el reparto de responsabilidades, pero añade coordinación, latencia y necesidad de gestionar memoria y comunicación. Un solo agente es más simple, aunque acumula todas las capacidades y puede volverse menos fiable en tareas complejas.',
+	},
 ];

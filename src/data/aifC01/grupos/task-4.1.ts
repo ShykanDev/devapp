@@ -10,6 +10,10 @@ export const gruposTask41: GrupoTematico[] = [
 				tipo: 'concepto',
 				md: 'La IA responsable se evalúa contra seis características que el examen pide reconocer:\n\n- **Bias (sesgo)**: el sistema favorece o perjudica a un grupo sin una razón técnica que lo justifique; suele venir de los datos o de cómo se formuló el objetivo.\n- **Fairness (equidad)**: el resultado trata de forma comparable a personas comparables, sin ventajas ni penalizaciones por atributos protegidos.\n- **Inclusividad**: el sistema funciona de forma razonable con distintos idiomas, acentos, capacidades y contextos, no solo con el grupo mayoritario.\n- **Robustness (robustez)**: mantiene un rendimiento aceptable ante entradas ruidosas, inusuales o manipuladas, sin degradarse por un cambio menor.\n- **Safety (seguridad)**: no provoca daño físico, legal o financiero y, cuando falla, lo hace de forma controlada y reversible.\n- **Veracidad**: lo que afirma se corresponde con fuentes verificables; no inventa ni presenta una suposición como un hecho.\n\nNinguna se mide «en general»: se comprueban con evidencia y por subgrupos, no con la impresión de una sola demostración.',
 			},
+			{
+				tipo: 'concepto',
+				md: 'Aviso de vocabulario que confunde a casi todo el mundo: **«sesgo» (bias) no significa lo mismo en las dos partes de este dominio.**\n\n- **Sesgo social (social bias, en fairness)**: el sistema trata peor a un grupo de personas. Es el de este objective (4.1#1) y se corrige revisando los datos y midiendo por subgrupo (subgroup analysis).\n- **Sesgo estadístico (statistical bias, en bias-variance)**: el modelo es demasiado simple y no captura la relación de los datos. Es el del objective 4.1#6 y se corrige dando más capacidad al modelo.\n\nSon errores distintos: uno hace daño a personas, el otro hace que el modelo prediga mal en general. Un modelo puede predecir bien de media y seguir tratando mal a un grupo concreto por culpa de los datos.',
+			},
 			{ tipo: 'comparacion', parId: 'bias-vs-variance' },
 			{
 				tipo: 'escenario',
@@ -183,6 +187,10 @@ export const gruposTask41: GrupoTematico[] = [
 				tipo: 'concepto',
 				md: 'El error de un modelo se descompone en **sesgo** y **varianza**, y los dos fallos se corrigen en direcciones opuestas:\n\n- **Sesgo alto (underfitting)**: el modelo es demasiado simple para la relación real; falla tanto en entrenamiento como en datos nuevos.\n- **Varianza alta (overfitting)**: el modelo se ajusta al ruido del entrenamiento; acierta en el histórico y falla al generalizar.\n- **Efecto sobre grupos demográficos**: si un subgrupo está poco representado, el modelo lo trata peor aunque la exactitud media suba.\n- **Imprecisión**: ambos extremos producen respuestas incorrectas, pero por motivos distintos y con correcciones distintas.\n\nDiagnóstico: compara el error de entrenamiento con el de validación y desagrega por subgrupo. Una brecha grande entre ambos apunta a varianza alta; un error alto y parecido en los dos apunta a sesgo alto.',
 			},
+			{
+				tipo: 'concepto',
+				md: '**Overfitting («sobreajuste») y underfitting («subajuste») son las dos formas de fallar de un modelo.** Se entienden con la imagen de un estudiante que prepara un examen:\n\n- **Underfitting («subajuste») — no estudió lo suficiente**: el modelo es demasiado simple para el problema. Se equivoca con los ejemplos que ya vio y también con los casos nuevos. Su error es **alto en entrenamiento (training) y alto en validación (validation)**.\n- **Overfitting («sobreajuste») — memorizó las respuestas**: el modelo es tan flexible que aprende de memoria los ejemplos y su ruido. Acierta con lo que ya vio y se derrumba ante casos nuevos. Su error es **bajo en entrenamiento (training) y alto en validación (validation)**.\n- **Lo que quieres** es un estudiante que entendió el tema: error bajo y, sobre todo, **parecido** en entrenamiento y en validación.\n\nCómo se corrige cada uno:\n\n- **Underfitting / sesgo alto (high bias)**: modelo con más capacidad, mejores variables o menos regularización (regularization).\n- **Overfitting / varianza alta (high variance)**: más datos, regularización, un modelo más simple y validación con datos separados.\n\nLo que decide no es el error de entrenamiento, sino la **brecha de generalización (generalization gap)** entre entrenamiento y validación. Un 99 % en entrenamiento con un 60 % en validación es un mal resultado, no un éxito.',
+			},
 			{ tipo: 'comparacion', parId: 'overfitting-vs-underfitting' },
 			{
 				tipo: 'escenario',
@@ -205,6 +213,10 @@ export const gruposTask41: GrupoTematico[] = [
 					'Overfitting memoriza; underfitting no aprende la señal.',
 					'La decisión se toma comparando entrenamiento contra validación y midiendo por subgrupo.',
 				],
+			},
+			{
+				tipo: 'ejemplo',
+				md: '```text\nMismo problema, tres modelos (error en %):\n  modelo simple    -> entrenamiento 35 | validacion 36   (underfitting: alto y parecido)\n  modelo ajustado  -> entrenamiento  8 | validacion 10   (equilibrado: lo deseable)\n  modelo complejo  -> entrenamiento  1 | validacion 28   (overfitting: brecha enorme)\n\nConclusión: no mires solo la columna de entrenamiento; mira la diferencia entre las dos.\n```',
 			},
 		],
 		preguntasGuia: [

@@ -154,4 +154,72 @@ export const preguntasTask23: PreguntaAifC01[] = [
 		explanation:
 			'Provisioned throughput se orienta a cargas sostenidas y predecibles con capacidad reservada; on-demand factura el consumo real y se adapta a demanda variable. La elección es un intercambio entre compromiso de capacidad y flexibilidad.',
 	},
+	{
+		id: '2.3-q10',
+		taskId: '2.3',
+		objetivos: ['2.3#1'],
+		tipo: 'escenario',
+		question:
+			'Un equipo quiere construir un agente que use herramientas internas, recuerde el contexto de cada sesión y se ejecute en un entorno gestionado con identidad propia, sin aprovisionar ni operar servidores. ¿Qué opciones de AWS encajan mejor?',
+		options: [
+			'Amazon Transcribe y Amazon Polly, para las herramientas del agente.',
+			'AWS Glue y Amazon Redshift, para la memoria y la orquestación.',
+			'Amazon Bedrock AgentCore para ejecutar y operar el agente y sus identidades, con un framework como Strands Agents para definirlo.',
+			'Amazon CloudFront y AWS PrivateLink como sustituto del runtime del agente.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'Amazon Bedrock AgentCore ofrece el runtime gestionado e identidades para agentes, y Strands Agents aporta el framework para definirlos con herramientas y memoria. El resto de opciones no cubren el ciclo de vida de un agente.',
+	},
+	{
+		id: '2.3-q11',
+		taskId: '2.3',
+		objetivos: ['2.3#2'],
+		tipo: 'conocimiento',
+		question:
+			'Una empresa lanza un asistente y no sabe si tendrá cientos o cientos de miles de usuarios al mes. ¿Qué ventaja de los servicios gestionados de GenAI de AWS responde mejor a esa incertidumbre?',
+		options: [
+			'La escalabilidad y la eficiencia del consumo elástico: se paga por uso y la capacidad se adapta sin reaprovisionar servidores.',
+			'La garantía de que el modelo no producirá respuestas incorrectas.',
+			'La obligación de reservar capacidad fija durante todo el año.',
+			'La sustitución de la gestión de identidades por las políticas internas del modelo.',
+		],
+		correctAnswer: 0,
+		explanation:
+			'El consumo elástico y el pago por uso permiten crecer o reducir capacidad según la demanda real, sin inversión anticipada ni operación de servidores. Los servicios gestionados no eliminan los errores del modelo ni eximen de gestionar identidades.',
+	},
+	{
+		id: '2.3-q12',
+		taskId: '2.3',
+		objetivos: ['2.3#3'],
+		tipo: 'seguridad',
+		question:
+			'Una empresa necesita que el tráfico entre su red virtual y el servicio de IA no salga a internet y quiere saber qué controles le corresponden a ella y cuáles asume AWS. ¿Qué elementos debe considerar?',
+		options: [
+			'Solo el cifrado en reposo, porque AWS se encarga de todo lo demás.',
+			'El tamaño del modelo elegido y su número de parámetros.',
+			'Únicamente el registro de llamadas a la API.',
+			'AWS PrivateLink para conectar la red privada al servicio sin exponerlo a internet, junto con el modelo de responsabilidad compartida de AWS.',
+		],
+		correctAnswer: 3,
+		explanation:
+			'AWS PrivateLink permite el acceso privado al servicio sin atravesar internet, y el modelo de responsabilidad compartida aclara que AWS protege la infraestructura del servicio mientras el cliente responde de sus datos, permisos y configuración.',
+	},
+	{
+		id: '2.3-q13',
+		taskId: '2.3',
+		objetivos: ['2.3#4'],
+		tipo: 'tradeoff',
+		question:
+			'Un equipo compara consumir un modelo fundacional gestionado por API con entrenar y alojar un modelo propio. ¿Qué afirmación describe mejor el intercambio de coste?',
+		options: [
+			'El modelo gestionado siempre resulta más caro que uno propio, sea cual sea el volumen.',
+			'Un modelo propio da más control y puede ajustarse mejor al dominio, pero exige inversión en datos, entrenamiento y operación; el gestionado se paga por uso y traslada esa operación al proveedor.',
+			'Ambas opciones cuestan lo mismo porque en los dos casos se factura por tokens.',
+			'Un modelo propio elimina por completo el coste de inferencia.',
+		],
+		correctAnswer: 1,
+		explanation:
+			'El modelo propio añade coste y esfuerzo de datos, entrenamiento y operación a cambio de control y especialización; el gestionado evita esa inversión y factura por consumo. Cuál conviene depende del volumen, la especialización necesaria y la capacidad del equipo.',
+	},
 ];

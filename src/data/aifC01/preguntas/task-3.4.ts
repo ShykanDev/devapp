@@ -205,4 +205,72 @@ export const preguntasTask34: PreguntaAifC01[] = [
 		explanation:
 			'Optimizar una sola métrica de alineación puede degradar las demás. Reducir el coste por interacción tiene valor solo si la finalización de tareas y la satisfacción se mantienen; si caen, el ahorro no compensa.',
 	},
+	{
+		id: '3.4-q13',
+		taskId: '3.4',
+		objetivos: ['3.4#1'],
+		tipo: 'tradeoff',
+		question:
+			'El equipo debate entre evaluar respuestas abiertas con revisores humanos o con un juez LLM automatizado. ¿Qué afirmación describe mejor el intercambio?',
+		options: [
+			'El juez LLM elimina la necesidad de definir una rúbrica de evaluación.',
+			'La revisión humana es rápida y gratuita, y el juez LLM solo sirve para tareas de clasificación.',
+			'El juez LLM permite evaluar a gran escala y de forma repetible a menor coste, a cambio de validar sus criterios contra revisores humanos; la revisión humana es más fiable en los matices, pero no escala.',
+			'Los dos enfoques miden exactamente lo mismo, así que basta con elegir el más barato.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'El juez LLM aporta escala, repetibilidad y coste bajo, pero su criterio debe calibrarse y auditarse contra revisores humanos para evitar sesgos. La evaluación humana captura mejor los matices subjetivos, aunque es más lenta y costosa.',
+	},
+	{
+		id: '3.4-q14',
+		taskId: '3.4',
+		objetivos: ['3.4#2'],
+		tipo: 'escenario',
+		question:
+			'Un modelo de moderación marca como inapropiados contenidos legítimos de los usuarios y el equipo recibe muchas quejas. La prioridad ahora es no bloquear contenido válido, aunque se cuelen algunos casos dudosos. ¿Qué métrica debe priorizarse?',
+		options: [
+			'Precision, porque mide cuántos de los contenidos marcados eran realmente inapropiados.',
+			'Recall, porque mide cuántos casos inapropiados se detectaron.',
+			'Accuracy, porque resume todos los aciertos del modelo.',
+			'BLEU, porque mide la similitud con una respuesta de referencia.',
+		],
+		correctAnswer: 0,
+		explanation:
+			'Si el problema son las falsas alarmas sobre contenido legítimo, hay que priorizar precision, que mide la proporción de marcas correctas entre las emitidas. Recall se centra en no dejar pasar casos positivos, que es el objetivo contrario al que plantea el equipo.',
+	},
+	{
+		id: '3.4-q15',
+		taskId: '3.4',
+		objetivos: ['3.4#3', '3.4#5'],
+		tipo: 'metrica',
+		question:
+			'Antes de publicar un asistente interno, el equipo quiere fijar con qué métricas demostrará que cumple el objetivo de negocio y que aporta valor real. ¿Qué combinación es la más adecuada?',
+		options: [
+			'Perplejidad del modelo y número de parámetros.',
+			'Similitud BLEU con respuestas de referencia y latencia de la primera palabra.',
+			'Precisión de n-gramas y tasa de aciertos del clasificador interno.',
+			'Tasa de finalización de tareas, tiempo ahorrado por el usuario y coste por interacción.',
+		],
+		correctAnswer: 3,
+		explanation:
+			'La alineación con el negocio se demuestra con resultados del proceso: si el usuario completa su tarea, cuánto tiempo ahorra y a qué coste por interacción. Perplejidad, parámetros y métricas de n-gramas describen el modelo, no el valor entregado a la organización.',
+	},
+	{
+		id: '3.4-q16',
+		taskId: '3.4',
+		objetivos: ['3.4#4'],
+		tipo: 'escenario',
+		question:
+			'Un asistente RAG responde con seguridad, pero a veces cita documentos que ya no están vigentes porque el índice no se actualiza. ¿Qué conviene evaluar para localizar y corregir el fallo?',
+		options: [
+			'Solo la respuesta final con un juez LLM, porque el texto parece correcto.',
+			'La calidad de la recuperación y la vigencia de los fragmentos, además del grounding de la respuesta respecto a las fuentes.',
+			'La longitud media de las respuestas y el número de tokens de salida.',
+			'La fecha de entrenamiento del modelo fundacional y su ventana de contexto.',
+		],
+		correctAnswer: 1,
+		explanation:
+			'En una aplicación RAG el fallo puede estar en la recuperación o en la vigencia del índice, no solo en la generación. Evaluar por capas la recuperación, la relevancia y la antigüedad de los fragmentos, y comprobar el grounding de la respuesta, localiza la causa que una respuesta final plausible oculta.',
+	},
 ];

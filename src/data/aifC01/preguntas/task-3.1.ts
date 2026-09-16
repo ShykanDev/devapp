@@ -255,4 +255,89 @@ export const preguntasTask31: PreguntaAifC01[] = [
 		explanation:
 			'Cuando un agente actúa sobre sistemas reales, el riesgo no es solo textual: una acción errónea es irreversible. El control se diseña con permisos mínimos, límites explícitos, trazabilidad de cada paso y supervisión humana en las decisiones críticas.',
 	},
+	{
+		id: '3.1-q16',
+		taskId: '3.1',
+		objetivos: ['3.1#1'],
+		tipo: 'escenario',
+		question:
+			'Un equipo elige un modelo fundacional para un asistente de voz que atiende llamadas en tiempo real y dispone de un presupuesto por token reducido. Ha descartado el modelo con mejor calidad porque tarda varios segundos en responder. ¿Qué criterios de selección están guiando la decisión?',
+		options: [
+			'Modalidad y longitud de salida, porque la voz exige transcripciones largas.',
+			'Personalización y complejidad, porque el modelo descartado no admite fine-tuning.',
+			'Latencia y coste, porque el caso de uso exige respuesta inmediata y un gasto contenido.',
+			'Multilingüe y prompt caching, porque la caché reduce el número de idiomas.',
+		],
+		correctAnswer: 2,
+		explanation:
+			'La latencia es determinante en una conversación en tiempo real y el coste por token acota el presupuesto. La calidad sigue siendo un criterio, pero aquí se subordina a responder rápido y dentro del gasto previsto.',
+	},
+	{
+		id: '3.1-q17',
+		taskId: '3.1',
+		objetivos: ['3.1#2'],
+		tipo: 'conocimiento',
+		question:
+			'¿Qué parámetro de inferencia limita el número máximo de tokens que el modelo puede generar en su respuesta?',
+		options: [
+			'La longitud máxima de salida (max tokens).',
+			'La temperatura.',
+			'El top-p.',
+			'El número de dimensiones del embedding.',
+		],
+		correctAnswer: 0,
+		explanation:
+			'La longitud máxima de salida acota cuántos tokens puede producir el modelo. La temperatura y el top-p afectan al muestreo y a la variedad, no al tamaño máximo de la respuesta.',
+	},
+	{
+		id: '3.1-q18',
+		taskId: '3.1',
+		objetivos: ['3.1#3'],
+		tipo: 'tradeoff',
+		question:
+			'Un equipo puede personalizar su asistente añadiendo cada vez más documentos al contexto de cada consulta o ajustando el modelo con ejemplos. El volumen documental es alto y las consultas son frecuentes. ¿Qué intercambio describe mejor la decisión?',
+		options: [
+			'Ambos enfoques eliminan el coste de inferencia porque el modelo recuerda lo que ya leyó.',
+			'El contexto extenso aporta información actualizada sin entrenar, pero encarece cada llamada; el ajuste reduce tokens por consulta, pero exige datos y repetir el entrenamiento cuando el contenido cambia.',
+			'El ajuste del modelo permite citar los documentos originales y actualizarlos al instante.',
+			'Ampliar el contexto siempre es más barato que ajustar el modelo, sin importar la frecuencia de uso.',
+		],
+		correctAnswer: 1,
+		explanation:
+			'Cargar mucho contexto se paga en cada llamada aunque no requiera entrenamiento; el ajuste traslada el coste al entrenamiento y hay que repetirlo si las fuentes cambian. La elección depende de la frecuencia de consulta y de la volatilidad del contenido.',
+	},
+	{
+		id: '3.1-q19',
+		taskId: '3.1',
+		objetivos: ['3.1#4'],
+		tipo: 'escenario',
+		question:
+			'Una empresa almacena embeddings en una base de datos vectorial gestionada, pero las consultas de RAG se han vuelto lentas porque se repiten búsquedas idénticas. ¿Qué servicio del alcance puede reducir esa carga antes de escalar el almacén?',
+		options: [
+			'AWS Glue, porque cataloga los datos de origen.',
+			'Amazon Redshift, porque está pensado para analítica sobre grandes volúmenes.',
+			'AWS Lake Formation, porque gestiona permisos sobre el lago de datos.',
+			'Amazon ElastiCache, para guardar en memoria los resultados de búsquedas repetidas.',
+		],
+		correctAnswer: 3,
+		explanation:
+			'ElastiCache añade una capa en memoria que evita repetir la misma consulta al almacén vectorial. Glue, Redshift y Lake Formation cubren catalogación, analítica y permisos, no la caché de búsquedas.',
+	},
+	{
+		id: '3.1-q20',
+		taskId: '3.1',
+		objetivos: ['3.1#5', '3.1#6'],
+		tipo: 'conocimiento',
+		question:
+			'¿Por qué un agente de IA puede resultar más costoso de operar que una única llamada a un modelo fundacional?',
+		options: [
+			'Porque cada paso del agente suele implicar una nueva llamada al modelo y el estado de la conversación puede reenviarse en cada iteración.',
+			'Porque los agentes no pueden apoyarse en modelos destilados.',
+			'Porque un agente redefine los pesos del modelo en cada acción.',
+			'Porque la memoria del agente almacena los embeddings en Amazon S3.',
+		],
+		correctAnswer: 0,
+		explanation:
+			'Un agente razona en varios pasos y cada uno puede requerir una llamada con el historial acumulado, lo que multiplica los tokens. Un modelo destilado sí puede servir de base a un agente y el agente no modifica los pesos.',
+	},
 ];
