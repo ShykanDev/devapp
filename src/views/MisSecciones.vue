@@ -1,19 +1,8 @@
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-menu-button></ion-menu-button>
-				</ion-buttons>
-				<ion-title>Mis secciones</ion-title>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader title="Mis secciones" />
 
-		<ion-content>
-			<ion-refresher slot="fixed" @ionRefresh="onRefresh">
-				<ion-refresher-content pulling-text="Suelta para actualizar" refreshing-text="Actualizando…"></ion-refresher-content>
-			</ion-refresher>
-
+		<main class="app-content">
 			<div class="page-shell">
 				<header class="page-head">
 					<p class="mt-kicker">Biblioteca</p>
@@ -26,45 +15,45 @@
 				<!-- Sin sesión -->
 				<div v-if="!user" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="lockClosedOutline"></ion-icon>
+						<AppIcon :icon="lockClosedOutline" />
 					</div>
 					<p class="state-block__title">Inicia sesión para ver tus secciones</p>
 					<p class="state-block__hint">Guarda tus páginas educativas en tu cuenta.</p>
-					<ion-button class="state-block__cta" router-link="/login">Iniciar sesión</ion-button>
+					<AppButton class="state-block__cta" to="/login">Iniciar sesión</AppButton>
 				</div>
 
 				<!-- Cargando -->
 				<div v-else-if="loading" class="state-block">
-					<ion-spinner name="crescent" class="spinner-primary"></ion-spinner>
+					<AppSpinner class="spinner-primary" />
 					<p class="state-block__title">Cargando secciones…</p>
 				</div>
 
 				<!-- Error -->
 				<div v-else-if="error" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="warningOutline"></ion-icon>
+						<AppIcon :icon="warningOutline" />
 					</div>
 					<p class="state-block__title">No se pudieron cargar tus secciones</p>
 					<p class="state-block__hint">{{ error }}</p>
-					<ion-button class="state-block__cta" @click="loadPages">
-						<ion-icon slot="start" :icon="refresh"></ion-icon>
+					<AppButton class="state-block__cta" @click="loadPages">
+						<template #start><AppIcon :icon="refresh" /></template>
 						Reintentar
-					</ion-button>
+					</AppButton>
 				</div>
 
 				<!-- Vacío -->
 				<div v-else-if="pages.length === 0" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="libraryOutline"></ion-icon>
+						<AppIcon :icon="libraryOutline" />
 					</div>
 					<p class="state-block__title">Todavía no tienes secciones</p>
 					<p class="state-block__hint">
 						Pídele al asistente en el chat que cree una sección para ti y aparecerá aquí.
 					</p>
-					<ion-button class="state-block__cta" router-link="/folder/chat">
-						<ion-icon slot="start" :icon="chatbubbleOutline"></ion-icon>
+					<AppButton class="state-block__cta" to="/folder/chat">
+						<template #start><AppIcon :icon="chatbubbleOutline" /></template>
 						Ir al chat
-					</ion-button>
+					</AppButton>
 				</div>
 
 				<!-- Lista -->
@@ -72,81 +61,86 @@
 					<div class="section-head">
 						<h2 class="section-head__title">{{ pages.length }} sección{{ pages.length === 1 ? '' : 'es' }}</h2>
 						<button type="button" class="section-head__action" @click="goToChat">
-							<ion-icon :icon="add"></ion-icon>
+							<AppIcon :icon="add" />
 							<span>Nueva</span>
 						</button>
 					</div>
 
 					<div class="page-list">
 						<div
-							v-for="page in pages"
-							:key="page.id"
+							v-for="node in visibleNodes"
+							:key="node.page.id"
 							class="page-row"
+							:class="{ 'page-row--child': node.depth > 0 }"
+							:style="{ paddingLeft: `${18 + node.depth * 22}px` }"
 							role="link"
 							tabindex="0"
-							@click="openPage(page)"
-							@keydown.enter="openPage(page)"
-							@keydown.space.prevent="openPage(page)"
+							@click="openPage(node.page)"
+							@keydown.enter="openPage(node.page)"
+							@keydown.space.prevent="openPage(node.page)"
 						>
+							<button
+								v-if="node.children.length"
+								type="button"
+								class="tree-toggle"
+								:aria-label="collapsed.has(node.page.id) ? 'Expandir subtemas' : 'Ocultar subtemas'"
+								@click.stop="toggleCollapsed(node.page.id)"
+							>
+								<AppIcon :icon="collapsed.has(node.page.id) ? chevronForward : chevronDown" />
+							</button>
+							<span v-else-if="node.depth > 0" class="tree-branch tree-branch--leaf">↳</span>
+							<span v-else class="tree-branch" />
+
 							<div class="page-row__main">
-								<h3 class="page-row__title">{{ page.data.title }}</h3>
+								<h3 class="page-row__title">
+									{{ node.page.data.title }}
+									<span v-if="node.depth > 0" class="page-row__badge">Subtema</span>
+								</h3>
 								<p class="page-row__meta">
-									<span>{{ page.data.description }}</span>
+									<span>{{ node.page.data.description }}</span>
 								</p>
 							</div>
 
 							<div class="page-row__side">
-								<span class="page-row__topic">{{ page.topic }}</span>
-								<span class="page-row__date">{{ formatDate(page.updatedAt) }}</span>
+								<span class="page-row__topic">{{ node.page.topic }}</span>
+								<span class="page-row__date">{{ formatDate(node.page.updatedAt) }}</span>
 							</div>
 
 							<div class="page-row__actions">
 								<button
 									type="button"
 									class="icon-btn"
-									:class="{ 'icon-btn--spin': regeneratingId === page.id }"
+									:class="{ 'icon-btn--spin': regeneratingId === node.page.id }"
 									aria-label="Regenerar contenido"
-									:disabled="regeneratingId === page.id"
-									@click.stop="regenerate(page)"
+									:disabled="regeneratingId === node.page.id"
+									@click.stop="regenerate(node.page)"
 								>
-									<ion-icon :icon="refresh"></ion-icon>
+									<AppIcon :icon="refresh" />
 								</button>
 								<button
 									type="button"
 									class="icon-btn icon-btn--danger"
 									aria-label="Eliminar sección"
-									@click.stop="remove(page)"
+									@click.stop="remove(node)"
 								>
-									<ion-icon :icon="trashOutline"></ion-icon>
+									<AppIcon :icon="trashOutline" />
 								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</ion-content>
-	</ion-page>
+		</main>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import {
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonMenuButton,
-	IonPage,
-	IonRefresher,
-	IonRefresherContent,
-	IonSpinner,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import {
 	add,
 	chatbubbleOutline,
+	chevronDown,
+	chevronForward,
 	libraryOutline,
 	lockClosedOutline,
 	refresh,
@@ -154,8 +148,19 @@ import {
 	warningOutline,
 } from 'ionicons/icons';
 import { getAuth, type User } from 'firebase/auth';
-import { deleteDynamicPage, listDynamicPages, saveDynamicPage, type StoredDynamicPage } from '../services/dynamicPages';
+import AppButton from '../components/ui/AppButton.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppPage from '../components/ui/AppPage.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
+import {
+	deleteDynamicPageTree,
+	listDynamicPages,
+	updateDynamicPage,
+	type StoredDynamicPage,
+} from '../services/dynamicPages';
 import { requestPageGeneration, PageGenerationClientError } from '../lib/dynamicPage';
+import { buildPageTree, countDescendants, flattenPageTree, type PageTreeNode } from '../lib/pageTree';
 import { parseDynamicPage } from '../schemas/dynamicPage';
 import { useRouter } from 'vue-router';
 
@@ -165,6 +170,20 @@ const pages = ref<StoredDynamicPage[]>([]);
 const loading = ref(false);
 const error = ref('');
 const regeneratingId = ref<string | null>(null);
+const collapsed = ref<Set<string>>(new Set());
+
+const tree = computed(() => buildPageTree(pages.value));
+const visibleNodes = computed(() => flattenPageTree(tree.value, collapsed.value));
+
+const toggleCollapsed = (id: string) => {
+	const next = new Set(collapsed.value);
+	if (next.has(id)) {
+		next.delete(id);
+	} else {
+		next.add(id);
+	}
+	collapsed.value = next;
+};
 
 const formatDate = (ts: unknown) => {
 	if (ts && typeof ts === 'object' && 'toDate' in ts && typeof ts.toDate === 'function') {
@@ -205,19 +224,6 @@ const loadPages = async () => {
 	}
 };
 
-const onRefresh = async (e: CustomEvent) => {
-	try {
-		const uid = user.value?.uid;
-		if (uid) {
-			pages.value = await listDynamicPages(uid);
-		}
-	} catch (err) {
-		console.error(err);
-	} finally {
-		(e.target as HTMLIonRefresherElement).complete();
-	}
-};
-
 const regenerate = async (page: StoredDynamicPage) => {
 	if (!user.value || regeneratingId.value) return;
 
@@ -231,10 +237,11 @@ const regenerate = async (page: StoredDynamicPage) => {
 			return;
 		}
 
-		const uid = user.value.uid;
-		await deleteDynamicPage(uid, page.id);
-		const newId = await saveDynamicPage(uid, parsed.data, page.topic);
-		router.replace({ name: 'dynamic-view', params: { pageId: newId } });
+		await updateDynamicPage(user.value.uid, page.id, parsed.data);
+		const target = pages.value.find((item) => item.id === page.id);
+		if (target) {
+			target.data = parsed.data;
+		}
 	} catch (e) {
 		console.error(e);
 		if (e instanceof PageGenerationClientError) {
@@ -247,14 +254,26 @@ const regenerate = async (page: StoredDynamicPage) => {
 	}
 };
 
-const remove = async (page: StoredDynamicPage) => {
+const remove = async (node: PageTreeNode) => {
 	if (!user.value) return;
-	const confirmed = window.confirm(`¿Eliminar "${page.data.title}"?`);
-	if (!confirmed) return;
+	const descendants = countDescendants(node);
+	const message =
+		descendants > 0
+			? `¿Eliminar "${node.page.data.title}" y sus ${descendants} subtema${descendants === 1 ? '' : 's'}?`
+			: `¿Eliminar "${node.page.data.title}"?`;
+	if (!window.confirm(message)) return;
 
 	try {
-		await deleteDynamicPage(user.value.uid, page.id);
-		pages.value = pages.value.filter((p) => p.id !== page.id);
+		await deleteDynamicPageTree(user.value.uid, node.page.id);
+		const removed = new Set<string>([node.page.id]);
+		const collect = (item: PageTreeNode) => {
+			for (const child of item.children) {
+				removed.add(child.page.id);
+				collect(child);
+			}
+		};
+		collect(node);
+		pages.value = pages.value.filter((p) => !removed.has(p.id));
 	} catch (e) {
 		console.error(e);
 		error.value = 'No se pudo eliminar la sección. Intenta de nuevo.';
@@ -332,7 +351,7 @@ onMounted(() => {
 	border-radius: 10px;
 }
 
-.section-head__action ion-icon {
+.section-head__action .app-icon {
 	font-size: 17px;
 }
 
@@ -367,6 +386,62 @@ onMounted(() => {
 
 .page-row:active {
 	background: var(--mt-muted);
+}
+
+.page-row--child {
+	background: color-mix(in srgb, var(--mt-muted) 45%, transparent);
+}
+
+.tree-toggle {
+	width: 26px;
+	height: 26px;
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	border-radius: 8px;
+	background: transparent;
+	color: var(--mt-ink-3);
+	cursor: pointer;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+.tree-toggle .app-icon {
+	font-size: 16px;
+}
+
+@media (hover: hover) {
+	.tree-toggle:hover {
+		background: var(--mt-muted);
+		color: var(--mt-ink-2);
+	}
+}
+
+.tree-branch {
+	width: 26px;
+	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--mt-ink-3);
+	font-size: 14px;
+}
+
+.tree-branch--leaf {
+	color: var(--mt-line-strong);
+}
+
+.page-row__badge {
+	margin-left: 8px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: var(--mt-accent-soft);
+	color: var(--mt-accent);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	vertical-align: middle;
 }
 
 .page-row__main {
@@ -422,7 +497,7 @@ onMounted(() => {
 	opacity: 0.5;
 }
 
-.icon-btn--spin ion-icon {
+.icon-btn--spin .app-icon {
 	animation: icon-btn-spin 0.9s linear infinite;
 }
 
@@ -469,7 +544,7 @@ onMounted(() => {
 	margin-bottom: 8px;
 }
 
-.state-block__icon ion-icon {
+.state-block__icon .app-icon {
 	font-size: 24px;
 }
 
@@ -495,7 +570,7 @@ onMounted(() => {
 }
 
 .spinner-primary {
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 	width: 24px;
 	height: 24px;
 	margin-bottom: 8px;

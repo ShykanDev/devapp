@@ -1,3 +1,5 @@
+import { WORKER_URL } from '../config/worker';
+
 export interface ChatMessageParam {
 	role: string;
 	content: string;
@@ -11,7 +13,7 @@ export interface StreamChatHandlers {
 	signal?: AbortSignal;
 }
 
-const CHAT_URL = 'https://ai-worker-inference.shykandev.workers.dev/chat';
+const CHAT_URL = `${WORKER_URL}/chat`;
 
 interface StreamPayload {
 	delta?: string;

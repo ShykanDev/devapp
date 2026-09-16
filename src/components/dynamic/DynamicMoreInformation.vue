@@ -1,21 +1,20 @@
 <template>
 	<section class="callout callout--warning">
-		<div class="callout__head">
-			<span class="callout__icon">
-				<ion-icon :icon="medical"></ion-icon>
-			</span>
-			<h3 class="callout__title">{{ info.title }}</h3>
-		</div>
 		<div class="callout__body">
+			<span class="callout__tag">
+				<AppIcon :icon="bugOutline" />
+				Errores comunes
+			</span>
+			<h3 class="callout__title">Errores comunes y buenas prácticas</h3>
 			<DynamicRichText :text="info.content" />
 		</div>
 	</section>
 </template>
 
 <script setup lang="ts">
-import { IonIcon } from '@ionic/vue';
-import { medical } from 'ionicons/icons';
+import { bugOutline } from 'ionicons/icons';
 import type { DynamicPage } from '../../schemas/dynamicPage';
+import AppIcon from '../ui/AppIcon.vue';
 import DynamicRichText from './DynamicRichText.vue';
 
 defineProps<{ info: DynamicPage['moreInformation'] }>();
@@ -23,44 +22,41 @@ defineProps<{ info: DynamicPage['moreInformation'] }>();
 
 <style scoped>
 .callout {
-	border-radius: var(--radius-box);
-	padding: 18px 20px;
-	border: 1px solid color-mix(in srgb, var(--mt-danger) 24%, var(--mt-line));
-	background: color-mix(in srgb, var(--mt-danger) 5%, var(--mt-surface));
+	border: 1px solid var(--mt-line);
+	border-radius: var(--radius-card);
+	background: var(--mt-surface);
+	box-shadow: var(--shadow-soft);
+	overflow: hidden;
 }
 
-.callout__head {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin-bottom: 6px;
+.callout--warning {
+	border-color: color-mix(in srgb, var(--mt-danger) 28%, var(--mt-line));
 }
 
-.callout__icon {
+.callout__body {
+	padding: 16px 18px;
+}
+
+.callout__tag {
 	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	width: 26px;
-	height: 26px;
-	flex-shrink: 0;
-	border-radius: 8px;
-	background: color-mix(in srgb, var(--mt-danger) 12%, transparent);
+	gap: 5px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
 	color: var(--mt-danger);
 }
 
-.callout__icon ion-icon {
-	font-size: 15px;
+.callout__tag .app-icon {
+	font-size: 14px;
 }
 
 .callout__title {
-	margin: 0;
-	font-size: 15.5px;
-	font-weight: 650;
+	margin: 8px 0 6px;
+	font-size: 16px;
+	font-weight: 700;
 	letter-spacing: -0.012em;
 	color: var(--mt-ink);
-}
-
-.callout__body :deep(.rich-text) {
-	color: var(--mt-ink-2);
 }
 </style>

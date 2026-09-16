@@ -1,21 +1,8 @@
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-menu-button></ion-menu-button>
-				</ion-buttons>
-				<ion-title>Chat</ion-title>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader title="Chat" />
 
-		<ion-content>
-			<ion-refresher slot="fixed" @ionRefresh="onRefresh">
-				<ion-refresher-content
-					pulling-text="Suelta para actualizar"
-					refreshing-text="Actualizando…"
-				></ion-refresher-content>
-			</ion-refresher>
+		<main class="app-content">
 			<div class="page-shell">
 				<header class="page-head">
 					<p class="mt-kicker">Asistente</p>
@@ -28,30 +15,30 @@
 				<!-- Sin sesión -->
 				<div v-if="!user" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="lockClosedOutline"></ion-icon>
+						<AppIcon :icon="lockClosedOutline" />
 					</div>
 					<p class="state-block__title">Inicia sesión para guardar tus chats</p>
 					<p class="state-block__hint">
 						Tus conversaciones con el asistente se guardan en tu cuenta.
 					</p>
-					<ion-button class="state-block__cta" router-link="/login">Iniciar sesión</ion-button>
+					<AppButton class="state-block__cta" to="/login">Iniciar sesión</AppButton>
 				</div>
 
 				<template v-else>
 					<button type="button" class="new-chat-btn" @click="startNewChat">
 						<span class="new-chat-btn__icon">
-							<ion-icon :icon="chatbubbleOutline"></ion-icon>
+							<AppIcon :icon="chatbubbleOutline" />
 						</span>
 						<span class="new-chat-btn__text">
 							<strong>Nueva conversación</strong>
 							<small>Pregunta o crea una sección con el asistente</small>
 						</span>
-						<ion-icon class="new-chat-btn__arrow" :icon="chevronForward"></ion-icon>
+						<AppIcon class="new-chat-btn__arrow" :icon="chevronForward" />
 					</button>
 
 					<!-- Cargando -->
 					<div v-if="loading" class="loading-row">
-						<ion-spinner name="crescent" class="spinner-primary"></ion-spinner>
+						<AppSpinner class="spinner-primary" />
 						<p class="loading-row__text">Cargando conversaciones…</p>
 					</div>
 
@@ -59,16 +46,16 @@
 					<div v-else-if="error" class="state-block state-block--slim">
 						<p class="state-block__title">No se pudieron cargar tus chats</p>
 						<p class="state-block__hint">{{ error }}</p>
-						<ion-button class="state-block__cta" @click="loadChats">
-							<ion-icon slot="start" :icon="refresh"></ion-icon>
+						<AppButton class="state-block__cta" @click="loadChats">
+							<template #start><AppIcon :icon="refresh" /></template>
 							Reintentar
-						</ion-button>
+						</AppButton>
 					</div>
 
 					<!-- Sin chats -->
 					<div v-else-if="chats.length === 0" class="empty-chat">
 						<div class="empty-chat__orb">
-							<ion-icon :icon="sparklesOutline"></ion-icon>
+							<AppIcon :icon="sparklesOutline" />
 						</div>
 						<p class="empty-chat__title">Aún no tienes conversaciones</p>
 						<p class="empty-chat__hint">
@@ -99,7 +86,7 @@
 										:aria-label="`Eliminar ${chat.title}`"
 										@click.stop="removeChat(chat)"
 									>
-										<ion-icon :icon="trashOutline"></ion-icon>
+										<AppIcon :icon="trashOutline" />
 									</button>
 								</div>
 							</button>
@@ -107,25 +94,11 @@
 					</div>
 				</template>
 			</div>
-		</ion-content>
-	</ion-page>
+		</main>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import {
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonMenuButton,
-	IonPage,
-	IonRefresher,
-	IonRefresherContent,
-	IonSpinner,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import {
@@ -137,8 +110,12 @@ import {
 	trashOutline,
 } from 'ionicons/icons';
 import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
-import { onIonViewWillEnter } from '@ionic/vue';
 import { deleteChat, subscribeChats, type StoredChat } from '../services/aiChats';
+import AppPage from '../components/ui/AppPage.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppButton from '../components/ui/AppButton.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
 
 const router = useRouter();
 const user = ref<User | null>(getAuth().currentUser);
@@ -216,13 +193,6 @@ const removeChat = async (chat: StoredChat) => {
 	}
 };
 
-const onRefresh = async (e: CustomEvent) => {
-	loadChats();
-	setTimeout(() => {
-		(e.target as HTMLIonRefresherElement).complete();
-	}, 500);
-};
-
 watch(
 	() => user.value,
 	(u) => {
@@ -239,12 +209,6 @@ watch(
 );
 
 onMounted(() => {
-	if (user.value) {
-		loadChats();
-	}
-});
-
-onIonViewWillEnter(() => {
 	if (user.value) {
 		loadChats();
 	}
@@ -327,7 +291,7 @@ onBeforeUnmount(() => {
 	color: var(--mt-accent);
 }
 
-.new-chat-btn__icon ion-icon {
+.new-chat-btn__icon .app-icon {
 	font-size: 21px;
 }
 
@@ -386,7 +350,7 @@ onBeforeUnmount(() => {
 	margin-bottom: 8px;
 }
 
-.state-block__icon ion-icon {
+.state-block__icon .app-icon {
 	font-size: 24px;
 }
 
@@ -412,7 +376,6 @@ onBeforeUnmount(() => {
 }
 
 .spinner-primary {
-	--color: var(--mt-accent);
 	width: 24px;
 	height: 24px;
 	margin-bottom: 8px;
@@ -459,7 +422,7 @@ onBeforeUnmount(() => {
 	margin-bottom: 8px;
 }
 
-.empty-chat__orb ion-icon {
+.empty-chat__orb .app-icon {
 	font-size: 22px;
 }
 
@@ -567,7 +530,7 @@ onBeforeUnmount(() => {
 	transition: background 0.15s ease, color 0.15s ease;
 }
 
-.chat-row__delete ion-icon {
+.chat-row__delete .app-icon {
 	font-size: 17px;
 }
 

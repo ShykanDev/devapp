@@ -14,6 +14,7 @@ const sectionSchema = z
 		title: z.string().trim().min(3).max(120),
 		content: z.string().trim().min(1).max(20000),
 		subsections: z.array(subsectionSchema).optional().default([]),
+		suggestions: z.array(z.string().trim().min(3).max(120)).max(5).optional().default([]),
 	})
 	.strict();
 

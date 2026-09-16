@@ -4,7 +4,7 @@ import type { DifficultyId, ExamQuestion } from '../src/schema/examen';
 
 function makeQuestions(n: number): ExamQuestion[] {
 	return Array.from({ length: n }, (_, i) => ({
-		question: `Pregunta de opción múltiple número ${i + 1} sobre el tema médico.`,
+		question: `Pregunta de opción múltiple número ${i + 1} sobre el tema de programación.`,
 		options: ['Primera opción', 'Segunda opción', 'Tercera opción', 'Cuarta opción'],
 		correctAnswer: (i + 1) % 4,
 		explanation: 'La opción señalada es la correcta.',
@@ -14,8 +14,8 @@ function makeQuestions(n: number): ExamQuestion[] {
 function makeExam(difficulty: DifficultyId, questions: ExamQuestion[] = makeQuestions(EXAM_DIFFICULTY_COUNTS[difficulty])): Record<string, unknown> {
 	return {
 		schemaVersion: 1,
-		title: `Examen: Diabetes tipo 2`,
-		topic: 'Diabetes tipo 2',
+		title: `Examen: Recursividad`,
+		topic: 'Recursividad',
 		difficulty,
 		questions,
 	};

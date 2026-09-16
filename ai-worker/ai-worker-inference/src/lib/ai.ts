@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
-import { extractJson } from './json';
+import { extractJson, JsonExtractError } from './json';
 import {
 	ARTICLE_EDIT_SYSTEM_PROMPT,
-	DOCTOR_SYSTEM_PROMPT,
+	TUTOR_SYSTEM_PROMPT,
 	classifySystemPrompt,
 	editSystemPrompt,
 	examChunkGenerateSystemPrompt,
@@ -12,17 +12,20 @@ import {
 	generatePageSystemPrompt,
 	repairSystemPrompt,
 	reviewerSystemPrompt,
+	suggestionsSystemPrompt,
 } from './prompts';
 import { EXAM_DIFFICULTY_COUNTS } from '../schema/examen';
 import type { DifficultyId } from '../schema/examen';
 import type { DynamicPage } from '../schema/dynamicPage';
 
-const MODEL = 'deepseek-v4-flash-0731';
+const MODEL = 'deepseek/deepseek-v4-flash';
+const MAX_JSON_ATTEMPTS = 3;
+const RETRY_BASE_DELAY_MS = 400;
 
 export function createClient(apiKey: string): OpenAI {
 	return new OpenAI({
 		apiKey,
-		baseURL: 'https://api.cheaperinference.com/v1',
+		baseURL: 'https://api.commandcode.ai/provider/v1',
 	});
 }
 
@@ -30,35 +33,88 @@ interface JsonCallOptions {
 	responseFormat?: boolean;
 }
 
+function delay(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function errorStatus(error: unknown): number | undefined {
+	if (error && typeof error === 'object') {
+		const status = (error as { status?: unknown }).status;
+		if (typeof status === 'number') {
+			return status;
+		}
+	}
+	return undefined;
+}
+
+function isUnsupportedResponseFormat(error: unknown): boolean {
+	if (!(error instanceof Error)) {
+		return false;
+	}
+	const message = error.message.toLowerCase();
+	return message.includes('response_format') || message.includes('unsupported') || message.includes('not supported');
+}
+
+function isTransientError(error: unknown): boolean {
+	if (error instanceof JsonExtractError) {
+		return true;
+	}
+
+	const status = errorStatus(error);
+	if (typeof status === 'number') {
+		return status === 408 || status === 409 || status === 429 || status >= 500;
+	}
+
+	if (error instanceof Error) {
+		const message = error.message.toLowerCase();
+		return (
+			message.includes('respuesta vacía') ||
+			message.includes('timeout') ||
+			message.includes('timed out') ||
+			message.includes('fetch failed') ||
+			message.includes('network') ||
+			message.includes('econnreset') ||
+			message.includes('socket hang up')
+		);
+	}
+
+	return false;
+}
+
 async function completeJsonRaw(
 	client: OpenAI,
 	messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
 	options: JsonCallOptions = {}
 ): Promise<unknown> {
-	const responseFormat = options.responseFormat === false ? undefined : { type: 'json_object' as const };
+	const useResponseFormat = options.responseFormat !== false;
 
-	try {
-		const completion = await client.chat.completions.create({
-			model: MODEL,
-			messages,
-			response_format: responseFormat,
-		});
-		const content = completion.choices[0]?.message?.content ?? '';
-		if (!content.trim()) {
-			throw new Error('Respuesta vacía del modelo');
-		}
-		return extractJson(content);
-	} catch (error) {
-		if (options.responseFormat === undefined) {
-			const isUnsupportedFormat =
-				error instanceof Error &&
-				(error.message.includes('response_format') || error.message.toLowerCase().includes('not supported'));
-			if (isUnsupportedFormat) {
+	for (let attempt = 1; attempt <= MAX_JSON_ATTEMPTS; attempt += 1) {
+		try {
+			const completion = await client.chat.completions.create({
+				model: MODEL,
+				messages,
+				...(useResponseFormat ? { response_format: { type: 'json_object' as const } } : {}),
+			});
+			const content = completion.choices[0]?.message?.content ?? '';
+			if (!content.trim()) {
+				throw new Error('Respuesta vacía del modelo');
+			}
+			return extractJson(content);
+		} catch (error) {
+			if (useResponseFormat && isUnsupportedResponseFormat(error)) {
 				return completeJsonRaw(client, messages, { responseFormat: false });
 			}
+
+			if (attempt < MAX_JSON_ATTEMPTS && isTransientError(error)) {
+				await delay(RETRY_BASE_DELAY_MS * attempt);
+				continue;
+			}
+
+			throw error;
 		}
-		throw error;
 	}
+
+	throw new Error('No se pudo obtener una respuesta JSON válida del modelo');
 }
 
 export async function completeJson(
@@ -103,8 +159,10 @@ export async function classifyIntent(
 
 export async function generatePage(
 	client: OpenAI,
-	topic: string
+	topic: string,
+	context?: string
 ): Promise<DynamicPage> {
+	const contextual = context && context.trim() ? `\nContexto: ${context.trim()}` : '';
 	const raw = await completeJson(client, [
 		{
 			role: 'system',
@@ -112,10 +170,50 @@ export async function generatePage(
 		},
 		{
 			role: 'user',
-			content: `Genera una página educativa sobre: ${topic}`,
+			content: `Genera una página educativa sobre: ${topic}${contextual}`,
 		},
 	]);
 	return raw as DynamicPage;
+}
+
+export interface SuggestionSection {
+	title: string;
+	content: string;
+	subsections?: { title: string; content: string }[];
+}
+
+export async function generateSectionSuggestions(
+	client: OpenAI,
+	topic: string,
+	sections: SuggestionSection[]
+): Promise<unknown> {
+	return completeJson(client, [
+		{
+			role: 'system',
+			content: suggestionsSystemPrompt,
+		},
+		{
+			role: 'user',
+			content: `Tema de la página: ${topic}\n\nSecciones (JSON):\n${JSON.stringify(sections, null, 2)}`,
+		},
+	]);
+}
+
+export async function repairSuggestions(
+	client: OpenAI,
+	draft: unknown,
+	issues: string
+): Promise<unknown> {
+	return completeJson(client, [
+		{
+			role: 'system',
+			content: suggestionsSystemPrompt,
+		},
+		{
+			role: 'user',
+			content: `El siguiente JSON de sugerencias NO pasó la validación.\n\nBorrador actual (JSON):\n${JSON.stringify(draft, null, 2)}\n\nErrores de validación encontrados:\n${issues}\n\nDevuelve el JSON corregido de sugerencias.`,
+		},
+	]);
 }
 
 export async function editPage(
@@ -258,7 +356,7 @@ export async function chatCompletion(
 		messages: [
 			{
 				role: 'system',
-				content: DOCTOR_SYSTEM_PROMPT,
+				content: TUTOR_SYSTEM_PROMPT,
 			},
 			...messages,
 		],
@@ -277,7 +375,7 @@ export async function* streamChatCompletion(
 		messages: [
 			{
 				role: 'system',
-				content: DOCTOR_SYSTEM_PROMPT,
+				content: TUTOR_SYSTEM_PROMPT,
 			},
 			...messages,
 		],

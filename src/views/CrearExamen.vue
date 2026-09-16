@@ -1,24 +1,17 @@
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-back-button :default-href="'/examenes'" text=""></ion-back-button>
-				</ion-buttons>
-				<ion-title>Nuevo examen</ion-title>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader title="Nuevo examen" back="/examenes" />
 
-		<ion-content>
+		<main class="app-content">
 			<div class="page-shell">
 				<!-- Sin sesión -->
 				<div v-if="!user" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="lockClosedOutline"></ion-icon>
+						<AppIcon :icon="lockClosedOutline" />
 					</div>
 					<p class="state-block__title">Inicia sesión para crear exámenes</p>
 					<p class="state-block__hint">Guarda tus exámenes de práctica en tu cuenta.</p>
-					<ion-button class="state-block__cta" router-link="/login">Iniciar sesión</ion-button>
+					<AppButton class="state-block__cta" to="/login">Iniciar sesión</AppButton>
 				</div>
 
 				<!-- Elección de tema y dificultad -->
@@ -33,13 +26,13 @@
 					</header>
 
 					<div class="panel">
-						<ion-input
+						<AppInput
 							v-model="topicInput"
 							type="text"
 							class="panel__input"
-							placeholder="¿De qué quieres tu examen? (ej. Diabetes tipo 2)"
+							placeholder="¿De qué quieres tu examen? (ej. Fundamentos de JavaScript)"
 							@keyup.enter="startCreation"
-						></ion-input>
+						/>
 						<p v-if="topicWarning" class="panel__note">{{ topicWarning }}</p>
 
 						<p class="panel__label">Dificultad</p>
@@ -58,21 +51,21 @@
 									<span class="difficulty-option__name">{{ option.label }}</span>
 									<span class="difficulty-option__desc">{{ option.description }}</span>
 								</span>
-								<ion-icon
+								<AppIcon
 									class="difficulty-option__check"
 									:icon="checkmarkCircle"
-								></ion-icon>
+								/>
 							</button>
 						</div>
 
-						<ion-button
+						<AppButton
 							class="panel__submit"
 							:disabled="!canGenerate"
 							@click="startCreation"
 						>
-							<ion-icon slot="start" :icon="sparkles"></ion-icon>
+							<template #start><AppIcon :icon="sparkles" /></template>
 							Generar examen
-						</ion-button>
+						</AppButton>
 					</div>
 
 					<div class="create-hints">
@@ -94,7 +87,7 @@
 				<!-- Generando / guardando -->
 				<div v-else-if="phase === 'generating' || phase === 'saving'" class="state-block generating">
 					<div class="generating__orb">
-						<ion-spinner name="crescent"></ion-spinner>
+						<AppSpinner />
 					</div>
 					<p class="state-block__title">{{ statusText }}</p>
 					<p class="state-block__hint">Esto puede tardar unos segundos. No cierres la pantalla.</p>
@@ -103,7 +96,7 @@
 				<!-- Error -->
 				<div v-else class="state-block">
 					<div class="state-block__icon state-block__icon--danger">
-						<ion-icon :icon="warningOutline"></ion-icon>
+						<AppIcon :icon="warningOutline" />
 					</div>
 					<p class="state-block__title">No se pudo generar el examen</p>
 					<p class="state-block__hint">{{ createError }}</p>
@@ -111,36 +104,29 @@
 						{{ issue }}
 					</p>
 					<div class="state-block__actions">
-						<ion-button class="state-block__cta" @click="startCreation">
-							<ion-icon slot="start" :icon="refresh"></ion-icon>
+						<AppButton class="state-block__cta" @click="startCreation">
+							<template #start><AppIcon :icon="refresh" /></template>
 							Reintentar
-						</ion-button>
-						<ion-button fill="clear" @click="resetCreate">Cambiar de tema</ion-button>
+						</AppButton>
+						<AppButton variant="clear" @click="resetCreate">Cambiar de tema</AppButton>
 					</div>
 				</div>
 			</div>
-		</ion-content>
-	</ion-page>
+		</main>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import {
-	IonBackButton,
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonInput,
-	IonPage,
-	IonSpinner,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { checkmarkCircle, lockClosedOutline, refresh, sparkles, warningOutline } from 'ionicons/icons';
 import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
+import AppButton from '../components/ui/AppButton.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppInput from '../components/ui/AppInput.vue';
+import AppPage from '../components/ui/AppPage.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
 import { requestExamGeneration, ExamGenerationClientError } from '../lib/examen';
 import { saveExamen } from '../services/examenes';
 import {
@@ -161,10 +147,14 @@ const createError = ref('');
 const createIssues = ref<string[]>([]);
 
 const topicIdeas = [
-	'Diabetes tipo 2',
-	'Hipertensión arterial',
-	'Antibióticos y resistencia',
-	'Vacunas e inmunidad',
+	'Fundamentos de JavaScript',
+	'Complejidad algorítmica',
+	'SQL y bases de datos',
+	'Git y ramas',
+	'APIs REST',
+	'Vue 3: composables',
+	'Programación orientada a objetos',
+	'Docker y contenedores',
 ];
 
 const DIFFICULTY_COLORS: Record<DifficultyId, string> = {
@@ -449,7 +439,7 @@ onBeforeUnmount(() => {
 	margin-bottom: 8px;
 }
 
-.state-block__icon ion-icon {
+.state-block__icon .app-icon {
 	font-size: 24px;
 }
 
@@ -506,9 +496,9 @@ onBeforeUnmount(() => {
 	margin-bottom: 8px;
 }
 
-.generating__orb ion-spinner {
+.generating__orb .app-spinner {
 	width: 26px;
 	height: 26px;
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 }
 </style>

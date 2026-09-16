@@ -6,7 +6,7 @@
 
 ## 1. Identidad y propósito
 
-- **App:** Medicina / salud (educación médica, secciones generadas por IA, consulta con asistente).
+- **App:** Programación / desarrollo de software (educación técnica, secciones generadas por IA, consulta con asistente).
 - **Objetivo visual:** transmitir **confianza, calma y sofisticación**. Nada de gradientes decorativos, tarjetas flotantes o efectos llamativos. La interfaz debe sentirse costosa sin verse complicada.
 
 ---

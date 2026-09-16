@@ -1,55 +1,58 @@
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-back-button v-if="!isNewChat" :default-href="'/folder/chat'" text=""></ion-back-button>
-					<ion-menu-button v-else></ion-menu-button>
-				</ion-buttons>
-				<ion-title>Chat</ion-title>
-				<ion-buttons v-if="isNewChat && hasMessages" slot="end">
-					<ion-button fill="clear" class="header-saved-btn" @click="goToList">
-						<ion-icon slot="icon-only" :icon="listOutline"></ion-icon>
-					</ion-button>
-				</ion-buttons>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader
+			title="Chat"
+			:back="isNewChat ? false : '/folder/chat'"
+			:menu="isNewChat"
+		>
+			<template v-if="isNewChat && hasMessages" #end>
+				<AppButton
+					variant="clear"
+					iconOnly
+					class="header-saved-btn"
+					aria-label="Ver mis chats"
+					@click="goToList"
+				>
+					<AppIcon :icon="listOutline" :size="20" />
+				</AppButton>
+			</template>
+		</AppHeader>
 
-		<ion-content ref="contentEl" class="chat-content">
+		<main ref="contentEl" class="app-content chat-content">
 			<div class="chat-scroll">
 				<div class="chat-col">
 					<!-- Sin sesión -->
 					<div v-if="!user" class="chat-empty">
 						<div class="chat-empty__orb">
-							<ion-icon :icon="lockClosedOutline"></ion-icon>
+							<AppIcon :icon="lockClosedOutline" />
 						</div>
 						<h2 class="chat-empty__title">Inicia sesión para guardar tus chats</h2>
 						<p class="chat-empty__text">
 							Si entras sin cuenta, la conversación no se guardará al salir.
 						</p>
-						<ion-button class="chat-shortcut" router-link="/login">Iniciar sesión</ion-button>
+						<AppButton class="chat-shortcut" to="/login">Iniciar sesión</AppButton>
 					</div>
 
 					<!-- Cargando hilo -->
 					<div v-else-if="loadingThread" class="chat-loading">
-						<ion-spinner name="crescent" class="spinner-primary"></ion-spinner>
+						<AppSpinner class="spinner-primary" />
 						<p class="chat-loading__text">Cargando conversación…</p>
 					</div>
 
 					<!-- Hilo no encontrado -->
 					<div v-else-if="notFound" class="chat-empty">
 						<div class="chat-empty__orb">
-							<ion-icon :icon="documentTextOutline"></ion-icon>
+							<AppIcon :icon="documentTextOutline" />
 						</div>
 						<h2 class="chat-empty__title">Conversación no encontrada</h2>
 						<p class="chat-empty__text">Puede que ya haya sido eliminada.</p>
-						<ion-button class="chat-shortcut" router-link="/folder/chat">Ver mis chats</ion-button>
+						<AppButton class="chat-shortcut" to="/folder/chat">Ver mis chats</AppButton>
 					</div>
 
 					<!-- Estado vacío (chat nuevo) -->
 					<div v-else-if="chatHistory.length === 0 && !isThinking" class="chat-empty">
 						<div class="chat-empty__orb">
-							<ion-icon :icon="sparklesOutline"></ion-icon>
+							<AppIcon :icon="sparklesOutline" />
 						</div>
 						<h2 class="chat-empty__title">¿Sobre qué tema quieres aprender?</h2>
 						<p class="chat-empty__text">
@@ -71,10 +74,10 @@
 							</button>
 						</div>
 
-						<ion-button fill="clear" class="chat-shortcut" @click="goToSections">
-							<ion-icon slot="start" :icon="libraryOutline"></ion-icon>
+						<AppButton variant="clear" class="chat-shortcut" @click="goToSections">
+							<template #start><AppIcon :icon="libraryOutline" /></template>
 							Ver mis secciones guardadas
-						</ion-button>
+						</AppButton>
 					</div>
 
 					<!-- Conversación -->
@@ -90,7 +93,7 @@
 								class="chat-avatar"
 								aria-hidden="true"
 							>
-								<ion-icon :icon="sparklesOutline"></ion-icon>
+								<AppIcon :icon="sparklesOutline" />
 							</div>
 							<div class="chat-bubble" :class="m.role === 'user' ? 'chat-bubble--user' : 'chat-bubble--assistant'">
 								<span v-if="m.role === 'assistant' && !m.content && isThinking" class="chat-typing">
@@ -103,18 +106,18 @@
 					</div>
 				</div>
 			</div>
-		</ion-content>
+		</main>
 
-		<ion-footer class="chat-footer" v-if="user && !loadingThread && !notFound">
+		<footer class="chat-footer" v-if="user && !loadingThread && !notFound">
 			<div class="composer-bar">
 				<div class="composer-field">
-					<ion-input
+					<AppInput
 						v-model="userRequest"
 						class="composer-input"
 						type="text"
 						placeholder="Escribe tu consulta…"
 						@keyup.enter="sendMessage"
-					></ion-input>
+					/>
 					<button
 						type="button"
 						class="composer-send"
@@ -122,43 +125,27 @@
 						@click="sendMessage"
 						aria-label="Enviar mensaje"
 					>
-						<ion-icon :icon="send"></ion-icon>
+						<AppIcon :icon="send" />
 					</button>
 				</div>
 				<div class="composer-status">
 					<p v-if="savedState" class="composer-saved">
-						<ion-icon :icon="checkmarkCircleOutline"></ion-icon>
+						<AppIcon :icon="checkmarkCircleOutline" />
 						{{ savedState }}
 					</p>
 					<p v-if="saveError" class="composer-save-error">
-						<ion-icon :icon="warningOutline"></ion-icon>
+						<AppIcon :icon="warningOutline" />
 						{{ saveError }}
 					</p>
 				</div>
 			</div>
-		</ion-footer>
-	</ion-page>
+		</footer>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import {
-	IonBackButton,
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonFooter,
-	IonHeader,
-	IonIcon,
-	IonInput,
-	IonMenuButton,
-	IonPage,
-	IonSpinner,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import {
 	checkmarkCircleOutline,
 	documentTextOutline,
@@ -178,21 +165,22 @@ import {
 	messageListToParams,
 	saveChat,
 } from '../services/aiChats';
-
-interface ChatContentElement {
-	$el?: HTMLElement | null;
-	scrollToBottom?: (duration?: number) => Promise<void>;
-}
+import AppPage from '../components/ui/AppPage.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppButton from '../components/ui/AppButton.vue';
+import AppInput from '../components/ui/AppInput.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
 
 const route = useRoute();
 const router = useRouter();
-const userRequest = ref('');
+const 	userRequest = ref('');
 const isThinking = ref(false);
 const streamStarted = ref(false);
 const chatHistory = ref<{ role: string; content: string }[]>([]);
 
 const user = ref<User | null>(getAuth().currentUser);
-const contentEl = ref<ChatContentElement | null>(null);
+const contentEl = ref<HTMLElement | null>(null);
 const threadEl = ref<HTMLElement | null>(null);
 
 const loadingThread = ref(false);
@@ -205,62 +193,64 @@ const saveError = ref('');
 
 let persistTimer: ReturnType<typeof setTimeout> | null = null;
 let suppressNextLoad = false;
-let persisting = false;
+let saveRunning = false;
+let saveRequested = false;
+let saveUpdateUrl = false;
+let saveWaiters: Array<(value: boolean) => void> = [];
 
 const suggestionPool = [
-	'¿Qué es la presión arterial y cómo se mide?',
-	'¿Cómo puedo dormir mejor?',
-	'¿Qué hago si me duele la cabeza seguido?',
-	'¿Cuánta agua debo tomar al día?',
-	'¿Qué son los macronutrientes?',
-	'¿Cómo funciona el corazón paso a paso?',
-	'¿Qué significan los dos números de la presión?',
-	'¿Cuánto ejercicio necesito a la semana?',
-	'¿Qué vacunas me corresponden de adulto?',
-	'¿Cómo saber si tengo anemia?',
-	'¿La fiebre siempre es peligrosa?',
-	'¿Qué debo comer para tener más energía?',
-	'¿Cómo distinguir un resfriado de la gripe?',
-	'¿Por qué me siento cansado todo el día?',
-	'¿Qué son las ITS y cómo se previenen?',
-	'¿Cómo funciona la vacuna contra la influenza?',
-	'¿Qué hacer si me atraganto?',
-	'¿Cómo controlar la ansiedad en el momento?',
-	'¿Qué es la diabetes tipo 2?',
-	'¿Cómo cuidar mi salud mental cada día?',
-	'¿Cuándo debo ir al médico por un dolor?',
-	'¿Qué es el colesterol bueno y el malo?',
-	'¿Cómo bajar la presión alta sin pastillas?',
-	'¿Qué tan seguido debo hacerme chequeos?',
-	'¿Qué hacer ante una quemadura?',
-	'¿Qué es la saturación de oxígeno y cuándo es urgente?',
-	'¿Cómo mejorar mi concentración?',
-	'¿Los antibióticos sirven para un resfriado?',
-	'¿Qué alimentos suben la glucosa?',
-	'¿Por qué es importante desayunar?',
-	'¿Cómo prevenir enfermedades del corazón?',
-	'¿Qué es el síndrome del túnel carpiano?',
-	'¿Cómo medirme bien la temperatura?',
-	'¿Qué hago si tengo acidez constante?',
-	'¿Cómo evitar lesiones al hacer ejercicio?',
-	'¿Qué significan los resultados de una biometría hemática?',
-	'¿Es normal sudar mucho al dormir?',
-	'¿Cómo cuidar mi espalda al sentarme?',
-	'¿Qué alimentos ayudan a conciliar el sueño?',
-	'¿Cómo detectar una alergia alimentaria?',
-	'¿Qué pasa si no tomo suficiente agua?',
-	'¿Qué vitaminas necesito en temporada de frío?',
-	'¿Cómo saber si necesito lentes?',
-	'¿Qué hago si alguien tiene un infarto?',
-	'¿Cómo limpiar y curar una herida leve?',
-	'¿Qué es la osteoporosis y cómo prevenirla?',
-	'¿Por qué me duelen las rodillas al subir escaleras?',
-	'¿Qué es el ayuno intermitente y es seguro?',
-	'¿Cómo afecta el estrés al estómago?',
-	'Crea una sección sobre hipertensión arterial',
-	'Crea una sección sobre diabetes tipo 2',
-	'Crea una sección sobre nutrición y ejercicio',
-	'Crea una sección sobre salud mental y estrés',
+	'¿Qué es una variable en programación?',
+	'Explícame las promesas en JavaScript',
+	'¿Qué es Big-O?',
+	'Diferencia entre SQL y NoSQL',
+	'Cómo funciona Git rebase',
+	'¿Qué es una API REST?',
+	'¿Qué es la programación orientada a objetos?',
+	'Explícame async y await en JavaScript',
+	'¿Qué es un closure en JavaScript?',
+	'Diferencia entre let, const y var',
+	'¿Cómo funciona el event loop de JavaScript?',
+	'¿Qué es la recursión?',
+	'¿Qué es un arreglo y un objeto en JavaScript?',
+	'¿Qué es una función pura?',
+	'Explícame el DOM',
+	'Diferencia entre == y ===',
+	'¿Qué es TypeScript?',
+	'¿Cómo funciona un hook en React?',
+	'¿Qué es el estado en una aplicación?',
+	'Diferencia entre componente y elemento',
+	'¿Qué es CSS Flexbox?',
+	'¿Cómo funciona CSS Grid?',
+	'¿Qué es el modelo de caja en CSS?',
+	'Diferencia entre rem, em y px',
+	'¿Qué es la especificidad en CSS?',
+	'¿Cómo funciona una media query?',
+	'¿Qué es un endpoint?',
+	'Diferencia entre GET y POST',
+	'¿Qué es un status code HTTP?',
+	'¿Cómo funciona la autenticación con tokens?',
+	'¿Qué es CORS?',
+	'Diferencia entre síncrono y asíncrono',
+	'¿Qué es una promesa y cómo se encadena?',
+	'¿Cómo funciona la búsqueda binaria?',
+	'¿Qué es una lista enlazada?',
+	'¿Qué es una pila y una cola?',
+	'¿Qué es una tabla hash?',
+	'Diferencia entre ordenamiento burbuja y quicksort',
+	'¿Qué es la programación funcional?',
+	'¿Qué es un callback?',
+	'¿Cómo funciona el hoisting en JavaScript?',
+	'¿Qué es un error de tipo en JavaScript?',
+	'¿Cómo depurar código en el navegador?',
+	'¿Qué es una prueba unitaria?',
+	'Diferencia entre git merge y git rebase',
+	'¿Qué es un pull request?',
+	'¿Cómo funciona el control de versiones con Git?',
+	'¿Qué es una base de datos relacional?',
+	'Crea una sección sobre React',
+	'Crea una sección sobre Docker',
+	'Crea una sección sobre complejidad algorítmica',
+	'Crea una sección sobre consultas SQL',
 ];
 
 const suggestions = ref<string[]>([]);
@@ -274,53 +264,30 @@ const pickSuggestions = () => {
 	suggestions.value = copy.slice(0, 3);
 };
 
-const canVibrate = computed(() => Haptics && typeof Haptics.impact === 'function');
-
-const vibrate = async (style: ImpactStyle = ImpactStyle.Light) => {
-	try {
-		if (!canVibrate.value) return;
-		await Haptics.impact({ style });
-	} catch {
-		// Sin haptics en navegador
-	}
+const vibrate = () => {
+	navigator.vibrate?.(10);
 };
 
 const renderMessage = (content: string) => parseMarkdown(content);
 
 const scrollContentToBottom = async (smooth = true) => {
 	await nextTick();
-	const host = contentEl.value;
-	if (!host) return;
-
-	let el: HTMLElement | null = host.$el ?? (host as unknown as HTMLElement);
-
-	try {
-		if (typeof host.scrollToBottom === 'function') {
-			await host.scrollToBottom(smooth ? 320 : 0);
-			return;
-		}
-
-		el = el?.shadowRoot?.querySelector('.inner-scroll') ?? el;
-		if (!el) return;
-		if (smooth) {
-			el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-		} else {
-			el.scrollTop = el.scrollHeight;
-		}
-	} catch {
-		const inner = el?.querySelector('.chat-thread');
-		inner?.scrollIntoView({ block: 'end', behavior: smooth ? 'smooth' : 'auto' });
+	const el = contentEl.value;
+	if (!el) return;
+	if (smooth) {
+		el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+	} else {
+		el.scrollTop = el.scrollHeight;
 	}
 };
 
 // ---------- Persistencia ----------
 
-const persistNow = async (opts: { updateUrl?: boolean } = {}): Promise<boolean> => {
+const doPersist = async (opts: { updateUrl?: boolean } = {}): Promise<boolean> => {
 	const uid = user.value?.uid;
 	if (!uid) return false;
-	if (chatHistory.value.length === 0 || persisting) return false;
+	if (chatHistory.value.length === 0) return false;
 
-	persisting = true;
 	saveError.value = '';
 	try {
 		let chatId = loadedChatId.value;
@@ -340,14 +307,40 @@ const persistNow = async (opts: { updateUrl?: boolean } = {}): Promise<boolean> 
 		console.error('No se pudo guardar el chat', e);
 		saveError.value = 'No se pudo guardar en la nube. Revisa tu conexión.';
 		return false;
-	} finally {
-		persisting = false;
 	}
+};
+
+const drainPersist = async () => {
+	if (saveRunning) return;
+	saveRunning = true;
+	try {
+		while (saveRequested) {
+			saveRequested = false;
+			const updateUrl = saveUpdateUrl;
+			saveUpdateUrl = false;
+			const waiters = saveWaiters;
+			saveWaiters = [];
+			const result = await doPersist({ updateUrl });
+			waiters.forEach((resolve) => resolve(result));
+		}
+	} finally {
+		saveRunning = false;
+	}
+};
+
+const persistNow = (opts: { updateUrl?: boolean } = {}): Promise<boolean> => {
+	return new Promise((resolve) => {
+		saveRequested = true;
+		saveUpdateUrl = saveUpdateUrl || Boolean(opts.updateUrl);
+		saveWaiters.push(resolve);
+		void drainPersist();
+	});
 };
 
 const schedulePersist = () => {
 	if (persistTimer) clearTimeout(persistTimer);
 	persistTimer = setTimeout(() => {
+		persistTimer = null;
 		persistNow({ updateUrl: true });
 	}, 800);
 };
@@ -448,14 +441,14 @@ const sendMessage = async () => {
 		chatHistory.value.push({ role: 'assistant', content: '' });
 		const lastIndex = chatHistory.value.length - 1;
 
-		vibrate(ImpactStyle.Medium);
+		vibrate();
 		scrollContentToBottom();
 
 		await streamChat(chatHistory.value, {
 			onDelta: (delta) => {
 				if (!streamStarted.value) {
 					streamStarted.value = true;
-					vibrate(ImpactStyle.Light);
+					vibrate();
 				}
 				chatHistory.value[lastIndex].content += delta;
 				scrollContentToBottom(false);
@@ -479,7 +472,7 @@ const sendMessage = async () => {
 					chatHistory.value[lastIndex].content =
 						'Disculpa, no obtuve respuesta del asistente. Intenta de nuevo.';
 				}
-				vibrate(ImpactStyle.Light);
+				vibrate();
 				scrollContentToBottom();
 			},
 		});
@@ -494,7 +487,7 @@ const sendMessage = async () => {
 };
 
 // Guarda al cambiar de conversación o salir de la pantalla
-const leavePage = () => {
+const leavePage = async () => {
 	if (chatHistory.value.length === 0) return;
 
 	// Si el asistente aún responde, guarda lo que haya (sin el mensaje vacío en curso)
@@ -504,7 +497,7 @@ const leavePage = () => {
 			chatHistory.value = chatHistory.value.slice(0, -1);
 		}
 	}
-	flushPersist();
+	await flushPersist();
 };
 
 watch(
@@ -552,8 +545,8 @@ watch(
 	{ immediate: true }
 );
 
-onBeforeRouteLeave(() => {
-	leavePage();
+onBeforeRouteLeave(async () => {
+	await leavePage();
 });
 
 let unsubAuth: (() => void) | null = null;
@@ -589,7 +582,7 @@ window.addEventListener('pagehide', handlePageHide);
 
 <style scoped>
 .chat-content {
-	--background: var(--mt-canvas);
+	background: var(--mt-canvas);
 }
 
 .chat-scroll {
@@ -610,11 +603,6 @@ window.addEventListener('pagehide', handlePageHide);
 /* ---------- Carga ---------- */
 .header-saved-btn {
 	min-height: 36px;
-	--color: var(--mt-accent);
-}
-
-.header-saved-btn::part(native) {
-	padding: 0 6px;
 }
 
 .chat-loading {
@@ -627,7 +615,6 @@ window.addEventListener('pagehide', handlePageHide);
 }
 
 .spinner-primary {
-	--color: var(--mt-accent);
 	width: 24px;
 	height: 24px;
 }
@@ -660,7 +647,7 @@ window.addEventListener('pagehide', handlePageHide);
 	margin-bottom: 26px;
 }
 
-.chat-empty__orb ion-icon {
+.chat-empty__orb .app-icon {
 	font-size: 30px;
 }
 
@@ -765,7 +752,7 @@ window.addEventListener('pagehide', handlePageHide);
 	margin-top: 4px;
 }
 
-.chat-avatar ion-icon {
+.chat-avatar .app-icon {
 	font-size: 15px;
 }
 
@@ -875,11 +862,7 @@ window.addEventListener('pagehide', handlePageHide);
 
 /* ---------- Composer ---------- */
 .chat-footer {
-	--background: transparent;
-}
-
-.chat-footer::before {
-	display: none;
+	background: var(--mt-canvas);
 }
 
 .composer-bar {
@@ -905,10 +888,16 @@ window.addEventListener('pagehide', handlePageHide);
 }
 
 .composer-input {
-	--background: transparent;
-	--border-radius: 0;
 	min-height: 44px;
 	flex: 1;
+	background: transparent;
+	border: none;
+	padding: 4px 8px;
+}
+
+.composer-input:focus {
+	border-color: transparent;
+	box-shadow: none;
 }
 
 .composer-send {
@@ -926,7 +915,7 @@ window.addEventListener('pagehide', handlePageHide);
 	transition: opacity 0.15s ease, transform 0.1s ease;
 }
 
-.composer-send ion-icon {
+.composer-send .app-icon {
 	font-size: 18px;
 }
 
@@ -944,7 +933,7 @@ window.addEventListener('pagehide', handlePageHide);
 	color: var(--mt-ink-3);
 }
 
-.composer-saved ion-icon {
+.composer-saved .app-icon {
 	font-size: 13px;
 	color: var(--mt-success);
 }
@@ -958,7 +947,7 @@ window.addEventListener('pagehide', handlePageHide);
 	color: var(--mt-danger);
 }
 
-.composer-save-error ion-icon {
+.composer-save-error .app-icon {
 	font-size: 13px;
 	flex-shrink: 0;
 }

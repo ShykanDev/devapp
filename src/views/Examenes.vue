@@ -1,20 +1,9 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-menu-button></ion-menu-button>
-				</ion-buttons>
-				<ion-title>Exámenes</ion-title>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader title="Exámenes" />
 
-		<ion-content>
-			<ion-refresher slot="fixed" @ionRefresh="onRefresh">
-				<ion-refresher-content pulling-text="Suelta para actualizar" refreshing-text="Actualizando…"></ion-refresher-content>
-			</ion-refresher>
-
+		<main class="app-content">
 			<div class="page-shell">
 				<header class="page-head">
 					<p class="mt-kicker">Biblioteca</p>
@@ -27,45 +16,45 @@
 				<!-- Sin sesión -->
 				<div v-if="!user" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="lockClosedOutline"></ion-icon>
+						<AppIcon :icon="lockClosedOutline" />
 					</div>
 					<p class="state-block__title">Inicia sesión para ver tus exámenes</p>
 					<p class="state-block__hint">Guarda tus exámenes de práctica en tu cuenta.</p>
-					<ion-button class="state-block__cta" router-link="/login">Iniciar sesión</ion-button>
+					<AppButton class="state-block__cta" to="/login">Iniciar sesión</AppButton>
 				</div>
 
 				<!-- Cargando -->
 				<div v-else-if="loading" class="state-block">
-					<ion-spinner name="crescent" class="spinner-primary"></ion-spinner>
+					<AppSpinner class="spinner-primary" />
 					<p class="state-block__title">Cargando exámenes…</p>
 				</div>
 
 				<!-- Error de lectura -->
 				<div v-else-if="error" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="warningOutline"></ion-icon>
+						<AppIcon :icon="warningOutline" />
 					</div>
 					<p class="state-block__title">No se pudieron cargar tus exámenes</p>
 					<p class="state-block__hint">{{ error }}</p>
-					<ion-button class="state-block__cta" @click="loadExamenes()">
-						<ion-icon slot="start" :icon="refresh"></ion-icon>
+					<AppButton class="state-block__cta" @click="loadExamenes()">
+						<template #start><AppIcon :icon="refresh" /></template>
 						Reintentar
-					</ion-button>
+					</AppButton>
 				</div>
 
 				<!-- Vacío -->
 				<div v-else-if="examenes.length === 0" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="clipboardOutline"></ion-icon>
+						<AppIcon :icon="clipboardOutline" />
 					</div>
 					<p class="state-block__title">Todavía no tienes exámenes</p>
 					<p class="state-block__hint">
 						Elige un tema y una dificultad; la IA preparará un examen de opción múltiple para practicar.
 					</p>
-					<ion-button class="state-block__cta" @click="goToCreate">
-						<ion-icon slot="start" :icon="add"></ion-icon>
+					<AppButton class="state-block__cta" @click="goToCreate">
+						<template #start><AppIcon :icon="add" /></template>
 						Crear examen
-					</ion-button>
+					</AppButton>
 				</div>
 
 				<!-- Lista -->
@@ -75,13 +64,13 @@
 							{{ examenes.length }} examen{{ examenes.length === 1 ? '' : 'es' }}
 						</h2>
 						<button type="button" class="section-head__action" @click="goToCreate">
-							<ion-icon :icon="add"></ion-icon>
+							<AppIcon :icon="add" />
 							<span>Nueva</span>
 						</button>
 					</div>
 
 					<div v-if="actionError" class="list-alert">
-						<ion-icon :icon="warningOutline"></ion-icon>
+						<AppIcon :icon="warningOutline" />
 						<span>{{ actionError }}</span>
 					</div>
 
@@ -119,7 +108,7 @@
 									:disabled="regeneratingId === examen.id"
 									@click.stop="regenerate(examen)"
 								>
-									<ion-icon :icon="refresh"></ion-icon>
+									<AppIcon :icon="refresh" />
 								</button>
 								<button
 									type="button"
@@ -128,34 +117,19 @@
 									:disabled="regeneratingId === examen.id"
 									@click.stop="remove(examen)"
 								>
-									<ion-icon :icon="trashOutline"></ion-icon>
+									<AppIcon :icon="trashOutline" />
 								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</ion-content>
-	</ion-page>
+		</main>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import {
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonMenuButton,
-	IonPage,
-	IonRefresher,
-	IonRefresherContent,
-	IonSpinner,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
-import { onIonViewWillEnter } from '@ionic/vue';
-import { onBeforeUnmount, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import {
 	add,
 	clipboardOutline,
@@ -166,6 +140,11 @@ import {
 } from 'ionicons/icons';
 import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
 import { useRouter } from 'vue-router';
+import AppButton from '../components/ui/AppButton.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppPage from '../components/ui/AppPage.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
 import {
 	deleteExamen,
 	listExamenes,
@@ -239,14 +218,6 @@ const loadExamenes = async (silent = false) => {
 	}
 };
 
-const onRefresh = async (e: CustomEvent) => {
-	try {
-		await loadExamenes();
-	} finally {
-		(e.target as HTMLIonRefresherElement).complete();
-	}
-};
-
 const regenerate = async (examen: StoredExamen) => {
 	const uid = user.value?.uid;
 	if (!uid || regeneratingId.value) return;
@@ -312,7 +283,7 @@ watch(
 	}
 );
 
-onIonViewWillEnter(() => {
+onMounted(() => {
 	if (user.value) {
 		loadExamenes(true);
 	}
@@ -376,7 +347,7 @@ onBeforeUnmount(() => {
 	border-radius: 10px;
 }
 
-.section-head__action ion-icon {
+.section-head__action .app-icon {
 	font-size: 17px;
 }
 
@@ -394,7 +365,7 @@ onBeforeUnmount(() => {
 	line-height: 1.5;
 }
 
-.list-alert ion-icon {
+.list-alert .app-icon {
 	flex-shrink: 0;
 	margin-top: 1px;
 	font-size: 17px;
@@ -498,7 +469,7 @@ onBeforeUnmount(() => {
 	opacity: 0.5;
 }
 
-.icon-btn--spin ion-icon {
+.icon-btn--spin .app-icon {
 	animation: icon-btn-spin 0.9s linear infinite;
 }
 
@@ -545,7 +516,7 @@ onBeforeUnmount(() => {
 	margin-bottom: 8px;
 }
 
-.state-block__icon ion-icon {
+.state-block__icon .app-icon {
 	font-size: 24px;
 }
 
@@ -571,7 +542,7 @@ onBeforeUnmount(() => {
 }
 
 .spinner-primary {
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 	width: 24px;
 	height: 24px;
 	margin-bottom: 8px;

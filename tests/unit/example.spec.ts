@@ -1,23 +1,17 @@
-import { mount, flushPromises } from '@vue/test-utils'
-import { createRouter, createMemoryHistory } from 'vue-router'
-import FolderPage from '@/views/FolderPage.vue'
 import { describe, expect, test } from 'vitest'
+import { categoriasEnciclopedia, temasEnciclopedia } from '@/data/enciclopedia'
 
-describe('FolderPage.vue', () => {
-  test('renders folder view', async () => {
-    const router = createRouter({
-      history: createMemoryHistory(),
-      routes: [{ path: '/folder/:id', component: FolderPage }]
-    })
-    router.push('/folder/Medicamentos')
-    await router.isReady()
+describe('enciclopedia data', () => {
+  test('exposes programming categories and no preset topics', () => {
+    expect(categoriasEnciclopedia).toHaveLength(8)
+    expect(temasEnciclopedia).toHaveLength(0)
 
-    const wrapper = mount(FolderPage, {
-      global: {
-        plugins: [router]
-      }
-    })
-    await flushPromises()
-    expect(wrapper.text()).toContain('Medicamentos')
+    for (const categoria of categoriasEnciclopedia) {
+      expect(categoria.id).toBeTruthy()
+      expect(categoria.nombre).toBeTruthy()
+      expect(categoria.descripcion).toBeTruthy()
+      expect(categoria.icon).toBeTruthy()
+      expect(categoria.color).toMatch(/^#/)
+    }
   })
 })

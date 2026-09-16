@@ -2,7 +2,7 @@
 	<section class="dp-exam surface">
 		<div class="dp-head">
 			<span class="mt-icon-tile">
-				<ion-icon :icon="helpCircle"></ion-icon>
+				<AppIcon :icon="helpCircle" />
 			</span>
 			<div class="dp-head__text">
 				<h3 class="dp-head__title">{{ title }}</h3>
@@ -12,84 +12,87 @@
 			<span v-else class="dp-head__count">Pregunta {{ currentQuestion + 1 }} de {{ questions.length }}</span>
 		</div>
 
-		<!-- Resultado -->
-		<div v-if="showResult" class="dp-result">
-			<div class="dp-result__score">
-				<span class="dp-result__num">{{ correctCount }}<small>/{{ questions.length }}</small></span>
-				<span class="dp-result__pct">{{ percent }}%</span>
-			</div>
-			<p class="dp-result__text">
-				{{
-					percent >= 70
-						? '¡Buen trabajo! Dominas el tema.'
-						: 'Repasa el contenido y vuelve a intentarlo.'
-				}}
-			</p>
-			<ion-button class="dp-result__cta" @click="restart">
-				<ion-icon slot="start" :icon="refresh"></ion-icon>
-				Repetir examen
-			</ion-button>
-		</div>
-
-		<!-- Pregunta -->
-		<template v-else>
-			<p class="dp-question">{{ current.question }}</p>
-
-			<div class="dp-options">
-				<button
-					v-for="(option, optIdx) in current.options"
-					:key="optIdx"
-					type="button"
-					class="dp-option"
-					:class="optionClass(optIdx)"
-					:disabled="answered"
-					@click="selectOption(optIdx)"
-				>
-					<span class="dp-option__letter">{{ letterOf(optIdx) }}</span>
-					<span class="dp-option__text">{{ option }}</span>
-					<ion-icon
-						v-if="answered && optIdx === current.correctAnswer"
-						class="dp-option__mark dp-option__mark--ok"
-						:icon="checkmark"
-					></ion-icon>
-					<ion-icon
-						v-else-if="answered && optIdx === selectedIndex"
-						class="dp-option__mark dp-option__mark--bad"
-						:icon="close"
-					></ion-icon>
-				</button>
-			</div>
-
-			<div v-if="answered" class="dp-feedback" :class="isLastAnswerCorrect ? 'dp-feedback--ok' : 'dp-feedback--bad'">
-				<p class="dp-feedback__text">
+		<div class="dp-exam__body">
+			<!-- Resultado -->
+			<div v-if="showResult" class="dp-result">
+				<div class="dp-result__score">
+					<span class="dp-result__num">{{ correctCount }}<small>/{{ questions.length }}</small></span>
+					<span class="dp-result__pct">{{ percent }}%</span>
+				</div>
+				<p class="dp-result__text">
 					{{
-						isLastAnswerCorrect
-							? 'Correcto'
-							: `Incorrecto. La respuesta correcta es «${current.options[current.correctAnswer]}».`
+						percent >= 70
+							? '¡Buen trabajo! Dominas el tema.'
+							: 'Repasa el contenido y vuelve a intentarlo.'
 					}}
 				</p>
-				<p v-if="current.explanation" class="dp-feedback__explain">{{ current.explanation }}</p>
+				<AppButton class="dp-result__cta" @click="restart">
+					<template #start><AppIcon :icon="refresh" /></template>
+					Repetir examen
+				</AppButton>
 			</div>
 
-			<div class="dp-nav">
-				<button type="button" class="dp-nav__link" :disabled="currentQuestion === 0" @click="previous">
-					<ion-icon :icon="chevronBack"></ion-icon>
-					Anterior
-				</button>
-				<ion-button class="dp-nav__next" :disabled="!answered" @click="next">
-					{{ isLastQuestion ? 'Terminar' : 'Siguiente' }}
-					<ion-icon slot="end" :icon="chevronForward"></ion-icon>
-				</ion-button>
-			</div>
-		</template>
+			<!-- Pregunta -->
+			<template v-else>
+				<p class="dp-question">{{ current.question }}</p>
+
+				<div class="dp-options">
+					<button
+						v-for="(option, optIdx) in current.options"
+						:key="optIdx"
+						type="button"
+						class="dp-option"
+						:class="optionClass(optIdx)"
+						:disabled="answered"
+						@click="selectOption(optIdx)"
+					>
+						<span class="dp-option__letter">{{ letterOf(optIdx) }}</span>
+						<span class="dp-option__text">{{ option }}</span>
+						<AppIcon
+							v-if="answered && optIdx === current.correctAnswer"
+							class="dp-option__mark dp-option__mark--ok"
+							:icon="checkmark"
+						/>
+						<AppIcon
+							v-else-if="answered && optIdx === selectedIndex"
+							class="dp-option__mark dp-option__mark--bad"
+							:icon="close"
+						/>
+					</button>
+				</div>
+
+				<div v-if="answered" class="dp-feedback" :class="isLastAnswerCorrect ? 'dp-feedback--ok' : 'dp-feedback--bad'">
+					<p class="dp-feedback__text">
+						{{
+							isLastAnswerCorrect
+								? 'Correcto'
+								: `Incorrecto. La respuesta correcta es «${current.options[current.correctAnswer]}».`
+						}}
+					</p>
+					<p v-if="current.explanation" class="dp-feedback__explain">{{ current.explanation }}</p>
+				</div>
+
+				<div class="dp-nav">
+					<button type="button" class="dp-nav__link" :disabled="currentQuestion === 0" @click="previous">
+						<AppIcon :icon="chevronBack" />
+						Anterior
+					</button>
+					<AppButton class="dp-nav__next" :disabled="!answered" @click="next">
+						{{ isLastQuestion ? 'Terminar' : 'Siguiente' }}
+						<template #end><AppIcon :icon="chevronForward" /></template>
+					</AppButton>
+				</div>
+			</template>
+		</div>
 	</section>
 </template>
 
 <script setup lang="ts">
-import { IonButton, IonIcon } from '@ionic/vue';
 import { checkmark, chevronBack, chevronForward, close, helpCircle, refresh } from 'ionicons/icons';
 import { computed, ref, watch } from 'vue';
 import type { DynamicPageExamQuestion } from '../../schemas/dynamicPage';
+import AppButton from '../ui/AppButton.vue';
+import AppIcon from '../ui/AppIcon.vue';
 
 const props = withDefaults(
 	defineProps<{ questions: DynamicPageExamQuestion[]; title?: string; subtitle?: string }>(),
@@ -105,7 +108,7 @@ const current = computed(() => props.questions[Math.min(currentQuestion.value, p
 const answered = computed(() => selectedIndex.value !== null);
 const isLastAnswerCorrect = computed(() => selectedIndex.value === current.value.correctAnswer);
 const isLastQuestion = computed(() => currentQuestion.value === props.questions.length - 1);
-const showResult = computed(() => finished.value || answers.value.every((a) => a !== null));
+const showResult = computed(() => finished.value);
 
 const correctCount = computed(
 	() => answers.value.filter((a, i) => a === props.questions[i]?.correctAnswer).length
@@ -167,15 +170,16 @@ watch(
 .dp-exam {
 	border: 1px solid var(--mt-line);
 	border-radius: var(--radius-card);
-	padding: 20px;
 	box-shadow: var(--shadow-soft);
+	overflow: hidden;
 }
 
 .dp-head {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	margin-bottom: 18px;
+	padding: 16px 18px;
+	border-bottom: 1px solid var(--mt-line);
 }
 
 .dp-head__text {
@@ -185,37 +189,46 @@ watch(
 
 .dp-head__title {
 	margin: 0;
-	font-size: 16.5px;
-	font-weight: 650;
-	letter-spacing: -0.014em;
+	font-size: 15.5px;
+	font-weight: 700;
+	letter-spacing: -0.012em;
 	color: var(--mt-ink);
 }
 
 .dp-head__sub {
 	margin: 3px 0 0;
-	font-size: 12.5px;
+	font-size: 13px;
+	line-height: 1.4;
 	color: var(--mt-ink-3);
 }
 
-.dp-head__count,
 .dp-head__score {
-	font-size: 13px;
-	font-weight: 600;
-	color: var(--mt-ink-2);
+	flex-shrink: 0;
+	font-size: 15px;
+	font-weight: 700;
 	font-variant-numeric: tabular-nums;
+	color: var(--mt-accent);
 }
 
-.dp-head__score {
-	color: var(--mt-accent);
+.dp-head__count {
+	flex-shrink: 0;
+	font-size: 13px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	color: var(--mt-ink-3);
+}
+
+.dp-exam__body {
+	padding: 16px 20px 20px;
 }
 
 /* ---------- Pregunta ---------- */
 .dp-question {
-	margin: 4px 0 16px;
-	font-size: 16.5px;
+	margin: 2px 0 16px;
+	font-size: 15.5px;
 	font-weight: 600;
-	line-height: 1.5;
-	letter-spacing: -0.01em;
+	line-height: 1.55;
+	letter-spacing: -0.006em;
 	color: var(--mt-ink);
 }
 
@@ -234,11 +247,10 @@ watch(
 	text-align: left;
 	border: 1px solid var(--mt-line);
 	background: var(--mt-surface);
-	border-radius: 15px;
+	border-radius: 12px;
 	padding: 10px 14px;
-	font-family: var(--font-sans);
 	font-size: 14.5px;
-	line-height: 1.45;
+	line-height: 1.5;
 	color: var(--mt-ink);
 	cursor: pointer;
 	transition: border-color 0.15s ease, background 0.15s ease;
@@ -255,16 +267,16 @@ watch(
 }
 
 .dp-option__letter {
-	width: 28px;
-	height: 28px;
 	flex-shrink: 0;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: 9px;
+	width: 26px;
+	height: 26px;
+	border-radius: 999px;
 	background: var(--mt-muted);
 	font-size: 12.5px;
-	font-weight: 650;
+	font-weight: 700;
 	color: var(--mt-ink-2);
 }
 
@@ -292,8 +304,8 @@ watch(
 }
 
 .dp-option--correct .dp-option__letter {
-	background: var(--mt-success);
-	color: #fff;
+	background: color-mix(in srgb, var(--mt-success) 16%, transparent);
+	color: var(--mt-success);
 }
 
 .dp-option--wrong {
@@ -302,8 +314,8 @@ watch(
 }
 
 .dp-option--wrong .dp-option__letter {
-	background: var(--mt-danger);
-	color: #fff;
+	background: color-mix(in srgb, var(--mt-danger) 16%, transparent);
+	color: var(--mt-danger);
 }
 
 .dp-option--dim {
@@ -313,9 +325,8 @@ watch(
 /* ---------- Feedback ---------- */
 .dp-feedback {
 	margin-top: 14px;
-	padding: 14px 16px;
-	border-radius: 14px;
-	font-size: 14px;
+	padding: 12px 14px;
+	border-radius: 12px;
 }
 
 .dp-feedback--ok {
@@ -331,7 +342,7 @@ watch(
 .dp-feedback__text {
 	margin: 0;
 	font-weight: 600;
-	font-size: 14px;
+	font-size: 13.5px;
 	color: var(--mt-ink);
 }
 
@@ -347,7 +358,7 @@ watch(
 	margin: 6px 0 0;
 	font-size: 13px;
 	font-weight: 400;
-	line-height: 1.55;
+	line-height: 1.6;
 	color: var(--mt-ink-2);
 }
 
@@ -368,8 +379,7 @@ watch(
 	border: none;
 	background: transparent;
 	color: var(--mt-ink-2);
-	font-family: var(--font-sans);
-	font-size: 14px;
+	font-size: 13.5px;
 	font-weight: 600;
 	cursor: pointer;
 }
@@ -387,9 +397,8 @@ watch(
 .dp-result {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	padding: 12px 0 4px;
+	align-items: flex-start;
+	padding: 4px 0;
 }
 
 .dp-result__score {
@@ -399,7 +408,7 @@ watch(
 }
 
 .dp-result__num {
-	font-size: 44px;
+	font-size: 42px;
 	font-weight: 750;
 	letter-spacing: -0.04em;
 	color: var(--mt-ink);
@@ -408,7 +417,7 @@ watch(
 }
 
 .dp-result__num small {
-	font-size: 20px;
+	font-size: 19px;
 	font-weight: 600;
 	color: var(--mt-ink-3);
 	letter-spacing: -0.02em;

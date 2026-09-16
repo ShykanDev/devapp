@@ -1,87 +1,81 @@
 <template>
-	<ion-app>
-		<ion-router-outlet v-if="isAuthRoute" id="main-content"></ion-router-outlet>
+	<div v-if="isAuthRoute" class="app-auth">
+		<router-view />
+	</div>
 
-		<ion-split-pane v-else content-id="main-content" class="app-shell">
-			<ion-menu content-id="main-content" side="start" type="overlay" class="app-menu">
-				<ion-content class="app-menu__content">
-					<div class="app-menu__brand">
-						<span class="app-menu__mark" aria-hidden="true">
-							<svg viewBox="0 0 24 24" width="16" height="16">
-								<path
-									d="M10.5 3.2h3v7.3h7.3v3h-7.3v7.3h-3v-7.3H3.2v-3h7.3V3.2z"
-									fill="#ffffff"
-								/>
-							</svg>
-						</span>
-						<div class="app-menu__brand-text">
-							<span class="app-menu__brand-name">MediApp</span>
-							<span class="app-menu__brand-tag">Tu espacio de salud</span>
-						</div>
-					</div>
+	<div v-else class="app-shell">
+		<aside class="app-menu" :class="{ 'app-menu--open': menuOpen }">
+			<div class="app-menu__brand">
+				<span class="app-menu__mark" aria-hidden="true">
+					<svg viewBox="0 0 24 24" width="18" height="18">
+						<path
+							d="M9.4 6.6 4 12l5.4 5.4 1.5-1.5L7 12l3.9-3.9-1.5-1.5Zm5.2 0L19.4 12l-4.8 4.8-1.5-1.5L16.9 12l-3.8-3.9 1.5-1.5Z"
+							fill="#ffffff"
+						/>
+					</svg>
+				</span>
+				<div class="app-menu__brand-text">
+					<span class="app-menu__brand-name">DevApp</span>
+					<span class="app-menu__brand-tag">Tu espacio de código</span>
+				</div>
+			</div>
 
-					<div class="app-menu__nav">
-						<ion-menu-toggle :auto-hide="false" v-for="p in appPages" :key="p.url">
-							<router-link
-								:to="p.url"
-								class="app-menu__link"
-								:class="{ 'app-menu__link--active': selectedUrl === p.url }"
-							>
-								<ion-icon :icon="p.iosIcon" slot="start"></ion-icon>
-								<span class="app-menu__link-label">{{ p.title }}</span>
-								<span class="app-menu__link-dot" aria-hidden="true"></span>
-							</router-link>
-						</ion-menu-toggle>
-					</div>
+			<nav class="app-menu__nav">
+				<router-link
+					v-for="p in appPages"
+					:key="p.url"
+					:to="p.url"
+					class="app-menu__link"
+					:class="{ 'app-menu__link--active': selectedUrl === p.url }"
+					@click="closeMenu"
+				>
+					<AppIcon :icon="p.icon" :size="24" class="app-menu__link-icon" />
+					<span class="app-menu__link-label">{{ p.title }}</span>
+					<span class="app-menu__link-dot" aria-hidden="true"></span>
+				</router-link>
+			</nav>
 
-					<div class="app-menu__theme">
-						<button
-							type="button"
-							class="app-menu__theme-btn"
-							role="switch"
-							:aria-checked="isDark"
-							@click="toggleTheme()"
-						>
-							<span class="app-menu__theme-icon" aria-hidden="true">
-								<ion-icon :icon="isDark ? moon : sunny"></ion-icon>
-							</span>
-							<span class="app-menu__theme-label">
-								{{ isDark ? 'Modo oscuro' : 'Modo claro' }}
-							</span>
-							<span
-								class="app-menu__theme-track"
-								:class="{ 'app-menu__theme-track--on': isDark }"
-								aria-hidden="true"
-							>
-								<span class="app-menu__theme-thumb"></span>
-							</span>
-						</button>
-					</div>
+			<div class="app-menu__theme">
+				<button
+					type="button"
+					class="app-menu__theme-btn"
+					role="switch"
+					:aria-checked="isDark"
+					@click="toggleTheme()"
+				>
+					<span class="app-menu__theme-icon" aria-hidden="true">
+						<AppIcon :icon="isDark ? moon : sunny" :size="23" />
+					</span>
+					<span class="app-menu__theme-label">
+						{{ isDark ? 'Modo oscuro' : 'Modo claro' }}
+					</span>
+					<span
+						class="app-menu__theme-track"
+						:class="{ 'app-menu__theme-track--on': isDark }"
+						aria-hidden="true"
+					>
+						<span class="app-menu__theme-thumb"></span>
+					</span>
+				</button>
+			</div>
 
-					<div class="app-menu__foot">
-						<span class="app-menu__foot-note">
-							Tus secciones creadas con IA se guardan de forma segura en tu cuenta.
-						</span>
-					</div>
-				</ion-content>
-			</ion-menu>
+			<div class="app-menu__foot">
+				<span class="app-menu__foot-note">
+					Tus secciones y exámenes creados con IA se guardan de forma segura en tu cuenta.
+				</span>
+			</div>
+		</aside>
 
-			<ion-router-outlet id="main-content"></ion-router-outlet>
-		</ion-split-pane>
-	</ion-app>
+		<div v-if="menuOpen" class="app-scrim" @click="closeMenu" />
+
+		<div class="app-main">
+			<router-view />
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
-import {
-	IonApp,
-	IonContent,
-	IonIcon,
-	IonMenu,
-	IonMenuToggle,
-	IonRouterOutlet,
-	IonSplitPane,
-} from '@ionic/vue';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import {
 	bookOutline,
@@ -91,6 +85,8 @@ import {
 	moon,
 	sunny,
 } from 'ionicons/icons';
+import AppIcon from './components/ui/AppIcon.vue';
+import { closeMenu, menuOpen } from './components/ui/shell';
 import { toggleTheme, useTheme } from './theme/store';
 
 const { isDark } = useTheme();
@@ -99,65 +95,77 @@ const route = useRoute();
 const isAuthRoute = computed(() => route.path.startsWith('/login'));
 
 const appPages = [
-	{
-		title: 'Chat',
-		url: '/folder/chat',
-		iosIcon: chatbubbleOutline,
-	},
-	{
-		title: 'Enciclopedia',
-		url: '/enciclopedia',
-		iosIcon: bookOutline,
-	},
-	{
-		title: 'Exámenes',
-		url: '/examenes',
-		iosIcon: clipboardOutline,
-	},
-	{
-		title: 'Mis secciones',
-		url: '/mis-secciones',
-		iosIcon: libraryOutline,
-	},
+	{ title: 'Chat', url: '/folder/chat', icon: chatbubbleOutline },
+	{ title: 'Enciclopedia', url: '/enciclopedia', icon: bookOutline },
+	{ title: 'Exámenes', url: '/examenes', icon: clipboardOutline },
+	{ title: 'Mis secciones', url: '/mis-secciones', icon: libraryOutline },
 ];
 
 const selectedUrl = computed(
-	() =>
-		appPages.find((p) => route.path.startsWith(p.url))?.url ??
-		route.path
+	() => appPages.find((p) => route.path.startsWith(p.url))?.url ?? route.path
+);
+
+watch(
+	() => route.fullPath,
+	() => closeMenu()
 );
 </script>
 
 <style scoped>
-.app-shell {
-	--side-width: 272px;
-	--side-max-width: 272px;
+.app-auth {
+	height: 100dvh;
+	display: flex;
+	flex-direction: column;
 }
 
-:global(ion-router-outlet) {
-	--background: var(--mt-canvas);
+.app-shell {
+	display: flex;
+	height: 100dvh;
+	overflow: hidden;
+}
+
+.app-main {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	height: 100dvh;
+	overflow: hidden;
+}
+
+.app-main > * {
+	flex: 1 1 auto;
+	min-height: 0;
 }
 
 .app-menu {
-	--width: 272px;
-	--background: var(--mt-surface);
-	--border-width: 0px;
-}
-
-.app-menu ion-menu-toggle {
-	display: block;
-}
-
-.app-menu__content {
-	--background: var(--mt-surface);
-	--padding-top: var(--ion-safe-area-top, 0px);
-	--padding-bottom: var(--ion-safe-area-bottom, 0px);
-}
-
-.app-menu__content::part(scroll) {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 60;
 	display: flex;
 	flex-direction: column;
-	min-height: 100%;
+	width: 272px;
+	max-width: 82vw;
+	padding-top: env(safe-area-inset-top, 0px);
+	padding-bottom: env(safe-area-inset-bottom, 0px);
+	background: var(--mt-surface);
+	transform: translateX(-100%);
+	transition: transform 0.22s ease;
+	overflow-y: auto;
+}
+
+.app-menu--open {
+	transform: translateX(0);
+	box-shadow: var(--shadow-pop);
+}
+
+.app-scrim {
+	position: fixed;
+	inset: 0;
+	z-index: 50;
+	background: rgba(0, 0, 0, 0.42);
 }
 
 .app-menu__brand {
@@ -218,10 +226,8 @@ const selectedUrl = computed(
 	transition: background 0.15s ease;
 }
 
-.app-menu__link ion-icon {
-	font-size: 24px;
+.app-menu__link-icon {
 	color: var(--mt-ink-2);
-	flex-shrink: 0;
 }
 
 .app-menu__link-label {
@@ -247,7 +253,7 @@ const selectedUrl = computed(
 	background: var(--mt-accent-soft);
 }
 
-.app-menu__link--active ion-icon {
+.app-menu__link--active .app-menu__link-icon {
 	color: var(--mt-accent);
 }
 
@@ -294,10 +300,6 @@ const selectedUrl = computed(
 	color: var(--mt-ink-2);
 }
 
-.app-menu__theme-icon ion-icon {
-	font-size: 23px;
-}
-
 .app-menu__theme-label {
 	flex: 1;
 	text-align: left;
@@ -340,7 +342,6 @@ const selectedUrl = computed(
 }
 
 .app-menu__foot {
-	margin-top: 0;
 	padding: 20px;
 }
 
@@ -352,7 +353,14 @@ const selectedUrl = computed(
 
 @media (min-width: 768px) {
 	.app-menu {
+		position: static;
+		transform: none;
+		flex-shrink: 0;
 		border-right: 1px solid var(--mt-line);
+	}
+
+	.app-scrim {
+		display: none;
 	}
 }
 </style>

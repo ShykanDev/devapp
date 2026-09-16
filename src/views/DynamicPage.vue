@@ -1,32 +1,35 @@
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-back-button v-if="mode === 'view'" :default-href="'/mis-secciones'" text=""></ion-back-button>
-					<ion-menu-button v-else></ion-menu-button>
-				</ion-buttons>
-				<ion-title>{{ mode === 'create' ? 'Nueva sección' : 'Sección' }}</ion-title>
-				<ion-buttons v-if="mode === 'view' && viewState === 'ready' && user" slot="end">
-					<ion-button fill="clear" class="header-edit-btn" @click="openEditor" aria-label="Editar sección">
-						<ion-icon slot="icon-only" :icon="createOutline"></ion-icon>
-					</ion-button>
-				</ion-buttons>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader
+			:title="mode === 'create' ? 'Nueva sección' : 'Sección'"
+			:back="mode === 'view' ? viewBack : false"
+		>
+			<template #end>
+				<AppButton
+					v-if="mode === 'view' && viewState === 'ready' && user"
+					variant="clear"
+					iconOnly
+					class="header-edit-btn"
+					aria-label="Editar sección"
+					@click="openEditor"
+				>
+					<AppIcon :icon="createOutline" />
+				</AppButton>
+			</template>
+		</AppHeader>
 
-		<ion-content>
+		<main class="app-content">
 			<div class="page-shell">
 				<!-- ============ MODO CREAR ============ -->
 				<template v-if="mode === 'create'">
 					<!-- Sin sesión -->
 					<div v-if="!user" class="state-block">
 						<div class="state-block__icon">
-							<ion-icon :icon="lockClosedOutline"></ion-icon>
+							<AppIcon :icon="lockClosedOutline" />
 						</div>
 						<p class="state-block__title">Inicia sesión para crear secciones</p>
 						<p class="state-block__hint">Guarda tus páginas educativas personalizadas en tu cuenta.</p>
-						<ion-button class="state-block__cta" router-link="/login">Iniciar sesión</ion-button>
+						<AppButton class="state-block__cta" to="/login">Iniciar sesión</AppButton>
 					</div>
 
 					<!-- Selección de tema -->
@@ -41,21 +44,21 @@
 						</header>
 
 						<div class="panel">
-							<ion-input
+							<AppInput
 								v-model="topicInput"
 								type="text"
 								class="panel__input"
-								placeholder="¿Sobre qué tema? Ej. hipertensión arterial"
+								placeholder="¿Sobre qué tema? Ej. Fundamentos de JavaScript"
 								@keyup.enter="startCreation"
-							></ion-input>
-							<ion-button
+							/>
+							<AppButton
 								class="panel__submit"
 								:disabled="!topicInput.trim() || creating"
 								@click="startCreation"
 							>
-								<ion-icon slot="start" :icon="sparkles"></ion-icon>
+								<template #start><AppIcon :icon="sparkles" /></template>
 								Generar sección
-							</ion-button>
+							</AppButton>
 						</div>
 
 						<div class="create-hints">
@@ -77,7 +80,7 @@
 					<!-- Generando / validando / reparando -->
 					<div v-else-if="creating" class="state-block generating">
 						<div class="generating__orb">
-							<ion-spinner name="crescent"></ion-spinner>
+							<AppSpinner />
 						</div>
 						<p class="state-block__title">{{ createStatusText }}</p>
 						<p class="state-block__hint">Esto puede tardar unos segundos. No cierres la pantalla.</p>
@@ -86,16 +89,16 @@
 					<!-- Error -->
 					<div v-else-if="createPhase === 'error'" class="state-block">
 						<div class="state-block__icon state-block__icon--danger">
-							<ion-icon :icon="warningOutline"></ion-icon>
+							<AppIcon :icon="warningOutline" />
 						</div>
 						<p class="state-block__title">No se pudo generar la sección</p>
 						<p class="state-block__hint">{{ createError }}</p>
 						<div class="state-block__actions">
-							<ion-button class="state-block__cta" @click="startCreation">
-								<ion-icon slot="start" :icon="refresh"></ion-icon>
+							<AppButton class="state-block__cta" @click="startCreation">
+								<template #start><AppIcon :icon="refresh" /></template>
 								Reintentar
-							</ion-button>
-							<ion-button fill="clear" @click="resetCreate">Cambiar de tema</ion-button>
+							</AppButton>
+							<AppButton variant="clear" @click="resetCreate">Cambiar de tema</AppButton>
 						</div>
 					</div>
 				</template>
@@ -104,35 +107,35 @@
 				<template v-else>
 					<!-- Cargando -->
 					<div v-if="viewLoading" class="state-block">
-						<ion-spinner name="crescent" class="spinner-primary"></ion-spinner>
+						<AppSpinner class="spinner-primary" />
 						<p class="state-block__title">Cargando sección…</p>
 					</div>
 
 					<!-- Sin sesión -->
 					<div v-else-if="!user" class="state-block">
 						<div class="state-block__icon">
-							<ion-icon :icon="lockClosedOutline"></ion-icon>
+							<AppIcon :icon="lockClosedOutline" />
 						</div>
 						<p class="state-block__title">Inicia sesión para ver tus secciones</p>
-						<ion-button class="state-block__cta" router-link="/login">Iniciar sesión</ion-button>
+						<AppButton class="state-block__cta" to="/login">Iniciar sesión</AppButton>
 					</div>
 
 					<!-- No encontrada -->
 					<div v-else-if="viewState === 'not-found'" class="state-block">
 						<div class="state-block__icon">
-							<ion-icon :icon="documentTextOutline"></ion-icon>
+							<AppIcon :icon="documentTextOutline" />
 						</div>
 						<p class="state-block__title">Página no encontrada</p>
 						<p class="state-block__hint">Puede que ya haya sido eliminada.</p>
-						<ion-button class="state-block__cta" router-link="/mis-secciones">
+						<AppButton class="state-block__cta" to="/mis-secciones">
 							Ver mis secciones
-						</ion-button>
+						</AppButton>
 					</div>
 
 					<!-- Versión no soportada -->
 					<div v-else-if="viewState === 'unsupported'" class="state-block">
 						<div class="state-block__icon">
-							<ion-icon :icon="warningOutline"></ion-icon>
+							<AppIcon :icon="warningOutline" />
 						</div>
 						<p class="state-block__title">Versión no soportada</p>
 						<p class="state-block__hint">Esta página usa un formato más reciente que la app no reconoce.</p>
@@ -141,27 +144,32 @@
 					<!-- Error de lectura -->
 					<div v-else-if="viewState === 'error'" class="state-block">
 						<div class="state-block__icon state-block__icon--danger">
-							<ion-icon :icon="warningOutline"></ion-icon>
+							<AppIcon :icon="warningOutline" />
 						</div>
 						<p class="state-block__title">No se pudo cargar esta sección</p>
 						<p class="state-block__hint">{{ viewError }}</p>
 						<div class="state-block__actions">
-							<ion-button class="state-block__cta" @click="loadPage">
-								<ion-icon slot="start" :icon="refresh"></ion-icon>
+							<AppButton class="state-block__cta" @click="loadPage">
+								<template #start><AppIcon :icon="refresh" /></template>
 								Reintentar
-							</ion-button>
-							<ion-button fill="clear" router-link="/mis-secciones">
+							</AppButton>
+							<AppButton variant="clear" to="/mis-secciones">
 								Ver mis secciones
-							</ion-button>
+							</AppButton>
 						</div>
 					</div>
 
 					<!-- Contenido válido -->
 					<template v-else-if="validatedPage">
+						<p v-if="parentTitle" class="dp-parent-kicker">Subtema de: {{ parentTitle }}</p>
 						<DynamicHeader :title="validatedPage.title" :description="validatedPage.description" />
 						<div class="dp-blocks">
 							<div class="dp-block-group">
-								<DynamicSections :sections="validatedPage.sections" />
+								<DynamicSections
+									:sections="validatedPage.sections"
+									:children-by-section="childrenBySection"
+									@pick-subtopic="onPickSubtopic"
+								/>
 								<DynamicInformativeSection :info="validatedPage.informativeSection" />
 								<DynamicMoreInformation :info="validatedPage.moreInformation" />
 							</div>
@@ -173,100 +181,82 @@
 					</template>
 				</template>
 			</div>
-		</ion-content>
+		</main>
 
 		<!-- Modal: editar sección -->
-		<ion-modal
-			:is-open="editOpen"
-			@didDismiss="closeEditor"
-			:backdrop-dismiss="!editBusy"
-			mode="ios"
-			class="edit-modal"
-		>
-			<ion-header class="app-header">
-				<ion-toolbar>
-					<ion-title>Editar sección</ion-title>
-					<ion-buttons slot="end">
-						<ion-button :disabled="editBusy" @click="closeEditor">Cerrar</ion-button>
-					</ion-buttons>
-				</ion-toolbar>
-			</ion-header>
+		<AppModal v-model="editOpen">
+			<AppHeader title="Editar sección" :menu="false">
+				<template #end>
+					<AppButton variant="clear" :disabled="editBusy" @click="closeEditor">Cerrar</AppButton>
+				</template>
+			</AppHeader>
 
-			<ion-content>
+			<main class="app-content">
 				<div class="edit-panel">
 					<p class="edit-panel__intro">
 						Dile al asistente qué quieres cambiar de esta sección: editar, ampliar,
 						orientar o eliminar contenido. Ejemplo: <em>"agrega una sección sobre
-						alimentación recomendada"</em> o <em>"quita la flashcard sobre medicamentos"</em>.
+						promesas"</em> o <em>"quita la flashcard sobre closures"</em>.
 					</p>
 
-					<ion-textarea
+					<AppTextarea
 						v-model="editInstruction"
 						:disabled="editBusy"
-						auto-grow
 						class="edit-panel__input"
 						placeholder="¿Qué quieres editar de esta sección?"
-					></ion-textarea>
+					/>
 
 					<div v-if="editError" class="edit-panel__status edit-panel__status--error">
-						<ion-icon :icon="warningOutline"></ion-icon>
+						<AppIcon :icon="warningOutline" />
 						<span>{{ editError }}</span>
 					</div>
 
 					<div v-if="editSuccess" class="edit-panel__status edit-panel__status--ok">
-						<ion-icon :icon="checkmarkCircleOutline"></ion-icon>
+						<AppIcon :icon="checkmarkCircleOutline" />
 						<span>Sección actualizada</span>
 					</div>
 
 					<div class="edit-panel__busy" v-if="editBusy">
-						<ion-spinner name="crescent"></ion-spinner>
+						<AppSpinner />
 						<span>Editando la sección… puede tardar unos segundos.</span>
 					</div>
 
-					<ion-button
+					<AppButton
 						class="edit-panel__submit"
 						:disabled="!editInstruction.trim() || editBusy"
 						@click="applyEdit"
 					>
-						<ion-icon slot="start" :icon="sparkles"></ion-icon>
+						<template #start><AppIcon :icon="sparkles" /></template>
 						Aplicar cambios
-					</ion-button>
+					</AppButton>
 				</div>
-			</ion-content>
-		</ion-modal>
-	</ion-page>
+			</main>
+		</AppModal>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import {
-	IonBackButton,
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonInput,
-	IonMenuButton,
-	IonModal,
-	IonPage,
-	IonSpinner,
-	IonTextarea,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
 import { computed, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { checkmarkCircleOutline, createOutline, documentTextOutline, lockClosedOutline, refresh, sparkles, warningOutline } from 'ionicons/icons';
 import { getAuth, type User } from 'firebase/auth';
+import AppButton from '../components/ui/AppButton.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppInput from '../components/ui/AppInput.vue';
+import AppModal from '../components/ui/AppModal.vue';
+import AppPage from '../components/ui/AppPage.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
+import AppTextarea from '../components/ui/AppTextarea.vue';
 import DynamicHeader from '../components/dynamic/DynamicHeader.vue';
 import DynamicSections from '../components/dynamic/DynamicSections.vue';
 import DynamicInformativeSection from '../components/dynamic/DynamicInformativeSection.vue';
 import DynamicMoreInformation from '../components/dynamic/DynamicMoreInformation.vue';
 import DynamicFlashcards from '../components/dynamic/DynamicFlashcards.vue';
 import DynamicExam from '../components/dynamic/DynamicExam.vue';
-import { requestPageGeneration, requestPageEdit, PageGenerationClientError } from '../lib/dynamicPage';
+import { requestPageGeneration, requestPageEdit, requestSectionSuggestions, PageGenerationClientError } from '../lib/dynamicPage';
 import { parseDynamicPage, type DynamicPage } from '../schemas/dynamicPage';
-import { getDynamicPage, saveDynamicPage, updateDynamicPage } from '../services/dynamicPages';
+import { getDynamicPage, listChildPages, saveDynamicPage, updateDynamicPage } from '../services/dynamicPages';
 
 const route = useRoute();
 const router = useRouter();
@@ -278,10 +268,10 @@ const user = ref<User | null>(getAuth().currentUser);
 const mode = computed(() => (route.name === 'dynamic-create' ? 'create' : 'view'));
 
 const topicIdeas = [
-	'Diabetes tipo 2',
-	'Presión arterial alta',
-	'Salud mental y estrés',
-	'Nutrición y ejercicio',
+	'Fundamentos de JavaScript',
+	'Promesas y async/await',
+	'Complejidad algorítmica',
+	'SQL: consultas básicas',
 ];
 
 // ---- Estado de creación ----
@@ -295,8 +285,12 @@ const creating = ref(false);
 const viewLoading = ref(false);
 const viewState = ref<ViewState>('loading');
 const viewError = ref('');
-const storedPage = ref<{ schemaVersion: number; topic: string } | null>(null);
+const storedPage = ref<{ schemaVersion: number; topic: string; parentId: string | null; parentTitle: string } | null>(null);
 const validatedPage = ref<DynamicPage | null>(null);
+const childrenBySection = ref<Record<number, { topic: string; pageId: string }[]>>({});
+
+const parentTitle = computed(() => storedPage.value?.parentTitle ?? '');
+const viewBack = computed(() => (storedPage.value?.parentId ? `/page/${storedPage.value.parentId}` : '/mis-secciones'));
 
 // ---- Estado de edición ----
 const editOpen = ref(false);
@@ -340,10 +334,25 @@ const resetCreate = () => {
 	setPhase('topic');
 };
 
-const requestAndValidate = async (topic: string, review: boolean): Promise<DynamicPage> => {
+const requestAndValidate = async (topic: string, review: boolean, context = ''): Promise<DynamicPage> => {
 	setPhase('generating');
-	const result = await requestPageGeneration(topic, { review });
+	const result = await requestPageGeneration(topic, { review, context });
 	return result.page;
+};
+
+const getParentQuery = () => {
+	const parentId = typeof route.query.parentId === 'string' ? route.query.parentId.trim() : '';
+	const parentTitle = typeof route.query.parentTitle === 'string' ? route.query.parentTitle.trim() : '';
+	const section = typeof route.query.section === 'string' ? route.query.section.trim() : '';
+	return { parentId, parentTitle, section };
+};
+
+const createContext = () => {
+	const { parentTitle: parentTitleValue, section } = getParentQuery();
+	if (!parentTitleValue) return '';
+	return section
+		? `Este tema es un subtema de la página "${parentTitleValue}", dentro de la sección "${section}".`
+		: `Este tema es un subtema de la página "${parentTitleValue}".`;
 };
 
 const save = async (page: DynamicPage, topic: string) => {
@@ -353,7 +362,12 @@ const save = async (page: DynamicPage, topic: string) => {
 	}
 	setPhase('saving');
 	try {
-		const id = await saveDynamicPage(user.value.uid, page, topic);
+		const { parentId, parentTitle: parentTitleValue, section } = getParentQuery();
+		const id = await saveDynamicPage(user.value.uid, page, topic, {
+			parentId: parentId || null,
+			parentTitle: parentTitleValue,
+			originSectionTitle: section,
+		});
 		router.replace({ name: 'dynamic-view', params: { pageId: id } });
 		return id;
 	} catch (e) {
@@ -432,7 +446,7 @@ const startCreation = async () => {
 	setPhase('generating');
 
 	try {
-		const page = await requestAndValidate(topic, false);
+		const page = await requestAndValidate(topic, false, createContext());
 		const parsedLocally = parseDynamicPage(page);
 		if (parsedLocally.success) {
 			await save(parsedLocally.data, topic);
@@ -452,6 +466,77 @@ const startCreation = async () => {
 };
 
 // ---- Modo ver ----
+const loadChildren = async (uid: string, pageId: string) => {
+	try {
+		const children = await listChildPages(uid, pageId);
+		const sectionTitles = (validatedPage.value?.sections ?? []).map((section) => section.title.trim().toLowerCase());
+		const next: Record<number, { topic: string; pageId: string }[]> = {};
+		for (const child of children) {
+			const origin = child.originSectionTitle.trim().toLowerCase();
+			const index = sectionTitles.indexOf(origin);
+			if (index < 0) continue;
+			(next[index] ??= []).push({ topic: child.topic, pageId: child.id });
+		}
+		childrenBySection.value = next;
+	} catch (e) {
+		console.error(e);
+	}
+};
+
+const ensureSuggestions = async (uid: string, pageId: string) => {
+	const page = validatedPage.value;
+	if (!page) return;
+	const missing = page.sections.some((section) => (section.suggestions?.length ?? 0) === 0);
+	if (!missing) return;
+
+	try {
+		const result = await requestSectionSuggestions(storedPage.value?.topic ?? '', page.sections);
+		const updated: DynamicPage = {
+			...page,
+			sections: page.sections.map((section, index) => ({
+				...section,
+				suggestions:
+					(section.suggestions?.length ?? 0) > 0
+						? section.suggestions
+						: result.suggestions[index] ?? section.suggestions,
+			})),
+		};
+
+		const parsed = parseDynamicPage(updated);
+		if (!parsed.success) return;
+
+		validatedPage.value = parsed.data;
+		await updateDynamicPage(uid, pageId, parsed.data);
+	} catch (e) {
+		console.error(e);
+	}
+};
+
+const onPickSubtopic = ({ sectionIndex, sectionTitle, topic }: { sectionIndex: number; sectionTitle: string; topic: string }) => {
+	if (!user.value || !validatedPage.value) return;
+	const cleanTopic = topic.trim();
+	if (!cleanTopic) return;
+
+	const existing = (childrenBySection.value[sectionIndex] ?? []).find(
+		(child) => child.topic.trim().toLowerCase() === cleanTopic.toLowerCase()
+	);
+	if (existing) {
+		router.push({ name: 'dynamic-view', params: { pageId: existing.pageId } });
+		return;
+	}
+
+	const pageId = typeof route.params.pageId === 'string' ? route.params.pageId : '';
+	router.push({
+		name: 'dynamic-create',
+		query: {
+			topic: cleanTopic,
+			parentId: pageId,
+			parentTitle: validatedPage.value.title,
+			section: sectionTitle,
+		},
+	});
+};
+
 const loadPage = async () => {
 	const uid = user.value?.uid;
 	const pageId = typeof route.params.pageId === 'string' ? route.params.pageId : '';
@@ -460,6 +545,7 @@ const loadPage = async () => {
 	viewState.value = 'loading';
 	validatedPage.value = null;
 	storedPage.value = null;
+	childrenBySection.value = {};
 	viewError.value = '';
 
 	if (!uid) {
@@ -482,7 +568,12 @@ const loadPage = async () => {
 			return;
 		}
 
-		storedPage.value = { schemaVersion: page.schemaVersion, topic: page.topic };
+		storedPage.value = {
+			schemaVersion: page.schemaVersion,
+			topic: page.topic,
+			parentId: page.parentId,
+			parentTitle: page.parentTitle,
+		};
 
 		if (page.schemaVersion !== 1) {
 			viewState.value = 'unsupported';
@@ -498,6 +589,9 @@ const loadPage = async () => {
 
 		validatedPage.value = parsed.data;
 		viewState.value = 'ready';
+
+		void loadChildren(uid, pageId);
+		void ensureSuggestions(uid, pageId);
 	} catch (e) {
 		console.error(e);
 		viewState.value = 'error';
@@ -559,7 +653,7 @@ if (mode.value === 'create') {
 /* ---------- Crear ---------- */
 .header-edit-btn {
 	min-height: 36px;
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 }
 
 .header-edit-btn::part(native) {
@@ -656,7 +750,7 @@ if (mode.value === 'create') {
 	margin-bottom: 8px;
 }
 
-.state-block__icon ion-icon {
+.state-block__icon .app-icon {
 	font-size: 24px;
 }
 
@@ -698,7 +792,7 @@ if (mode.value === 'create') {
 }
 
 .spinner-primary {
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 	width: 24px;
 	height: 24px;
 	margin-bottom: 8px;
@@ -720,13 +814,22 @@ if (mode.value === 'create') {
 	margin-bottom: 8px;
 }
 
-.generating__orb ion-spinner {
+.generating__orb .app-spinner {
 	width: 26px;
 	height: 26px;
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 }
 
 /* ---------- Contenido generado ---------- */
+.dp-parent-kicker {
+	margin: 0 0 10px;
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--mt-accent);
+}
+
 .dp-blocks {
 	display: flex;
 	flex-direction: column;
@@ -778,7 +881,7 @@ if (mode.value === 'create') {
 	line-height: 1.5;
 }
 
-.edit-panel__status ion-icon {
+.edit-panel__status .app-icon {
 	flex-shrink: 0;
 	margin-top: 1px;
 	font-size: 17px;
@@ -812,11 +915,11 @@ if (mode.value === 'create') {
 	color: var(--mt-ink-2);
 }
 
-.edit-panel__busy ion-spinner {
+.edit-panel__busy .app-spinner {
 	width: 18px;
 	height: 18px;
 	flex-shrink: 0;
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 }
 
 :global(.edit-modal) {

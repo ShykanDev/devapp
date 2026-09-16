@@ -1,4 +1,4 @@
-const WORKER_URL = 'https://ai-worker-inference.shykandev.workers.dev';
+import { WORKER_URL } from '../config/worker';
 
 export class ArticleEditClientError extends Error {
 	readonly code: string;

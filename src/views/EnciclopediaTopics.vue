@@ -1,20 +1,22 @@
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-back-button default-href="/enciclopedia" text=""></ion-back-button>
-				</ion-buttons>
-				<ion-title>{{ categoria?.nombre ?? 'Temas' }}</ion-title>
-				<ion-buttons slot="end">
-					<ion-button fill="clear" class="header-add-btn" @click="openAdd" aria-label="Agregar tema">
-						<ion-icon slot="icon-only" :icon="add"></ion-icon>
-					</ion-button>
-				</ion-buttons>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader :title="categoria?.nombre ?? 'Temas'" back="/enciclopedia">
+			<template #end>
+				<AppButton
+					variant="clear"
+					icon-only
+					class="header-add-btn"
+					aria-label="Agregar tema"
+					@click="openAdd"
+				>
+					<template #start>
+						<AppIcon :icon="add" />
+					</template>
+				</AppButton>
+			</template>
+		</AppHeader>
 
-		<ion-content>
+		<main class="app-content">
 			<div class="page-shell">
 				<header class="page-head" v-if="categoria">
 					<p class="mt-kicker">Categoría</p>
@@ -23,7 +25,7 @@
 							class="page-head__icon"
 							:style="{ background: colorize(categoria.color).bg, color: categoria.color }"
 						>
-							<ion-icon :icon="iconOf(categoria.icon)"></ion-icon>
+							<AppIcon :icon="iconOf(categoria.icon)" />
 						</span>
 						<div>
 							<h1 class="mt-h-display page-head__title">{{ categoria.nombre }}</h1>
@@ -40,7 +42,7 @@
 						¿No encuentras un tema? Agrégalo y el asistente preparará su artículo.
 					</p>
 					<button type="button" class="add-card__btn" @click="openAdd">
-						<ion-icon :icon="sparkles"></ion-icon>
+						<AppIcon :icon="sparkles" />
 						<span>Agregar tema</span>
 					</button>
 				</div>
@@ -48,27 +50,29 @@
 				<div class="section-area">
 					<!-- Cargando -->
 					<div v-if="loading" class="loading-row">
-						<ion-spinner name="crescent" class="spinner-primary"></ion-spinner>
+						<AppSpinner class="spinner-primary" />
 						<p class="loading-row__text">Cargando temas…</p>
 					</div>
 
 					<!-- Error -->
 					<div v-else-if="error" class="state-block">
 						<div class="state-block__icon state-block__icon--danger">
-							<ion-icon :icon="warningOutline"></ion-icon>
+							<AppIcon :icon="warningOutline" />
 						</div>
 						<p class="state-block__title">No se pudieron cargar los temas</p>
 						<p class="state-block__hint">{{ error }}</p>
-						<ion-button class="state-block__cta" @click="load">
-							<ion-icon slot="start" :icon="refresh"></ion-icon>
+						<AppButton class="state-block__cta" @click="load">
+							<template #start>
+								<AppIcon :icon="refresh" />
+							</template>
 							Reintentar
-						</ion-button>
+						</AppButton>
 					</div>
 
 					<!-- Vacío -->
 					<div v-else-if="temas.length === 0" class="state-block">
 						<div class="state-block__icon">
-							<ion-icon :icon="bookOutline"></ion-icon>
+							<AppIcon :icon="bookOutline" />
 						</div>
 						<p class="state-block__title">Esta categoría no tiene temas aún</p>
 						<p class="state-block__hint">Agrega el primero y el asistente lo preparará para ti.</p>
@@ -97,120 +101,93 @@
 								:aria-label="`Eliminar ${t.nombre}`"
 								@click.prevent.stop="removeTema(t)"
 							>
-								<ion-icon :icon="trashOutline"></ion-icon>
+								<AppIcon :icon="trashOutline" />
 							</button>
-							<ion-icon class="topic-row__chevron" :icon="chevronForward"></ion-icon>
+							<AppIcon class="topic-row__chevron" :icon="chevronForward" />
 						</router-link>
 					</div>
 				</div>
 			</div>
-		</ion-content>
+		</main>
 
 		<!-- Modal: agregar tema -->
-		<ion-modal
-			:is-open="addOpen"
-			@didDismiss="closeAdd"
-			:backdrop-dismiss="!adding"
-			mode="ios"
-			class="add-modal"
-		>
-			<ion-header class="app-header">
-				<ion-toolbar>
-					<ion-title>Agregar tema</ion-title>
-					<ion-buttons slot="end">
-						<ion-button :disabled="adding" @click="closeAdd">Cerrar</ion-button>
-					</ion-buttons>
-				</ion-toolbar>
-			</ion-header>
+		<AppModal v-model="addOpen">
+			<AppHeader title="Agregar tema" :menu="false">
+				<template #end>
+					<AppButton :disabled="adding" @click="closeAdd">Cerrar</AppButton>
+				</template>
+			</AppHeader>
 
-			<ion-content>
+			<main class="app-content">
 				<div class="add-panel">
 					<p class="add-panel__intro">
 						Escribe el tema que quieres aprender en esta categoría. El asistente
 						preparará un artículo educativo y quedará guardado en tu cuenta.
 					</p>
 
-					<ion-input
+					<AppInput
 						v-model="newTemaNombre"
 						:disabled="adding"
 						class="add-panel__input"
 						type="text"
-						placeholder="Ej. La tiroides, El sistema linfático…"
+						placeholder="Ej. Recursión, APIs REST, índices…"
 						@keyup.enter="submitTema"
-					></ion-input>
+					/>
 
-					<ion-textarea
+					<AppTextarea
 						v-model="newTemaDescripcion"
 						:disabled="adding"
-						auto-grow
 						class="add-panel__input"
 						placeholder="Descripción breve del tema (opcional)"
-					></ion-textarea>
+					/>
 
 					<div v-if="addError" class="add-panel__status add-panel__status--error">
-						<ion-icon :icon="warningOutline"></ion-icon>
+						<AppIcon :icon="warningOutline" />
 						<span>{{ addError }}</span>
 					</div>
 
 					<div class="add-panel__busy" v-if="adding">
-						<ion-spinner name="crescent"></ion-spinner>
+						<AppSpinner />
 						<span>Guardando tema…</span>
 					</div>
 
-					<ion-button
+					<AppButton
 						class="add-panel__submit"
 						:disabled="!newTemaNombre.trim() || adding"
 						@click="submitTema"
 					>
-						<ion-icon slot="start" :icon="sparkles"></ion-icon>
+						<template #start>
+							<AppIcon :icon="sparkles" />
+						</template>
 						Guardar y ver artículo
-					</ion-button>
+					</AppButton>
 				</div>
-			</ion-content>
-		</ion-modal>
-	</ion-page>
+			</main>
+		</AppModal>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import {
-	IonBackButton,
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonInput,
-	IonModal,
-	IonPage,
-	IonSpinner,
-	IonTextarea,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { onIonViewWillEnter } from '@ionic/vue';
 import {
 	add,
 	bookOutline,
 	chevronForward,
+	cloudOutline,
+	codeSlashOutline,
+	gitBranchOutline,
+	layersOutline,
+	phonePortraitOutline,
 	refresh,
+	schoolOutline,
+	serverOutline,
+	shieldCheckmarkOutline,
 	sparkles,
 	trashOutline,
 	warningOutline,
 } from 'ionicons/icons';
 import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
-import {
-	bandage,
-	body,
-	book,
-	happy,
-	heart,
-	medkit,
-	nutrition,
-	pulse,
-	shieldCheckmark,
-} from 'ionicons/icons';
 import { categoriasEnciclopedia, temasEnciclopedia } from '../data/enciclopedia';
 import type { CategoriaEnciclopedia, TemaEnciclopedia } from '../data/enciclopedia';
 import {
@@ -220,22 +197,29 @@ import {
 	type StoredEnciclopediaTema,
 } from '../services/enciclopediaTopics';
 import { deleteEnciclopediaArticle } from '../services/enciclopediaArticulos';
+import AppPage from '../components/ui/AppPage.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppButton from '../components/ui/AppButton.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppInput from '../components/ui/AppInput.vue';
+import AppTextarea from '../components/ui/AppTextarea.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
+import AppModal from '../components/ui/AppModal.vue';
 
 type TemasRow = (TemaEnciclopedia | StoredEnciclopediaTema) & { source: 'preset' | 'custom' };
 
 const iconMap: Record<string, any> = {
-	body,
-	book,
-	bandage,
-	happy,
-	heart,
-	medkit,
-	nutrition,
-	pulse,
-	shieldCheckmark,
+	school: schoolOutline,
+	codeSlash: codeSlashOutline,
+	server: serverOutline,
+	layers: layersOutline,
+	gitBranch: gitBranchOutline,
+	cloud: cloudOutline,
+	shieldCheckmark: shieldCheckmarkOutline,
+	phonePortrait: phonePortraitOutline,
 };
 
-const iconOf = (name: string) => iconMap[name] ?? book;
+const iconOf = (name: string) => iconMap[name] ?? bookOutline;
 
 const colorize = (hex: string) => ({
 	bg: `${hex}1a`,
@@ -377,7 +361,7 @@ if (user.value) {
 	load();
 }
 
-onIonViewWillEnter(() => {
+onMounted(() => {
 	if (user.value) {
 		load();
 	}
@@ -432,7 +416,7 @@ onBeforeUnmount(() => {
 	border-radius: 17px;
 }
 
-.page-head__icon ion-icon {
+.page-head__icon .app-icon {
 	font-size: 28px;
 }
 
@@ -487,7 +471,7 @@ onBeforeUnmount(() => {
 	cursor: pointer;
 }
 
-.add-card__btn ion-icon {
+.add-card__btn .app-icon {
 	font-size: 16px;
 }
 
@@ -537,7 +521,7 @@ onBeforeUnmount(() => {
 	margin-bottom: 8px;
 }
 
-.state-block__icon ion-icon {
+.state-block__icon .app-icon {
 	font-size: 24px;
 }
 
@@ -658,7 +642,7 @@ onBeforeUnmount(() => {
 	transition: background 0.15s ease, color 0.15s ease;
 }
 
-.topic-row__remove ion-icon {
+.topic-row__remove .app-icon {
 	font-size: 16px;
 }
 
@@ -709,7 +693,7 @@ onBeforeUnmount(() => {
 	line-height: 1.5;
 }
 
-.add-panel__status ion-icon {
+.add-panel__status .app-icon {
 	flex-shrink: 0;
 	margin-top: 1px;
 	font-size: 17px;
@@ -732,11 +716,11 @@ onBeforeUnmount(() => {
 	color: var(--mt-ink-2);
 }
 
-.add-panel__busy ion-spinner {
+.add-panel__busy .app-spinner {
 	width: 18px;
 	height: 18px;
 	flex-shrink: 0;
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 }
 
 .add-panel__submit {

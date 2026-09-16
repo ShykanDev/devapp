@@ -11,10 +11,13 @@ import {
 	editPage,
 	generateExam,
 	generatePage,
+	generateSectionSuggestions,
 	repairExam,
 	repairPage,
+	repairSuggestions,
 	reviewPage,
 	type PageMeta,
+	type SuggestionSection,
 } from './ai';
 
 export const DEFAULT_MAX_REPAIR_ATTEMPTS = 3;
@@ -83,7 +86,7 @@ async function produceValidJson(
 export async function generateValidPage(
 	client: OpenAI,
 	topic: string,
-	options: { review?: boolean; maxRepairAttempts?: number } = {}
+	options: { review?: boolean; maxRepairAttempts?: number; context?: string } = {}
 ): Promise<{ page: DynamicPage; meta: PageMeta }> {
 	const cleanTopic = topic.trim();
 	if (!cleanTopic) {
@@ -93,7 +96,12 @@ export async function generateValidPage(
 	const maxRepairs = options.maxRepairAttempts ?? DEFAULT_MAX_REPAIR_ATTEMPTS;
 	const meta: PageMeta = { attempts: 0, repairs: 0, reviewed: false };
 
-	let page = await produceValidJson(client, () => generatePage(client, cleanTopic), meta, maxRepairs);
+	let page = await produceValidJson(
+		client,
+		() => generatePage(client, cleanTopic, options.context),
+		meta,
+		maxRepairs
+	);
 
 	if (options.review) {
 		meta.reviewed = true;
@@ -123,6 +131,126 @@ export async function generateValidPage(
 	}
 
 	return { page, meta };
+}
+
+interface SuggestionsEvaluation {
+	ok: boolean;
+	suggestions: string[][];
+	issues: string[];
+}
+
+function buildSuggestionsSchema(sectionCount: number) {
+	return z
+		.object({
+			suggestions: z.array(z.array(z.string().trim().min(3).max(120)).min(1).max(5)),
+		})
+		.strict()
+		.superRefine((value, ctx) => {
+			if (value.suggestions.length !== sectionCount) {
+				ctx.addIssue({
+					code: z.ZodIssueCode.custom,
+					path: ['suggestions'],
+					message: `"suggestions" debe ser un arreglo de exactamente ${sectionCount} elementos`,
+				});
+			}
+		});
+}
+
+function normalizeSuggestions(
+	raw: string[][],
+	sections: SuggestionSection[]
+): SuggestionsEvaluation {
+	const suggestions: string[][] = [];
+	const issues: string[] = [];
+
+	for (let i = 0; i < sections.length; i++) {
+		const section = sections[i];
+		const sectionTitle = section.title.trim().toLowerCase();
+		const subsectionTitles = new Set(
+			(section.subsections ?? []).map((s) => s.title.trim().toLowerCase())
+		);
+		const seen = new Set<string>();
+		const list: string[] = [];
+
+		for (const candidate of raw[i] ?? []) {
+			const value = candidate.trim();
+			if (!value) {
+				continue;
+			}
+			const key = value.toLowerCase();
+			if (seen.has(key) || key === sectionTitle || subsectionTitles.has(key)) {
+				continue;
+			}
+			seen.add(key);
+			list.push(value);
+			if (list.length >= 5) {
+				break;
+			}
+		}
+
+		if (list.length < 1) {
+			issues.push(`suggestions.${i}: la sección no tiene subtemas válidos después de normalizar`);
+		}
+		suggestions.push(list);
+	}
+
+	if (issues.length > 0) {
+		return { ok: false, suggestions: [], issues };
+	}
+	return { ok: true, suggestions, issues: [] };
+}
+
+function evaluateSuggestions(
+	draft: unknown,
+	sections: SuggestionSection[]
+): SuggestionsEvaluation {
+	const parsed = buildSuggestionsSchema(sections.length).safeParse(draft);
+	if (!parsed.success) {
+		return {
+			ok: false,
+			suggestions: [],
+			issues: formatZodIssues(parsed.error).map((i) => `${i.path}: ${i.message}`),
+		};
+	}
+	return normalizeSuggestions(parsed.data.suggestions, sections);
+}
+
+export async function generateValidSuggestions(
+	client: OpenAI,
+	topic: string,
+	sections: SuggestionSection[],
+	options: { maxRepairAttempts?: number } = {}
+): Promise<{ suggestions: string[][]; meta: PageMeta }> {
+	const cleanTopic = topic.trim();
+	if (!cleanTopic) {
+		throw new PageGenerationError('El tema no puede estar vacío');
+	}
+	if (sections.length === 0) {
+		throw new PageGenerationError('Debe haber al menos una sección');
+	}
+
+	const maxRepairs = options.maxRepairAttempts ?? DEFAULT_MAX_REPAIR_ATTEMPTS;
+	const meta: PageMeta = { attempts: 0, repairs: 0, reviewed: false };
+
+	let draft: unknown = await generateSectionSuggestions(client, cleanTopic, sections);
+	meta.attempts += 1;
+
+	let outcome = evaluateSuggestions(draft, sections);
+	let repairCount = 0;
+
+	while (!outcome.ok && repairCount < maxRepairs) {
+		draft = await repairSuggestions(client, draft, outcome.issues.join('\n'));
+		meta.attempts += 1;
+		repairCount += 1;
+		meta.repairs = repairCount;
+		outcome = evaluateSuggestions(draft, sections);
+	}
+
+	if (!outcome.ok) {
+		throw new PageGenerationError('No se pudieron generar sugerencias válidas', outcome.issues);
+	}
+
+	return { suggestions: outcome.suggestions, meta };
 }
 
 export async function editValidPage(

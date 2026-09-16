@@ -12,6 +12,12 @@
 					<DynamicRichText :text="sub.content" />
 				</div>
 			</div>
+
+			<DynamicSuggestions
+				:suggestions="section.suggestions ?? []"
+				:generated="(childrenBySection?.[sIdx] ?? []).map((child) => child.topic)"
+				@pick="(topic) => emitPick(sIdx, section.title, topic)"
+			/>
 		</section>
 	</div>
 </template>
@@ -19,8 +25,20 @@
 <script setup lang="ts">
 import type { DynamicPageSection } from '../../schemas/dynamicPage';
 import DynamicRichText from './DynamicRichText.vue';
+import DynamicSuggestions from './DynamicSuggestions.vue';
 
-defineProps<{ sections: DynamicPageSection[] }>();
+defineProps<{
+	sections: DynamicPageSection[];
+	childrenBySection?: Record<number, { topic: string; pageId: string }[]>;
+}>();
+
+const emit = defineEmits<{
+	pickSubtopic: [payload: { sectionIndex: number; sectionTitle: string; topic: string }];
+}>();
+
+const emitPick = (sectionIndex: number, sectionTitle: string, topic: string) => {
+	emit('pickSubtopic', { sectionIndex, sectionTitle, topic });
+};
 </script>
 
 <style scoped>

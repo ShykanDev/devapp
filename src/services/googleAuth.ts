@@ -1,44 +1,58 @@
-import { Capacitor } from '@capacitor/core';
-import { FirebaseAuthentication } from '@capacitor-firebase/authentication';
 import {
-	getAuth,
 	getAdditionalUserInfo,
+	getAuth,
+	getRedirectResult,
 	GoogleAuthProvider as JsGoogleAuthProvider,
-	signInWithCredential,
 	signInWithPopup,
+	signInWithRedirect,
 	type User,
 } from 'firebase/auth';
+
+export interface GoogleSignInResult {
+	user: User;
+	isNewUser: boolean;
+}
 
 /**
  * Inicia sesión con Google.
  *
- * - Web/PWA: usa el flujo de popup del SDK de Firebase (funciona en navegador).
- * - Android/iOS: usa el flujo nativo del plugin @capacitor-firebase/authentication
- *   y luego firma la sesión del SDK JS de Firebase con signInWithCredential,
- *   para que toda la app (Firestore y demás) vea el mismo usuario autenticado.
+ * Usa `signInWithPopup` y, si el navegador/PWA lo bloquea, cae a
+ * `signInWithRedirect`. En ese caso el resultado se resuelve al volver con
+ * `resolveGoogleRedirect()` (llamado en el montaje de la pantalla de login).
  */
-export async function signInWithGoogleJS(): Promise<{
-	user: User;
-	isNewUser: boolean;
-}> {
-	if (Capacitor.isNativePlatform()) {
-		const nativeResult = await FirebaseAuthentication.signInWithGoogle();
-		const idToken = nativeResult.credential?.idToken;
-		if (!idToken) {
-			throw new Error('Google Sign-In no devolvió un ID token.');
-		}
-		const auth = getAuth();
-		const credential = JsGoogleAuthProvider.credential(idToken);
-		const result = await signInWithCredential(auth, credential);
+export async function signInWithGoogleJS(): Promise<GoogleSignInResult> {
+	const provider = new JsGoogleAuthProvider();
+	const auth = getAuth();
+
+	try {
+		const result = await signInWithPopup(auth, provider);
 		return {
 			user: result.user,
 			isNewUser: getAdditionalUserInfo(result)?.isNewUser ?? false,
 		};
+	} catch (error) {
+		const code = (error as { code?: string } | null)?.code;
+		if (
+			code === 'auth/popup-blocked' ||
+			code === 'auth/operation-not-supported-in-this-environment'
+		) {
+			await signInWithRedirect(auth, provider);
+			return new Promise<GoogleSignInResult>(() => {
+				// La página navega hacia Google; el resultado llega vía redirect.
+			});
+		}
+		throw error;
 	}
+}
 
-	const provider = new JsGoogleAuthProvider();
+/**
+ * Resuelve el resultado de un `signInWithRedirect` pendiente.
+ * Devuelve `null` si la entrada no vino de un redirect.
+ */
+export async function resolveGoogleRedirect(): Promise<GoogleSignInResult | null> {
 	const auth = getAuth();
-	const result = await signInWithPopup(auth, provider);
+	const result = await getRedirectResult(auth);
+	if (!result) return null;
 	return {
 		user: result.user,
 		isNewUser: getAdditionalUserInfo(result)?.isNewUser ?? false,

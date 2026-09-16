@@ -1,19 +1,16 @@
-import { createRouter, createWebHistory } from '@ionic/vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import { getAuth } from 'firebase/auth';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
+    name: 'login',
     component: () => import ('../views/LoginPage.vue')
   },
   {
     path: '',
     redirect: '/mis-secciones'
-  },
-  {
-    path: '/folder/:id',
-    component: () => import ('../views/FolderPage.vue')
   },
   {
     path: '/folder/chat',

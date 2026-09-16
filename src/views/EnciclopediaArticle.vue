@@ -1,24 +1,26 @@
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-back-button default-href="/enciclopedia" text=""></ion-back-button>
-				</ion-buttons>
-				<ion-title>Artículo</ion-title>
-				<ion-buttons v-if="user && article && !loading" slot="end">
-					<ion-button fill="clear" class="header-edit-btn" @click="openEditor" aria-label="Editar artículo">
-						<ion-icon slot="icon-only" :icon="createOutline"></ion-icon>
-					</ion-button>
-				</ion-buttons>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader title="Artículo" back="/enciclopedia">
+			<template v-if="user && article && !loading" #end>
+				<AppButton
+					variant="clear"
+					icon-only
+					class="header-edit-btn"
+					aria-label="Editar artículo"
+					@click="openEditor"
+				>
+					<template #start>
+						<AppIcon :icon="createOutline" />
+					</template>
+				</AppButton>
+			</template>
+		</AppHeader>
 
-		<ion-content>
+		<main class="app-content">
 			<div class="page-shell">
 				<!-- Resolviendo tema -->
 				<div v-if="loading && !article && !tema" class="loading-box">
-					<ion-spinner name="crescent" class="spinner-primary"></ion-spinner>
+					<AppSpinner class="spinner-primary" />
 					<p class="loading-box__text">
 						Preparando la explicación… puede tardar unos segundos.
 					</p>
@@ -27,7 +29,7 @@
 				<!-- No encontrado -->
 				<div v-else-if="!tema" class="state-block">
 					<div class="state-block__icon">
-						<ion-icon :icon="bookOutline"></ion-icon>
+						<AppIcon :icon="bookOutline" />
 					</div>
 					<p class="state-block__title">Ese tema no existe</p>
 				</div>
@@ -41,7 +43,7 @@
 
 					<!-- Generando -->
 					<div v-if="loading && !article" class="loading-box">
-						<ion-spinner name="crescent" class="spinner-primary"></ion-spinner>
+						<AppSpinner class="spinner-primary" />
 						<p class="loading-box__text">
 							Preparando la explicación… puede tardar unos segundos.
 						</p>
@@ -50,14 +52,16 @@
 					<!-- Error -->
 					<div v-else-if="error && !article" class="state-block">
 						<div class="state-block__icon state-block__icon--danger">
-							<ion-icon :icon="warningOutline"></ion-icon>
+							<AppIcon :icon="warningOutline" />
 						</div>
 						<p class="state-block__title">No se pudo cargar el artículo</p>
 						<p class="state-block__hint">{{ error }}</p>
-						<ion-button class="state-block__cta" @click="loadArticle">
-							<ion-icon slot="start" :icon="refresh"></ion-icon>
+						<AppButton class="state-block__cta" @click="loadArticle">
+							<template #start>
+								<AppIcon :icon="refresh" />
+							</template>
 							Reintentar
-						</ion-button>
+						</AppButton>
 					</div>
 
 					<!-- Artículo -->
@@ -70,102 +74,80 @@
 
 					<!-- CTA -->
 					<div v-if="!loading && article && !error" class="article-cta">
-						<button type="button" class="article-cta__ask" @click="askDoctor">
+						<button type="button" class="article-cta__ask" @click="askTutor">
 							<span class="article-cta__orb">
-								<ion-icon :icon="chatbubbleOutline"></ion-icon>
+								<AppIcon :icon="chatbubbleOutline" />
 							</span>
 							<span class="article-cta__text">
 								<strong>¿Te quedó alguna duda?</strong>
 								<small>Pregúntale más al asistente</small>
 							</span>
-							<ion-icon class="article-cta__arrow" :icon="chevronForward"></ion-icon>
+							<AppIcon class="article-cta__arrow" :icon="chevronForward" />
 						</button>
 						<p class="article-cta__note">
-							Contenido educativo. No sustituye la valoración de un profesional de la salud.
+							Contenido educativo de programación.
 						</p>
 					</div>
 				</template>
 			</div>
-		</ion-content>
+		</main>
 
 		<!-- Modal: editar artículo -->
-		<ion-modal
-			:is-open="editOpen"
-			@didDismiss="closeEditor"
-			:backdrop-dismiss="!editBusy"
-			mode="ios"
-			class="edit-modal"
-		>
-			<ion-header class="app-header">
-				<ion-toolbar>
-					<ion-title>Editar artículo</ion-title>
-					<ion-buttons slot="end">
-						<ion-button :disabled="editBusy" @click="closeEditor">Cerrar</ion-button>
-					</ion-buttons>
-				</ion-toolbar>
-			</ion-header>
+		<AppModal v-model="editOpen">
+			<AppHeader title="Editar artículo" :menu="false">
+				<template #end>
+					<AppButton :disabled="editBusy" @click="closeEditor">Cerrar</AppButton>
+				</template>
+			</AppHeader>
 
-			<ion-content>
+			<main class="app-content">
 				<div class="edit-panel">
 					<p class="edit-panel__intro">
 						Dile al asistente qué quieres cambiar de este artículo: editar, ampliar,
 						orientar o eliminar contenido. Ejemplo:
-						<em>"agrega una sección sobre hábitos para cuidarlo"</em> o
-						<em>"quita el apartado sobre medicamentos"</em>.
+						<em>"agrega una sección sobre buenas prácticas"</em> o
+						<em>"quita el apartado sobre despliegue"</em>.
 					</p>
 
-					<ion-textarea
+					<AppTextarea
 						v-model="editInstruction"
 						:disabled="editBusy"
-						auto-grow
 						class="edit-panel__input"
 						placeholder="¿Qué quieres editar de este artículo?"
-					></ion-textarea>
+					/>
 
 					<div v-if="editError" class="edit-panel__status edit-panel__status--error">
-						<ion-icon :icon="warningOutline"></ion-icon>
+						<AppIcon :icon="warningOutline" />
 						<span>{{ editError }}</span>
 					</div>
 
 					<div v-if="editSuccess" class="edit-panel__status edit-panel__status--ok">
-						<ion-icon :icon="checkmarkCircleOutline"></ion-icon>
+						<AppIcon :icon="checkmarkCircleOutline" />
 						<span>Artículo actualizado</span>
 					</div>
 
 					<div class="edit-panel__busy" v-if="editBusy">
-						<ion-spinner name="crescent"></ion-spinner>
+						<AppSpinner />
 						<span>Editando el artículo… puede tardar unos segundos.</span>
 					</div>
 
-					<ion-button
+					<AppButton
 						class="edit-panel__submit"
 						:disabled="!editInstruction.trim() || editBusy"
 						@click="applyEdit"
 					>
-						<ion-icon slot="start" :icon="sparkles"></ion-icon>
+						<template #start>
+							<AppIcon :icon="sparkles" />
+						</template>
 						Aplicar cambios
-					</ion-button>
+					</AppButton>
 				</div>
-			</ion-content>
-		</ion-modal>
-	</ion-page>
+			</main>
+		</AppModal>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import {
-	IonBackButton,
-	IonButton,
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonModal,
-	IonPage,
-	IonSpinner,
-	IonTextarea,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 import {
@@ -189,6 +171,13 @@ import {
 	saveEnciclopediaArticle,
 } from '../services/enciclopediaArticulos';
 import { requestArticleEdit, ArticleEditClientError } from '../lib/articleEdit';
+import AppPage from '../components/ui/AppPage.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppButton from '../components/ui/AppButton.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppTextarea from '../components/ui/AppTextarea.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
+import AppModal from '../components/ui/AppModal.vue';
 
 interface ResolvedTema {
 	id: string;
@@ -257,11 +246,10 @@ const categoriaDe = (temaResuelto: ResolvedTema): CategoriaEnciclopedia | null =
 
 // ---------- Persistencia ----------
 
-const persistNow = async (): Promise<void> => {
+const persistNow = async (id: string = topicId.value): Promise<void> => {
 	const uid = user.value?.uid;
-	const id = topicId.value;
 	const content = article.value.trim();
-	if (!uid || !tema.value || !content) return;
+	if (!uid || !id || !tema.value || !content) return;
 	if (persisting) return;
 
 	persisting = true;
@@ -282,12 +270,12 @@ const schedulePersist = () => {
 	}, 1200);
 };
 
-const flushPersist = () => {
+const flushPersist = (id: string = topicId.value) => {
 	if (persistTimer) {
 		clearTimeout(persistTimer);
 		persistTimer = null;
 	}
-	return persistNow();
+	return persistNow(id);
 };
 
 // ---------- Generación ----------
@@ -306,7 +294,7 @@ const loadArticle = async () => {
 			[
 				{
 					role: 'user',
-					content: `${tema.value.pregunta} Dame una explicación educativa, bien estructurada y con base científica, como artículo corto para aprender. Usa secciones cortas con títulos y listas con bullets (formato markdown simple con #, ##, - bullet). Termina con un apartado de "Cuándo acudir al médico" si aplica.`,
+					content: `${tema.value.pregunta} Dame una explicación educativa, bien estructurada y con ejemplos claros, como artículo corto para aprender. Usa secciones cortas con títulos y listas con bullets (formato markdown simple con #, ##, - bullet). Termina con un apartado de "Errores comunes y buenas prácticas".`,
 				},
 			],
 			{
@@ -468,7 +456,7 @@ const applyEdit = async () => {
 
 // ---------- Navegación ----------
 
-const askDoctor = () => {
+const askTutor = () => {
 	router.push({
 		name: 'aiChat-thread',
 		params: { chatId: 'nuevo' },
@@ -478,8 +466,10 @@ const askDoctor = () => {
 
 watch(
 	() => route.params.id,
-	() => {
-		flushPersist();
+	async (newId, oldId) => {
+		if (typeof oldId === 'string' && oldId) {
+			await flushPersist(oldId);
+		}
 		init();
 	},
 	{ immediate: true }
@@ -614,7 +604,7 @@ onBeforeUnmount(() => {
 	margin-bottom: 8px;
 }
 
-.state-block__icon ion-icon {
+.state-block__icon .app-icon {
 	font-size: 24px;
 }
 
@@ -787,7 +777,7 @@ onBeforeUnmount(() => {
 	color: var(--mt-accent);
 }
 
-.article-cta__orb ion-icon {
+.article-cta__orb .app-icon {
 	font-size: 20px;
 }
 
@@ -862,7 +852,7 @@ onBeforeUnmount(() => {
 	line-height: 1.5;
 }
 
-.edit-panel__status ion-icon {
+.edit-panel__status .app-icon {
 	flex-shrink: 0;
 	margin-top: 1px;
 	font-size: 17px;
@@ -896,11 +886,11 @@ onBeforeUnmount(() => {
 	color: var(--mt-ink-2);
 }
 
-.edit-panel__busy ion-spinner {
+.edit-panel__busy .app-spinner {
 	width: 18px;
 	height: 18px;
 	flex-shrink: 0;
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 }
 
 :global(.edit-modal) {

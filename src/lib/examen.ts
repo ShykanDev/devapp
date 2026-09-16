@@ -1,4 +1,5 @@
 import type { DifficultyId, Examen } from '../schemas/examen';
+import { WORKER_URL } from '../config/worker';
 
 export type ExamGenerationMeta = {
 	attempts: number;
@@ -29,8 +30,6 @@ export class ExamGenerationClientError extends Error {
 		this.issues = issues;
 	}
 }
-
-const WORKER_URL = 'https://ai-worker-inference.shykandev.workers.dev';
 
 const DEFAULT_MESSAGES: Record<ExamGenerationErrorCode, string> = {
 	MAX_REPAIR: 'No se pudo generar un examen válido. Intenta con otro tema o dificultad.',

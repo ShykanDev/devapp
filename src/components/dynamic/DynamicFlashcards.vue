@@ -2,7 +2,7 @@
 	<section class="dp-flashcards surface">
 		<div class="dp-head">
 			<span class="mt-icon-tile">
-				<ion-icon :icon="flash"></ion-icon>
+				<AppIcon :icon="flash" />
 			</span>
 			<div class="dp-head__text">
 				<h3 class="dp-head__title">Flashcards</h3>
@@ -11,40 +11,42 @@
 			<span class="dp-progress">{{ currentIndex + 1 }} / {{ flashcards.length }}</span>
 		</div>
 
-		<div class="dp-flashcard-box" :class="{ 'dp-flashcard-box--flipped': showAnswer }" @click="flip">
-			<div class="dp-flashcard-inner">
-				<div class="dp-flashcard-face dp-flashcard-question">
-					<span class="dp-flashcard-label">Pregunta</span>
-					<p class="dp-flashcard-text">{{ current.question }}</p>
-				</div>
-				<div class="dp-flashcard-face dp-flashcard-answer">
-					<span class="dp-flashcard-label">Respuesta</span>
-					<p class="dp-flashcard-text">{{ current.answer }}</p>
+		<div class="dp-flashcards__body">
+			<div class="dp-flashcard-box" :class="{ 'dp-flashcard-box--flipped': showAnswer }" @click="flip">
+				<div class="dp-flashcard-inner">
+					<div class="dp-flashcard-face dp-flashcard-question">
+						<span class="dp-flashcard-label">Pregunta</span>
+						<p class="dp-flashcard-text">{{ current.question }}</p>
+					</div>
+					<div class="dp-flashcard-face dp-flashcard-answer">
+						<span class="dp-flashcard-label">Respuesta</span>
+						<p class="dp-flashcard-text">{{ current.answer }}</p>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="dp-flashcard-actions">
-			<button type="button" class="dp-flashcard-nav dp-flashcard-nav--prev" :disabled="currentIndex === 0" @click="previous">
-				<ion-icon :icon="chevronBack"></ion-icon>
-				<span>Anterior</span>
-			</button>
-			<button type="button" class="dp-flashcard-flip" @click="flip">
-				{{ showAnswer ? 'Ocultar respuesta' : 'Ver respuesta' }}
-			</button>
-			<button type="button" class="dp-flashcard-nav" :disabled="currentIndex === flashcards.length - 1" @click="next">
-				<span>Siguiente</span>
-				<ion-icon :icon="chevronForward"></ion-icon>
-			</button>
+			<div class="dp-flashcard-actions">
+				<button type="button" class="dp-flashcard-nav dp-flashcard-nav--prev" :disabled="currentIndex === 0" @click="previous">
+					<AppIcon :icon="chevronBack" />
+					<span>Anterior</span>
+				</button>
+				<button type="button" class="dp-flashcard-flip" @click="flip">
+					{{ showAnswer ? 'Ocultar respuesta' : 'Ver respuesta' }}
+				</button>
+				<button type="button" class="dp-flashcard-nav" :disabled="currentIndex === flashcards.length - 1" @click="next">
+					<span>Siguiente</span>
+					<AppIcon :icon="chevronForward" />
+				</button>
+			</div>
 		</div>
 	</section>
 </template>
 
 <script setup lang="ts">
-import { IonIcon } from '@ionic/vue';
 import { chevronBack, chevronForward, flash } from 'ionicons/icons';
 import { computed, ref, watch } from 'vue';
 import type { DynamicPageFlashcard } from '../../schemas/dynamicPage';
+import AppIcon from '../ui/AppIcon.vue';
 
 const props = defineProps<{ flashcards: DynamicPageFlashcard[] }>();
 
@@ -84,15 +86,16 @@ watch(
 .dp-flashcards {
 	border: 1px solid var(--mt-line);
 	border-radius: var(--radius-card);
-	padding: 20px;
 	box-shadow: var(--shadow-soft);
+	overflow: hidden;
 }
 
 .dp-head {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	margin-bottom: 18px;
+	padding: 16px 18px;
+	border-bottom: 1px solid var(--mt-line);
 }
 
 .dp-head__text {
@@ -102,23 +105,29 @@ watch(
 
 .dp-head__title {
 	margin: 0;
-	font-size: 16.5px;
-	font-weight: 650;
-	letter-spacing: -0.014em;
+	font-size: 15.5px;
+	font-weight: 700;
+	letter-spacing: -0.012em;
 	color: var(--mt-ink);
 }
 
 .dp-head__sub {
 	margin: 3px 0 0;
-	font-size: 12.5px;
+	font-size: 13px;
+	line-height: 1.4;
 	color: var(--mt-ink-3);
 }
 
 .dp-progress {
+	flex-shrink: 0;
 	font-size: 13px;
 	font-weight: 600;
-	color: var(--mt-ink-2);
 	font-variant-numeric: tabular-nums;
+	color: var(--mt-ink-3);
+}
+
+.dp-flashcards__body {
+	padding: 18px 20px 20px;
 }
 
 .dp-flashcard-box {
@@ -149,30 +158,32 @@ watch(
 	flex-direction: column;
 	justify-content: center;
 	gap: 12px;
-	padding: 24px;
-	border-radius: 18px;
+	padding: 22px;
+	border-radius: 14px;
+	border: 1px solid var(--mt-line);
 }
 
 .dp-flashcard-question {
 	background: var(--mt-muted);
-	border: 1px solid var(--mt-line);
-	align-items: center;
-	text-align: center;
+	align-items: flex-start;
+	text-align: left;
 }
 
 .dp-flashcard-answer {
 	background: var(--mt-accent-soft);
-	border: 1px solid color-mix(in srgb, var(--mt-accent) 24%, var(--mt-line));
+	border-color: color-mix(in srgb, var(--mt-accent) 26%, var(--mt-line));
 	transform: rotateY(180deg);
-	align-items: center;
-	text-align: center;
-	color: var(--mt-ink);
+	align-items: flex-start;
+	text-align: left;
 }
 
 .dp-flashcard-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
 	font-size: 11px;
-	font-weight: 700;
-	letter-spacing: 0.1em;
+	font-weight: 600;
+	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	color: var(--mt-ink-3);
 }
@@ -183,11 +194,11 @@ watch(
 
 .dp-flashcard-text {
 	margin: 0;
-	font-size: 16.5px;
-	font-weight: 600;
-	line-height: 1.5;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.6;
 	color: var(--mt-ink);
-	letter-spacing: -0.008em;
+	letter-spacing: -0.005em;
 }
 
 .dp-flashcard-actions {
@@ -208,8 +219,7 @@ watch(
 	border-radius: 12px;
 	background: transparent;
 	color: var(--mt-accent);
-	font-family: var(--font-sans);
-	font-size: 13.5px;
+	font-size: 13px;
 	font-weight: 600;
 	cursor: pointer;
 	transition: opacity 0.15s ease;
@@ -231,8 +241,7 @@ watch(
 	border-radius: 999px;
 	background: var(--mt-surface);
 	color: var(--mt-ink);
-	font-family: var(--font-sans);
-	font-size: 13.5px;
+	font-size: 13px;
 	font-weight: 600;
 	cursor: pointer;
 }

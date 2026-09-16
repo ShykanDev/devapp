@@ -3,18 +3,18 @@ import { DynamicPageSchema } from '../src/schema/dynamicPage';
 
 const validPage = {
 	schemaVersion: 1,
-	title: 'Hipertensión arterial',
+	title: 'Complejidad algorítmica',
 	description:
-		'Aprende qué es la presión arterial alta, por qué importa controlarla y cómo convivir con ella de forma segura.',
+		'Aprende qué es la notación Big-O, por qué importa al optimizar y cómo analizar el costo de tus algoritmos.',
 	sections: [
 		{
-			title: '¿Qué es la hipertensión?',
+			title: '¿Qué es la complejidad?',
 			content:
-				'La hipertensión arterial es la elevación sostenida de la presión que ejerce la sangre contra las paredes de las arterias.',
+				'La complejidad describe cómo crece el tiempo o la memoria de un algoritmo a medida que crece la entrada.',
 			subsections: [
 				{
-					title: 'Los dos números',
-					content: 'El sistólico es la presión al latir y el diastólico es la presión entre latidos.',
+					title: 'Crecimiento asintótico',
+					content: 'Nos interesa el comportamiento cuando el tamaño de la entrada tiende a infinito.',
 				},
 			],
 		},
@@ -22,44 +22,44 @@ const validPage = {
 	informativeSection: {
 		title: 'Dato importante',
 		content:
-			'La hipertensión suele ser asintomática, por eso se le llama el asesino silencioso: revisa tu presión al menos una vez al año.',
+			'Dos algoritmos con la misma tarea pueden diferir muchísimo en rendimiento; la notación Big-O te ayuda a compararlos.',
 	},
 	moreInformation: {
-		title: 'Cuándo acudir al médico',
+		title: 'Errores comunes y buenas prácticas',
 		content:
-			'Si tu presión está por encima de 180/120 o tienes dolor de pecho, dificultad para respirar o visión borrosa, acude a urgencias.',
+			'No optimices antes de medir. Identifica primero el cuello de botella real y elige la estructura de datos adecuada.',
 	},
 	flashcards: [
 		{
-			question: '¿Qué significa 120/80?',
-			answer: '120 es la presión sistólica y 80 la diastólica, ambos en mmHg.',
+			question: '¿Qué mide la notación O(n)?',
+			answer: 'Que el tiempo de ejecución crece de forma lineal con el tamaño de la entrada.',
 		},
 		{
-			question: '¿Cuándo se considera hipertensión?',
-			answer: 'Cuando la presión se mantiene en 130/80 o más en varias mediciones.',
+			question: '¿Cuál es la complejidad de una búsqueda binaria?',
+			answer: 'O(log n), porque divide el espacio de búsqueda a la mitad en cada paso.',
 		},
 		{
-			question: '¿La hipertensión siempre da síntomas?',
-			answer: 'No, casi nunca da síntomas; por eso hay que medirla seguido.',
+			question: '¿Por qué importa la complejidad espacial?',
+			answer: 'Porque un algoritmo puede ser rápido pero consumir demasiada memoria.',
 		},
 	],
 	exam: {
 		questions: [
 			{
-				question: '¿Cuál de estos valores se considera una crisis hipertensiva?',
-				options: ['120/80', '130/80', '160/100', '180/120'],
+				question: '¿Cuál de estas complejidades crece más rápido?',
+				options: ['O(1)', 'O(log n)', 'O(n)', 'O(n^2)'],
 				correctAnswer: 3,
-				explanation: 'Presiones de 180/120 o mayores requieren atención de urgencia.',
+				explanation: 'O(n^2) escala peor que las demás al aumentar la entrada.',
 			},
 			{
-				question: '¿Cuál es una medida clave para controlar la presión?',
-				options: ['Reducir el sodio', 'Fumar más', 'Evitar el ejercicio', 'Saltarse los medicamentos'],
+				question: '¿Qué estructura es ideal para búsquedas promedio O(1)?',
+				options: ['Tabla hash', 'Lista enlazada', 'Arreglo', 'Árbol binario'],
 				correctAnswer: 0,
 			},
 			{
-				question: '¿Cómo se llama la presión cuando el corazón se relaja?',
-				options: ['Sistólica', 'Diastólica', 'Media', 'Pulso'],
-				correctAnswer: 1,
+				question: '¿Qué complejidad tiene acceder a un elemento por índice en un arreglo?',
+				options: ['O(1)', 'O(log n)', 'O(n)', 'O(n log n)'],
+				correctAnswer: 0,
 			},
 		],
 	},
@@ -77,20 +77,20 @@ const validWithoutSubsections = {
 
 const validWithReviewSubsections = {
 	...validPage,
-	title: '   Diabetes tipo 2   ',
+	title: '   Recursividad   ',
 	sections: [
 		...validPage.sections,
 		{
-			title: 'Tratamiento',
-			content: 'El tratamiento combina alimentación, ejercicio y, si se requiere, medicamentos.',
+			title: 'Casos base',
+			content: 'Toda función recursiva necesita un caso base y un paso que se acerque a él.',
 			subsections: [
 				{
-					title: 'Alimentación',
-					content: 'Prefiere alimentos con bajo índice glucémico.',
+					title: 'Caso base',
+					content: 'Es la condición que detiene la recursión.',
 				},
 				{
-					title: 'Ejercicio',
-					content: 'Al menos 150 minutos de actividad moderada a la semana.',
+					title: 'Paso recursivo',
+					content: 'La función se llama a sí misma con una entrada más pequeña.',
 				},
 			],
 		},
@@ -111,11 +111,62 @@ describe('worker dynamicPage schema conformance', () => {
 		}
 	});
 
+	it('defaults missing suggestions to an empty array', () => {
+		const result = DynamicPageSchema.safeParse(validPage);
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.data.sections[0].suggestions).toEqual([]);
+		}
+	});
+
+	it('accepts a section with exactly 5 suggestions', () => {
+		const withSuggestions = {
+			...validPage,
+			sections: [
+				{
+					...validPage.sections[0],
+					suggestions: ['Notación Big-O', 'Complejidad temporal', 'Complejidad espacial', 'Análisis amortizado', 'Peor caso'],
+				},
+			],
+		};
+		const result = DynamicPageSchema.safeParse(withSuggestions);
+		expect(result.success).toBe(true);
+		if (result.success) {
+			expect(result.data.sections[0].suggestions).toHaveLength(5);
+		}
+	});
+
+	it('rejects more than 5 suggestions in a section', () => {
+		const broken = {
+			...validPage,
+			sections: [
+				{
+					...validPage.sections[0],
+					suggestions: ['Sub 01', 'Sub 02', 'Sub 03', 'Sub 04', 'Sub 05', 'Sub 06'],
+				},
+			],
+		};
+		expect(DynamicPageSchema.safeParse(broken).success).toBe(false);
+	});
+
+	it('rejects non-array suggestions', () => {
+		const broken = {
+			...validPage,
+			sections: [
+				{
+					...validPage.sections[0],
+					suggestions: 'no soy un arreglo',
+				},
+			],
+		};
+		expect(DynamicPageSchema.safeParse(broken).success).toBe(false);
+	});
+
 	it('trims strings and accepts extra valid subsections', () => {
 		const result = DynamicPageSchema.safeParse(validWithReviewSubsections);
 		expect(result.success).toBe(true);
 		if (result.success) {
-			expect(result.data.title).toBe('Diabetes tipo 2');
+			expect(result.data.title).toBe('Recursividad');
 			expect(result.data.sections).toHaveLength(2);
 		}
 	});

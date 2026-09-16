@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
-import { createClient, chatCompletion, classifyIntent, editArticle, streamChatCompletion, streamEditArticle, type ArticleTema } from './lib/ai';
-import { generateValidPage, editValidPage, generateValidExam, PageGenerationError, maxRepairAttempts } from './lib/pagePipeline';
+import { createClient, chatCompletion, classifyIntent, editArticle, streamChatCompletion, streamEditArticle, type ArticleTema, type SuggestionSection } from './lib/ai';
+import { generateValidPage, editValidPage, generateValidExam, generateValidSuggestions, PageGenerationError, maxRepairAttempts } from './lib/pagePipeline';
 import { DynamicPageSchema } from './schema/dynamicPage';
 import type { DifficultyId } from './schema/examen';
 
@@ -8,6 +8,7 @@ const examDifficulties = new Set(['facil', 'media', 'dificil']);
 
 interface Env {
 	AI_API_KEY: string;
+	AI_API_KEY_PRO: string;
 	PAGE_MAX_REPAIR_ATTEMPTS?: string;
 }
 
@@ -27,8 +28,20 @@ function jsonResponse(body: unknown, status = 200): Response {
 	});
 }
 
+async function readJsonBody<T extends object>(request: Request): Promise<T | null> {
+	try {
+		const body = await request.json();
+		if (body && typeof body === 'object' && !Array.isArray(body)) {
+			return body as T;
+		}
+		return {} as T;
+	} catch {
+		return null;
+	}
+}
+
 function makeClient(env: Env): OpenAI {
-	return createClient(env.AI_API_KEY);
+	return createClient(env.AI_API_KEY_PRO);
 }
 
 export default {
@@ -49,10 +62,14 @@ export default {
 			}
 
 			try {
-				const body = (await request.json()) as {
+				const body = await readJsonBody<{
 					messages?: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
 					stream?: boolean;
-				};
+				}>(request);
+
+				if (!body) {
+					return jsonResponse({ error: 'Invalid JSON body' }, 400);
+				}
 
 				if (!body.messages) {
 					return jsonResponse({ error: 'Messages are required' }, 400);
@@ -142,12 +159,16 @@ export default {
 			}
 
 			try {
-				const body = (await request.json()) as {
+				const body = await readJsonBody<{
 					tema?: unknown;
 					content?: unknown;
 					instruction?: unknown;
 					stream?: boolean;
-				};
+				}>(request);
+
+				if (!body) {
+					return jsonResponse({ ok: false, code: 'INVALID_BODY', message: 'El cuerpo de la solicitud no es JSON válido' }, 400);
+				}
 
 				const instruction = typeof body.instruction === 'string' ? body.instruction.trim() : '';
 				if (!instruction) {
@@ -235,21 +256,29 @@ export default {
 			}
 
 			try {
-				const body = (await request.json()) as {
+				const body = await readJsonBody<{
 					topic?: unknown;
 					review?: unknown;
-				};
+					context?: unknown;
+				}>(request);
+
+				if (!body) {
+					return jsonResponse({ ok: false, code: 'INVALID_BODY', message: 'El cuerpo de la solicitud no es JSON válido' }, 400);
+				}
 
 				const topic = typeof body.topic === 'string' ? body.topic.trim() : '';
 				if (!topic) {
 					return jsonResponse({ ok: false, code: 'TOPIC_REQUIRED', message: 'topic es requerido' }, 400);
 				}
 
+				const context = typeof body.context === 'string' ? body.context.trim() : '';
+
 				const client = makeClient(env);
 
 				const { page, meta } = await generateValidPage(client, topic, {
 					review: body.review === true,
 					maxRepairAttempts: maxRepairAttempts(env),
+					context,
 				});
 
 				return jsonResponse({ ok: true, page, meta });
@@ -285,10 +314,14 @@ export default {
 			}
 
 			try {
-				const body = (await request.json()) as {
+				const body = await readJsonBody<{
 					page?: unknown;
 					instruction?: unknown;
-				};
+				}>(request);
+
+				if (!body) {
+					return jsonResponse({ ok: false, code: 'INVALID_BODY', message: 'El cuerpo de la solicitud no es JSON válido' }, 400);
+				}
 
 				const instruction = typeof body.instruction === 'string' ? body.instruction.trim() : '';
 				if (!instruction) {
@@ -346,10 +379,14 @@ export default {
 			}
 
 			try {
-				const body = (await request.json()) as {
+				const body = await readJsonBody<{
 					topic?: unknown;
 					difficulty?: unknown;
-				};
+				}>(request);
+
+				if (!body) {
+					return jsonResponse({ ok: false, code: 'INVALID_BODY', message: 'El cuerpo de la solicitud no es JSON válido' }, 400);
+				}
 
 				const topic = typeof body.topic === 'string' ? body.topic.trim() : '';
 				if (!topic) {
@@ -393,6 +430,94 @@ export default {
 						ok: false,
 						code: 'ERROR',
 						message: 'Error interno al generar el examen',
+					},
+					500,
+				);
+			}
+		}
+
+		if (url.pathname === '/generate-suggestions') {
+			if (request.method !== 'POST') {
+				return jsonResponse({ error: 'Method Not Allowed' }, 405);
+			}
+
+			try {
+				const body = await readJsonBody<{
+					topic?: unknown;
+					sections?: unknown;
+				}>(request);
+
+				if (!body) {
+					return jsonResponse({ ok: false, code: 'INVALID_BODY', message: 'El cuerpo de la solicitud no es JSON válido' }, 400);
+				}
+
+				const topic = typeof body.topic === 'string' ? body.topic.trim() : '';
+				if (!topic) {
+					return jsonResponse({ ok: false, code: 'TOPIC_REQUIRED', message: 'topic es requerido' }, 400);
+				}
+
+				if (!Array.isArray(body.sections) || body.sections.length === 0) {
+					return jsonResponse({ ok: false, code: 'SECTIONS_REQUIRED', message: 'sections es requerido' }, 400);
+				}
+
+				const sections: SuggestionSection[] = [];
+
+				for (const item of body.sections) {
+					if (!item || typeof item !== 'object') {
+						return jsonResponse({ ok: false, code: 'SECTIONS_REQUIRED', message: 'sections es requerido' }, 400);
+					}
+
+					const raw = item as Record<string, unknown>;
+					const title = typeof raw.title === 'string' ? raw.title.trim() : '';
+					const content = typeof raw.content === 'string' ? raw.content.trim() : '';
+					if (!title || !content) {
+						return jsonResponse({ ok: false, code: 'SECTIONS_REQUIRED', message: 'sections es requerido' }, 400);
+					}
+
+					const subsections: { title: string; content: string }[] = [];
+					if (Array.isArray(raw.subsections)) {
+						for (const sub of raw.subsections) {
+							if (!sub || typeof sub !== 'object') {
+								continue;
+							}
+							const subRaw = sub as Record<string, unknown>;
+							subsections.push({
+								title: typeof subRaw.title === 'string' ? subRaw.title.trim() : '',
+								content: typeof subRaw.content === 'string' ? subRaw.content.trim() : '',
+							});
+						}
+					}
+
+					sections.push({ title, content, subsections });
+				}
+
+				const client = makeClient(env);
+
+				const { suggestions, meta } = await generateValidSuggestions(client, topic, sections, {
+					maxRepairAttempts: maxRepairAttempts(env),
+				});
+
+				return jsonResponse({ ok: true, suggestions, meta });
+			} catch (error) {
+				console.error('Generate Suggestions Error:', error);
+
+				if (error instanceof PageGenerationError) {
+					return jsonResponse(
+						{
+							ok: false,
+							code: 'MAX_REPAIR',
+							message: 'No se pudieron generar sugerencias válidas',
+							issues: error.issues,
+						},
+						422,
+					);
+				}
+
+				return jsonResponse(
+					{
+						ok: false,
+						code: 'ERROR',
+						message: 'Error interno al generar sugerencias',
 					},
 					500,
 				);

@@ -1,26 +1,48 @@
 <template>
-	<ion-page class="login-page">
-		<ion-content  class="login-content">
+	<AppPage>
+		<main class="app-content">
 			<div class="container">
 				<header class="brand">
 					<span class="brand__mark" aria-hidden="true">
 						<svg viewBox="0 0 24 24" width="18" height="18">
-							<path d="M10.5 3.2h3v7.3h7.3v3h-7.3v7.3h-3v-7.3H3.2v-3h7.3V3.2z" fill="#ffffff" />
+							<path
+								d="M8 6 2 12l6 6"
+								fill="none"
+								stroke="#ffffff"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<path
+								d="M16 6l6 6-6 6"
+								fill="none"
+								stroke="#ffffff"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+							<path
+								d="M13.5 5 10.5 19"
+								fill="none"
+								stroke="#ffffff"
+								stroke-width="2"
+								stroke-linecap="round"
+							/>
 						</svg>
 					</span>
-					<span class="brand__name">MediApp</span>
+					<span class="brand__name">DevApp</span>
 				</header>
 
-				<main class="hero">
-					<p class="mt-kicker">Salud digital</p>
+				<section class="hero">
+					<p class="mt-kicker">Desarrollo de software</p>
 					<h1 class="mt-h-display hero__title">
-						Bienvenido a tu espacio de salud
+						Bienvenido a tu espacio de código
 					</h1>
 					<p class="mt-body hero__text">
-						Consulta información confiable, guarda tus secciones educativas y
-						resuelve tus dudas con el asistente.
+						Aprende a programar, guarda tus secciones de estudio y resuelve tus
+						dudas con el asistente.
 					</p>
-				</main>
+				</section>
 
 				<footer class="actions">
 					<button
@@ -29,7 +51,7 @@
 						:disabled="loading"
 						@click="handleGoogleLogin"
 					>
-						<ion-spinner v-if="loading" name="crescent" class="google-btn__spinner"></ion-spinner>
+						<AppSpinner v-if="loading" class="google-btn__spinner" />
 						<template v-else>
 							<svg class="google-btn__logo" viewBox="0 0 48 48" aria-hidden="true">
 								<path fill="#FFC107"
@@ -51,23 +73,49 @@
 					</p>
 				</footer>
 			</div>
-		</ion-content>
-	</ion-page>
+		</main>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonSpinner } from '@ionic/vue';
-import { onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { doc, getFirestore, Timestamp, writeBatch } from 'firebase/firestore';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { useIonRouter } from '@ionic/vue';
-import { signInWithGoogleJS } from '../services/googleAuth';
+import { getAuth, onAuthStateChanged, type User } from 'firebase/auth';
+import { useRouter } from 'vue-router';
+import { resolveGoogleRedirect, signInWithGoogleJS } from '../services/googleAuth';
+import AppPage from '../components/ui/AppPage.vue';
+import AppSpinner from '../components/ui/AppSpinner.vue';
 
-const router = useIonRouter();
+const router = useRouter();
 
 const auth = getAuth();
 const loading = ref(false);
 const db = getFirestore();
+
+let unsubscribe: (() => void) | null = null;
+
+const upsertUserDoc = async (user: User, isNewUser: boolean) => {
+	const batch = writeBatch(db);
+	const userDoc = doc(db, 'users', user.uid);
+
+	batch.set(
+		userDoc,
+		{
+			name: user.displayName,
+			email: user.email,
+			uid: user.uid,
+			createdAt: Timestamp.now(),
+			isBanned: false,
+		},
+		{ merge: true }
+	);
+
+	if (isNewUser) {
+		batch.set(userDoc, { plan: 'free' }, { merge: true });
+	}
+
+	await batch.commit();
+};
 
 const handleGoogleLogin = async () => {
 	if (loading.value) return;
@@ -75,29 +123,7 @@ const handleGoogleLogin = async () => {
 	loading.value = true;
 	try {
 		const result = await signInWithGoogleJS();
-		const user = result.user;
-		const isNewUser = result.isNewUser;
-		const batch = writeBatch(db);
-		const userDoc = doc(db, `users`, user.uid);
-
-		batch.set(
-			userDoc,
-			{
-				name: user.displayName,
-				email: user.email,
-				uid: user.uid,
-				createdAt: Timestamp.now(),
-				isBanned: false,
-			},
-			{ merge: true }
-		);
-
-		if (isNewUser) {
-			batch.set(userDoc, { plan: 'free' }, { merge: true });
-		}
-
-		await batch.commit();
-
+		await upsertUserDoc(result.user, result.isNewUser);
 		router.push({ name: 'mis-secciones' });
 	} catch (error) {
 		const err = error as any;
@@ -115,25 +141,33 @@ const openPrivacy = () => {
 	console.log('Abrir política de privacidad');
 };
 
-onMounted(() => {
-	onAuthStateChanged(auth, (current) => {
+onMounted(async () => {
+	const redirectResult = await resolveGoogleRedirect();
+
+	if (redirectResult) {
+		try {
+			await upsertUserDoc(redirectResult.user, redirectResult.isNewUser);
+			router.push({ name: 'mis-secciones' });
+		} catch (error) {
+			const err = error as any;
+			console.log('Error while resolving Google redirect', err);
+		}
+	}
+
+	unsubscribe = onAuthStateChanged(auth, (current) => {
 		if (current) {
 			router.push({ name: 'mis-secciones' });
 		}
 	});
 });
+
+onBeforeUnmount(() => {
+	unsubscribe?.();
+	unsubscribe = null;
+});
 </script>
 
 <style scoped>
-.login-page,
-.login-content {
-	--background: var(--mt-canvas);
-}
-
-.login-content {
-	--overflow: hidden;
-}
-
 .container {
 	position: relative;
 	z-index: 2;
@@ -228,7 +262,7 @@ onMounted(() => {
 }
 
 .google-btn__spinner {
-	--color: var(--mt-accent);
+	color: var(--mt-accent);
 	width: 22px;
 	height: 22px;
 }

@@ -1,4 +1,5 @@
 import type { DynamicPage } from '../schemas/dynamicPage';
+import { WORKER_URL } from '../config/worker';
 
 export type DynamicPageMeta = {
 	attempts: number;
@@ -25,12 +26,11 @@ export class PageGenerationClientError extends Error {
 	}
 }
 
-const WORKER_URL = 'https://ai-worker-inference.shykandev.workers.dev';
-
 export async function requestPageGeneration(
 	topic: string,
-	options: { review?: boolean } = {}
+	options: { review?: boolean; context?: string } = {}
 ): Promise<PageGenerationResult> {
+	const context = typeof options.context === 'string' ? options.context.trim() : '';
 	let response: Response;
 	try {
 		response = await fetch(`${WORKER_URL}/generate-page`, {
@@ -41,6 +41,7 @@ export async function requestPageGeneration(
 			body: JSON.stringify({
 				topic,
 				review: options.review === true,
+				...(context ? { context } : {}),
 			}),
 		});
 	} catch (e) {
@@ -152,6 +153,70 @@ export async function requestPageEdit(
 
 	return {
 		page: result.page as DynamicPage,
+		meta: (result.meta ?? { attempts: 1, repairs: 0, reviewed: false }) as DynamicPageMeta,
+	};
+}
+
+export interface SectionSuggestionsResult {
+	suggestions: string[][];
+	meta: DynamicPageMeta;
+}
+
+export async function requestSectionSuggestions(
+	topic: string,
+	sections: DynamicPage['sections']
+): Promise<SectionSuggestionsResult> {
+	let response: Response;
+	try {
+		response = await fetch(`${WORKER_URL}/generate-suggestions`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ topic, sections }),
+		});
+	} catch (e) {
+		console.error(e);
+		throw new PageGenerationClientError(
+			'ERROR',
+			'No se pudo conectar con el servidor. Revisa tu conexión e intenta de nuevo.'
+		);
+	}
+
+	let body: unknown;
+	try {
+		body = await response.json();
+	} catch {
+		body = null;
+	}
+
+	if (!response.ok || !body || typeof body !== 'object') {
+		const obj = (body ?? {}) as Record<string, unknown>;
+		const message =
+			typeof obj.message === 'string' && obj.message
+				? obj.message
+				: 'El servidor no pudo generar sugerencias. Intenta de nuevo.';
+		const issues = Array.isArray(obj.issues)
+			? obj.issues.filter((i): i is string => typeof i === 'string')
+			: undefined;
+		throw new PageGenerationClientError(
+			(response.status === 422 ? 'MAX_REPAIR' : 'ERROR') as GenerateErrorCode,
+			message,
+			issues
+		);
+	}
+
+	const result = body as Record<string, unknown>;
+	if (result.ok !== true || !Array.isArray(result.suggestions)) {
+		throw new PageGenerationClientError('ERROR', 'El servidor devolvió una respuesta inválida.');
+	}
+
+	const suggestions = result.suggestions.map((entry) =>
+		Array.isArray(entry) ? entry.filter((s): s is string => typeof s === 'string') : []
+	);
+
+	return {
+		suggestions,
 		meta: (result.meta ?? { attempts: 1, repairs: 0, reviewed: false }) as DynamicPageMeta,
 	};
 }

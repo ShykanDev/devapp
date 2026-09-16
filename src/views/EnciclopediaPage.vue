@@ -1,32 +1,25 @@
 <template>
-	<ion-page>
-		<ion-header :translucent="true" class="app-header">
-			<ion-toolbar>
-				<ion-buttons slot="start">
-					<ion-menu-button></ion-menu-button>
-				</ion-buttons>
-				<ion-title>Enciclopedia</ion-title>
-			</ion-toolbar>
-		</ion-header>
+	<AppPage>
+		<AppHeader title="Enciclopedia" />
 
-		<ion-content>
+		<main class="app-content">
 			<div class="page-shell">
 				<header class="page-head">
-					<p class="mt-kicker">Enciclopedia médica</p>
-					<h1 class="mt-h-display">Aprende sobre tu salud</h1>
+					<p class="mt-kicker">Enciclopedia de programación</p>
+					<h1 class="mt-h-display">Aprende a programar</h1>
 					<p class="mt-body page-head__desc">
-						Explicaciones claras, con base científica, preparadas para ti.
+						Conceptos, buenas prácticas y ejemplos claros, explicados para ti.
 					</p>
 				</header>
 
 				<!-- Buscador -->
 				<div class="search-well">
-					<ion-icon :icon="searchOutline" class="search-well__icon"></ion-icon>
-					<ion-input
+					<AppIcon :icon="searchOutline" class="search-well__icon" />
+					<AppInput
 						v-model="searchTerm"
 						class="search-well__input"
 						placeholder="Buscar un tema…"
-					></ion-input>
+					/>
 					<button
 						v-if="searchTerm.trim()"
 						type="button"
@@ -34,7 +27,7 @@
 						aria-label="Limpiar búsqueda"
 						@click="searchTerm = ''"
 					>
-						<ion-icon :icon="close"></ion-icon>
+						<AppIcon :icon="close" />
 					</button>
 				</div>
 
@@ -59,14 +52,14 @@
 								>
 									{{ categoryNameOf(t.categoriaId) }}
 								</span>
-								<ion-icon class="result-row__chevron" :icon="chevronForward"></ion-icon>
+								<AppIcon class="result-row__chevron" :icon="chevronForward" />
 							</router-link>
 						</div>
 					</div>
 
 					<div v-else class="no-results">
 						<div class="no-results__icon">
-							<ion-icon :icon="searchOutline"></ion-icon>
+							<AppIcon :icon="searchOutline" />
 						</div>
 						<p class="no-results__title">Sin resultados</p>
 						<p class="no-results__hint">
@@ -93,50 +86,38 @@
 										color: cat.color,
 									}"
 								>
-									<ion-icon :icon="iconOf(cat.icon)"></ion-icon>
+									<AppIcon :icon="iconOf(cat.icon)" />
 								</span>
 								<div class="cat-row__main">
 									<p class="cat-row__name">{{ cat.nombre }}</p>
 									<p class="cat-row__desc">{{ cat.descripcion }}</p>
 								</div>
 								<span class="cat-row__count">{{ temasDe(cat.id).length }}</span>
-								<ion-icon class="cat-row__chevron" :icon="chevronForward"></ion-icon>
+								<AppIcon class="cat-row__chevron" :icon="chevronForward" />
 							</router-link>
 						</div>
 					</div>
 				</template>
 			</div>
-		</ion-content>
-	</ion-page>
+		</main>
+	</AppPage>
 </template>
 
 <script setup lang="ts">
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import {
-	IonButtons,
-	IonContent,
-	IonHeader,
-	IonIcon,
-	IonInput,
-	IonMenuButton,
-	IonPage,
-	IonTitle,
-	IonToolbar,
-} from '@ionic/vue';
-import { computed, onBeforeUnmount, ref } from 'vue';
-import { onIonViewWillEnter } from '@ionic/vue';
-import {
-	bandage,
-	body,
-	book,
+	bookOutline,
 	chevronForward,
 	close,
-	happy,
-	heart,
-	medkit,
-	nutrition,
-	pulse,
+	cloudOutline,
+	codeSlashOutline,
+	gitBranchOutline,
+	layersOutline,
+	phonePortraitOutline,
+	schoolOutline,
 	searchOutline,
-	shieldCheckmark,
+	serverOutline,
+	shieldCheckmarkOutline,
 } from 'ionicons/icons';
 import { categoriasEnciclopedia, temasEnciclopedia } from '../data/enciclopedia';
 import type { CategoriaEnciclopedia } from '../data/enciclopedia';
@@ -145,20 +126,23 @@ import {
 	listEnciclopediaTemas,
 	type StoredEnciclopediaTema,
 } from '../services/enciclopediaTopics';
+import AppPage from '../components/ui/AppPage.vue';
+import AppHeader from '../components/ui/AppHeader.vue';
+import AppIcon from '../components/ui/AppIcon.vue';
+import AppInput from '../components/ui/AppInput.vue';
 
 const iconMap: Record<string, any> = {
-	body,
-	book,
-	heart,
-	happy,
-	nutrition,
-	bandage,
-	medkit,
-	pulse,
-	shieldCheckmark,
+	school: schoolOutline,
+	codeSlash: codeSlashOutline,
+	server: serverOutline,
+	layers: layersOutline,
+	gitBranch: gitBranchOutline,
+	cloud: cloudOutline,
+	shieldCheckmark: shieldCheckmarkOutline,
+	phonePortrait: phonePortraitOutline,
 };
 
-const iconOf = (name: string) => iconMap[name] ?? book;
+const iconOf = (name: string) => iconMap[name] ?? bookOutline;
 
 const searchTerm = ref('');
 
@@ -221,7 +205,7 @@ if (user.value) {
 	loadCustomTemas();
 }
 
-onIonViewWillEnter(() => {
+onMounted(() => {
 	if (user.value) {
 		loadCustomTemas();
 	}
@@ -283,7 +267,7 @@ onIonViewWillEnter(() => {
 	flex-shrink: 0;
 }
 
-.search-well__clear ion-icon {
+.search-well__clear .app-icon {
 	font-size: 16px;
 }
 
@@ -334,7 +318,7 @@ onIonViewWillEnter(() => {
 	border-radius: 13px;
 }
 
-.cat-row__icon ion-icon {
+.cat-row__icon .app-icon {
 	font-size: 22px;
 }
 
@@ -452,7 +436,7 @@ onIonViewWillEnter(() => {
 	margin-bottom: 14px;
 }
 
-.no-results__icon ion-icon {
+.no-results__icon .app-icon {
 	font-size: 24px;
 }
 
