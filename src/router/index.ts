@@ -121,6 +121,66 @@ const routes: Array<RouteRecordRaw> = [
     path: '/ai-practitioner/cobertura',
     name: 'aif-coverage',
     component: () => import ('../views/aifC01/AifCoverage.vue')
+  },
+  {
+    path: '/cloud-practitioner',
+    name: 'clf-overview',
+    component: () => import ('../views/clfC02/ClfOverview.vue')
+  },
+  {
+    path: '/cloud-practitioner/dominio/:domainId',
+    name: 'clf-domain',
+    component: () => import ('../views/clfC02/ClfDomain.vue')
+  },
+  {
+    path: '/cloud-practitioner/task/:taskId',
+    name: 'clf-task',
+    component: () => import ('../views/clfC02/ClfTask.vue')
+  },
+  {
+    path: '/cloud-practitioner/comparaciones',
+    name: 'clf-comparisons',
+    component: () => import ('../views/clfC02/ClfComparisons.vue')
+  },
+  {
+    path: '/cloud-practitioner/debiles',
+    name: 'clf-weak',
+    component: () => import ('../views/clfC02/ClfWeak.vue')
+  },
+  {
+    path: '/cloud-practitioner/repaso',
+    name: 'clf-review',
+    component: () => import ('../views/clfC02/ClfReview.vue')
+  },
+  {
+    path: '/cloud-practitioner/practica/:scope',
+    name: 'clf-practice',
+    component: () => import ('../views/clfC02/ClfPractice.vue')
+  },
+  {
+    path: '/cloud-practitioner/glosario',
+    name: 'clf-glossary',
+    component: () => import ('../views/clfC02/ClfGlossary.vue')
+  },
+  {
+    path: '/cloud-practitioner/servicios',
+    name: 'clf-services',
+    component: () => import ('../views/clfC02/ClfServices.vue')
+  },
+  {
+    path: '/cloud-practitioner/buscar',
+    name: 'clf-search',
+    component: () => import ('../views/clfC02/ClfSearch.vue')
+  },
+  {
+    path: '/cloud-practitioner/cobertura',
+    name: 'clf-coverage',
+    component: () => import ('../views/clfC02/ClfCoverage.vue')
+  },
+  {
+    path: '/cloud-practitioner/profesional',
+    name: 'clf-professional',
+    component: () => import ('../views/clfC02/ClfProfessional.vue')
   }
 ]
 

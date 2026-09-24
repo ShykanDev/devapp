@@ -100,6 +100,7 @@ const appPages = [
 	{ title: 'Enciclopedia', url: '/enciclopedia', icon: bookOutline },
 	{ title: 'Exámenes', url: '/examenes', icon: clipboardOutline },
 	{ title: 'AI Practitioner', url: '/ai-practitioner', icon: ribbonOutline },
+	{ title: 'Cloud Practitioner', url: '/cloud-practitioner', icon: ribbonOutline },
 	{ title: 'Mis secciones', url: '/mis-secciones', icon: libraryOutline },
 ];
 
