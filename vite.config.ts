@@ -11,12 +11,8 @@ import { defineConfig } from 'vite'
 
 import { cloudflare } from "@cloudflare/vite-plugin";
 
-// Build para GitHub Pages: se sirve bajo /<repo>/ y no usa el plugin de Cloudflare.
-const isGitHubPages = process.env.GITHUB_PAGES === 'true';
-
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: isGitHubPages ? '/devapp/' : '/',
   plugins: [vue(), legacy(), vueDevTools(), tailwindcss(), VitePWA({
     registerType: 'autoUpdate',
     includeAssets: ['favicon.png', 'apple-touch-icon.png'],
@@ -89,7 +85,7 @@ export default defineConfig({
     devOptions: {
       enabled: true,
     },
-  }), ...(isGitHubPages ? [] : [cloudflare()])],
+  }), cloudflare()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
