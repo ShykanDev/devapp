@@ -44,3 +44,23 @@ Worker (`devapp/ai-worker/ai-worker-inference/`):
 - `npx wrangler dev` — desarrollo local.
 - `npx wrangler deploy` — desplegar a Cloudflare.
 - `npx wrangler types` — regenerar tipos tras cambiar bindings.
+
+Nota Windows: si PowerShell bloquea `npx.ps1` (execution policy), usar
+`node node_modules/wrangler/bin/wrangler.js <comando>`.
+
+## Módulos de certificación (secciones de examen)
+
+Para agregar una **sección nueva** de estudio de otra certificación, seguir el molde
+reutilizable `.kilo/skill/nueva-certificacion/SKILL.md`. Es obligatorio: define el
+formato oficial de preguntas, las 7 capas de contenido, las reglas anti-sesgo, los
+guardrails con umbrales, el pipeline multiagente, el layout de archivos y la
+Definition of Done, derivados de la implementación de referencia CLF-C02.
+
+- Copiar la estructura canónica: `src/data/clfC02/**`, `src/schemas/clfC02.ts`,
+  `src/views/clfC02/**`, `tests/unit/clfC02*`.
+- No reescribir módulos existentes (AIF-C01, CLF-C02): las secciones nuevas son
+  aditivas.
+- Verificar fuentes oficiales con `webfetch` antes de escribir contenido; prohibido
+  inventar URLs o datos.
+- Los guardrails los escribe un agente distinto del que escribe el contenido.
+
