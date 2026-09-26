@@ -10,18 +10,23 @@ export const profesionalTask38: PreguntaProfesionalClfC02[] = [
 			'Un equipo necesita desacoplar un productor y un consumidor de mensajes y, además, enviar alertas a muchos suscriptores a la vez. ¿Qué servicios corresponden?',
 		options: [
 			'Amazon SQS para la cola que desacopla productor y consumidor, y Amazon SNS para publicar y notificar a muchos suscriptores.',
-			'Amazon SNS para desacoplar mediante una cola y Amazon SQS para notificar a los suscriptores.',
-			'Amazon EventBridge para desacoplar con colas y Amazon SNS para consultar bases de datos.',
-			'Amazon SQS para publicar y Amazon EventBridge para encolar los mensajes.',
+			'Amazon SNS para desacoplar productor y consumidor mediante una cola y Amazon SQS para notificar a todos los suscriptores a la vez.',
+			'Amazon EventBridge para desacoplar con colas y Amazon SNS para consultar bases de datos relacionales.',
+			'Amazon SQS para publicar a los suscriptores y Amazon EventBridge para encolar los mensajes.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'Amazon SQS es una cola que desacopla productor y consumidor reteniendo los mensajes, mientras que Amazon SNS es pub/sub y difunde una notificación a muchos suscriptores. Amazon EventBridge encamina eventos entre servicios sin esa función de cola.',
+			'Amazon SQS es una cola que desacopla productor y consumidor reteniendo los mensajes, mientras que Amazon SNS es pub/sub y difunde una notificación a muchos suscriptores. Amazon EventBridge encamina eventos entre servicios sin esa función de cola. Si el objetivo fuera reaccionar a eventos y enrutarlos según reglas, el servicio sería Amazon EventBridge.',
 		porQueOpcion: [
 			'Correcta: diferencia el desacople por cola de la difusión a suscriptores.',
 			'Incorrecto: intercambia las funciones de ambos servicios.',
 			'Incorrecto: Amazon EventBridge enruta eventos y Amazon SNS no consulta bases de datos.',
 			'Incorrecto: Amazon SQS no publica a suscriptores y Amazon EventBridge no es una cola para consumidores.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/sqs/',
+			'https://docs.aws.amazon.com/sns/',
+			'https://docs.aws.amazon.com/eventbridge/',
 		],
 	},
 	{
@@ -39,12 +44,20 @@ export const profesionalTask38: PreguntaProfesionalClfC02[] = [
 		],
 		correctAnswer: 0,
 		explanation:
-			'Amazon Connect ofrece un centro de contacto en la nube para voz y chat, y Amazon Simple Email Service (Amazon SES) es el servicio de envío de correo. Amazon SQS y Amazon SNS son de integración de aplicaciones, no de atención al cliente.',
+			'Amazon Connect ofrece un centro de contacto en la nube para voz y chat, y Amazon Simple Email Service (Amazon SES) es el servicio de envío de correo. Amazon SQS y Amazon SNS son de integración de aplicaciones, no de atención al cliente. Si cambia el canal a solo chat, el servicio de correo dejaría de ser necesario.',
 		porQueOpcion: [
 			'Correcta: asigna cada necesidad de negocio al servicio adecuado.',
 			'Incorrecto: intercambia las funciones de Amazon Connect y Amazon SES.',
 			'Incorrecto: los servicios de mensajería no atienden llamadas ni envían correo.',
 			'Incorrecto: AWS Support presta asistencia técnica y AWS IoT Core gestiona dispositivos.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/connect/',
+			'https://docs.aws.amazon.com/ses/',
+			'https://docs.aws.amazon.com/sqs/',
+			'https://docs.aws.amazon.com/sns/',
+			'https://docs.aws.amazon.com/awssupport/latest/user/getting-started.html',
+			'https://docs.aws.amazon.com/iot/',
 		],
 	},
 	{
@@ -56,18 +69,24 @@ export const profesionalTask38: PreguntaProfesionalClfC02[] = [
 			'Una empresa necesita asistencia técnica con tiempos de respuesta acordados y acceso a un Technical Account Manager. ¿Qué opción encaja mejor?',
 		options: [
 			'Un plan de AWS Support, como AWS Enterprise Support, que ofrece un Technical Account Manager y tiempos de respuesta definidos.',
-			'AWS Marketplace, que incluye un Technical Account Manager en todas las compras.',
-			'AWS Trusted Advisor, que asigna un Technical Account Manager por cuenta.',
-			'AWS Identity and Access Management (IAM), que presta soporte técnico con niveles de servicio.',
+			'AWS Marketplace, que incluye un Technical Account Manager en todas las compras de software de terceros.',
+			'AWS Trusted Advisor, que asigna un Technical Account Manager por cuenta y revisa las buenas prácticas.',
+			'AWS Identity and Access Management (IAM), que presta soporte técnico con niveles de servicio acordados.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'Los planes de AWS Support escalan el nivel de asistencia; AWS Enterprise Support incluye un Technical Account Manager y tiempos de respuesta acordados. AWS Marketplace es un catálogo de software y AWS Trusted Advisor y AWS IAM no prestan soporte técnico.',
+			'Los planes de AWS Support escalan el nivel de asistencia; AWS Enterprise Support incluye un Technical Account Manager y tiempos de respuesta acordados. AWS Marketplace es un catálogo de software y AWS Trusted Advisor y AWS IAM no prestan soporte técnico. Si el requisito fuera una carga de producción sin interlocutor dedicado, bastaría con AWS Business Support.',
 		porQueOpcion: [
 			'Correcta: identifica el plan de soporte con Technical Account Manager y tiempos acordados.',
 			'Incorrecto: AWS Marketplace comercializa software, no presta soporte con Technical Account Manager.',
 			'Incorrecto: AWS Trusted Advisor hace recomendaciones, no asigna un Technical Account Manager.',
 			'Incorrecto: AWS IAM gestiona identidades y permisos, no es un canal de soporte.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/awssupport/latest/user/getting-started.html',
+			'https://docs.aws.amazon.com/marketplace/',
+			'https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html',
+			'https://docs.aws.amazon.com/iam/',
 		],
 	},
 	{
@@ -79,18 +98,23 @@ export const profesionalTask38: PreguntaProfesionalClfC02[] = [
 			'Un equipo quiere automatizar la compilación, el despliegue y el rastreo de errores de su aplicación. ¿Qué servicios corresponden?',
 		options: [
 			'AWS CodeBuild para compilar y ejecutar pruebas, AWS CodePipeline para orquestar el despliegue y AWS X-Ray para rastrear peticiones y diagnosticar errores.',
-			'AWS X-Ray para compilar, AWS CodeBuild para desplegar y AWS CodePipeline para el rastreo.',
-			'AWS CodePipeline para compilar y AWS X-Ray para desplegar.',
-			'Los tres servicios hacen lo mismo y solo cambia el lenguaje de programación.',
+			'AWS X-Ray para compilar el código, AWS CodeBuild para orquestar el despliegue y AWS CodePipeline para el rastreo de peticiones distribuidas y la detección de cuellos de botella.',
+			'AWS CodePipeline para compilar el código y AWS X-Ray para desplegar en producción.',
+			'Los tres servicios hacen exactamente lo mismo y solo cambia el lenguaje de programación del proyecto.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'En las herramientas de desarrollo de AWS, AWS CodeBuild compila y ejecuta pruebas, AWS CodePipeline modela y orquesta las fases de despliegue y AWS X-Ray traza las peticiones para localizar cuellos de botella y errores.',
+			'En las herramientas de desarrollo de AWS, AWS CodeBuild compila y ejecuta pruebas, AWS CodePipeline modela y orquesta las fases de despliegue y AWS X-Ray traza las peticiones para localizar cuellos de botella y errores. Si el objetivo fuera solo rastrear errores, bastaría con AWS X-Ray.',
 		porQueOpcion: [
 			'Correcta: asigna compilación, orquestación y rastreo a cada servicio.',
 			'Incorrecto: intercambia las funciones de los tres servicios.',
 			'Incorrecto: AWS CodePipeline no compila y AWS X-Ray no despliega.',
 			'Incorrecto: cada servicio cubre una etapa distinta del ciclo de desarrollo.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/codebuild/',
+			'https://docs.aws.amazon.com/codepipeline/',
+			'https://docs.aws.amazon.com/xray/',
 		],
 	},
 	{
@@ -102,18 +126,24 @@ export const profesionalTask38: PreguntaProfesionalClfC02[] = [
 			'Una empresa necesita presentar aplicaciones en los equipos de sus empleados, crear una aplicación móvil y conectar dispositivos de campo a la nube. ¿Qué combinación de servicios es correcta?',
 		options: [
 			'Amazon WorkSpaces para escritorios virtuales, AWS Amplify para la aplicación móvil y AWS IoT Core para gestionar los dispositivos.',
-			'Amazon AppStream 2.0 para gestionar los dispositivos, AWS IoT Core para la aplicación móvil y AWS Amplify para los escritorios.',
+			'Amazon AppStream 2.0 para gestionar los dispositivos, AWS IoT Core para la aplicación móvil y AWS Amplify para los escritorios virtuales.',
 			'AWS Amplify para los escritorios, Amazon WorkSpaces para los dispositivos y Amazon AppStream 2.0 para la aplicación móvil.',
 			'AWS IoT Core para los escritorios, Amazon AppStream 2.0 para la aplicación móvil y Amazon WorkSpaces para los dispositivos.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'Amazon WorkSpaces ofrece escritorios virtuales para los usuarios finales, AWS Amplify es el servicio para crear y desplegar aplicaciones web y móviles, y AWS IoT Core conecta y gestiona dispositivos IoT.',
+			'Amazon WorkSpaces ofrece escritorios virtuales para los usuarios finales, AWS Amplify es el servicio para crear y desplegar aplicaciones web y móviles, y AWS IoT Core conecta y gestiona dispositivos IoT. Si el objetivo fuera presentar una sola aplicación en lugar de un escritorio, la opción sería Amazon AppStream 2.0.',
 		porQueOpcion: [
 			'Correcta: asigna escritorio virtual, desarrollo móvil y gestión de IoT a cada servicio.',
 			'Incorrecto: intercambia las funciones de los tres servicios.',
 			'Incorrecto: AWS Amplify no ofrece escritorios ni Amazon WorkSpaces gestiona dispositivos.',
 			'Incorrecto: AWS IoT Core no presenta escritorios y Amazon AppStream 2.0 no es la vía de aplicación móvil.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/workspaces/',
+			'https://docs.aws.amazon.com/amplify/',
+			'https://docs.aws.amazon.com/iot/',
+			'https://docs.aws.amazon.com/appstream2/',
 		],
 	},
 ];

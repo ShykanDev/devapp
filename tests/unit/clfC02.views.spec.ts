@@ -13,8 +13,14 @@ import ClfServices from '@/views/clfC02/ClfServices.vue';
 import ClfSearch from '@/views/clfC02/ClfSearch.vue';
 import ClfCoverage from '@/views/clfC02/ClfCoverage.vue';
 import ClfProfessional from '@/views/clfC02/ClfProfessional.vue';
+import ClfRecognition from '@/views/clfC02/ClfRecognition.vue';
+import ClfEvaluables from '@/views/clfC02/ClfEvaluables.vue';
+import ClfTransfer from '@/views/clfC02/ClfTransfer.vue';
 import { TODOS_LOS_PARES, TAREAS_PENDIENTES } from '@/data/clfC02/registroContenido';
 import { serviciosGeneralClfC02 } from '@/data/clfC02/servicios/general';
+import { reconocimientoClfC02 } from '@/data/clfC02/reconocimiento';
+import { evaluablesClfC02 } from '@/data/clfC02/evaluables';
+import { transferenciaClfC02 } from '@/data/clfC02/transferencia';
 import { construirExamenFinal } from '@/lib/clfC02Practice';
 import { reiniciarProgresoClfC02 } from '@/lib/clfC02Progress';
 
@@ -31,6 +37,9 @@ const rutas: RouteRecordRaw[] = [
 	{ path: '/cloud-practitioner/buscar', component: { template: '<div />' } },
 	{ path: '/cloud-practitioner/cobertura', component: { template: '<div />' } },
 	{ path: '/cloud-practitioner/profesional', component: { template: '<div />' } },
+	{ path: '/cloud-practitioner/reconocimiento', component: { template: '<div />' } },
+	{ path: '/cloud-practitioner/evaluables', component: { template: '<div />' } },
+	{ path: '/cloud-practitioner/transferencia', component: { template: '<div />' } },
 ];
 
 async function montarEn(
@@ -126,5 +135,19 @@ describe('clfC02 · montaje de vistas', () => {
 		const cobertura = await montarEn(ClfCoverage, '/cloud-practitioner/cobertura');
 		expect(cobertura.text()).toContain('4 dominios · 19 task statements · 135 objectives');
 		expect(cobertura.text()).toContain('Sin hallazgos');
+	});
+
+	it('monta las capas de reconocimiento y de capacidades evaluables', async () => {
+		const reconocimiento = await montarEn(ClfRecognition, '/cloud-practitioner/reconocimiento');
+		expect(reconocimiento.findAll('.familia')).toHaveLength(reconocimientoClfC02.length);
+		expect(reconocimiento.text()).toContain('Reconocer servicios');
+
+		const evaluables = await montarEn(ClfEvaluables, '/cloud-practitioner/evaluables');
+		expect(evaluables.findAll('.task')).toHaveLength(evaluablesClfC02.length);
+		expect(evaluables.text()).toContain('Qué puede evaluar AWS');
+
+		const transferencia = await montarEn(ClfTransfer, '/cloud-practitioner/transferencia');
+		expect(transferencia.text()).toContain('Transferencia de escenarios');
+		expect(transferencia.findAll('.escenario')).toHaveLength(transferenciaClfC02.length);
 	});
 });

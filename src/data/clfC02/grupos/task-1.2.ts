@@ -59,7 +59,7 @@ export const gruposTask12: GrupoTematico[] = [
 				tipo: 'escenario',
 				situacion: 'Un equipo revisa su plataforma y encuentra tres problemas a la vez: la base de datos se cae con frecuencia, no existen procedimientos de operación ni despliegues automatizados, y la factura creció por instancias sobredimensionadas. Necesita clasificar cada hallazgo en el pilar que le corresponde.',
 				analisis: 'El fallo recurrente de la base de datos apunta a **Reliability**; la ausencia de runbooks y automatización, a **Operational excellence**; y el sobredimensionamiento, a **Cost optimization**. Asignar cada hallazgo a un pilar concreto permite priorizar acciones en lugar de tratar la revisión como un único aprobado o suspenso.',
-				servicio: 'AWS Trusted Advisor',
+				servicio: 'AWS Well-Architected Tool',
 			},
 			{
 				tipo: 'errorComun',

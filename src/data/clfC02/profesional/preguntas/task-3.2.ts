@@ -10,18 +10,21 @@ export const profesionalTask32: PreguntaProfesionalClfC02[] = [
 			'¿Cuál de estas afirmaciones describe correctamente la relación entre Región, Availability Zone y edge location?',
 		options: [
 			'Una Región agrupa varias Availability Zones aisladas entre sí, y las edge locations son puntos de presencia fuera de ese eje para entregar contenido cerca del usuario.',
-			'Una Availability Zone contiene varias Regiones, y las edge locations son las zonas de disponibilidad de menor latencia.',
-			'Las edge locations y las Availability Zones son lo mismo, solo que las primeras están en otra Región.',
-			'Una Región es un único centro de datos y las Availability Zones son sus copias de seguridad.',
+			'Una Availability Zone contiene varias Regiones independientes entre sí, y las edge locations son las zonas de disponibilidad de menor latencia que se reparten por cada Región.',
+			'Las edge locations y las Availability Zones son lo mismo, solo que las primeras están en otra Región más cercana al usuario final.',
+			'Una Región es un único centro de datos y las Availability Zones son sus copias de seguridad repartidas geográficamente.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'La jerarquía es Región (área geográfica) con varias Availability Zones (centros de datos aislados con alimentación y red propias), y las edge locations son puntos de presencia separados de ese eje, usados para entregar contenido y resolver DNS cerca del usuario.',
+			'La jerarquía es Región (área geográfica) con varias Availability Zones (centros de datos aislados con alimentación y red propias), y las edge locations son puntos de presencia separados de ese eje, usados para entregar contenido y resolver DNS cerca del usuario. Invertir la relación o igualar edge y AZ es el error típico. Si el requisito fuera ubicar la base de datos tolerante a fallos, la capa correcta serían las Availability Zones de la Región.',
 		porQueOpcion: [
 			'Correcta: refleja la jerarquía Región, Availability Zone y punto de presencia.',
 			'Incorrecto: invierte la relación; la Availability Zone está dentro de la Región, no al contrario.',
 			'Incorrecto: son infraestructuras distintas con propósitos distintos, no un cambio de nombre.',
 			'Incorrecto: una Región agrupa varias Availability Zones, y ninguna es copia de seguridad de otra.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/whitepapers/latest/aws-overview/global-infrastructure.html',
 		],
 	},
 	{
@@ -32,19 +35,22 @@ export const profesionalTask32: PreguntaProfesionalClfC02[] = [
 		question:
 			'Una aplicación crítica debe seguir atendiendo el servicio aunque falle por completo un centro de datos. ¿Qué diseño cumple el objetivo?',
 		options: [
-			'Ejecutar todas las instancias en una sola Availability Zone y hacer snapshots cada hora.',
+			'Ejecutar todas las instancias en una sola Availability Zone y hacer snapshots cada hora para poder restaurar el servicio con rapidez.',
 			'Distribuir las instancias en varias Availability Zones de la misma Región detrás de un balanceador.',
 			'Ejecutar una única instancia de mayor tamaño en una sola Availability Zone.',
 			'Guardar copias de los datos en una edge location cercana.',
 		],
 		correctAnswer: 1,
 		explanation:
-			'La alta disponibilidad se consigue con redundancia activa: réplicas en varias Availability Zones, cada una con infraestructura independiente, y un balanceador que reparte el tráfico. Una sola Availability Zone, aunque tenga snapshots o más capacidad, sigue siendo un punto único de fallo.',
+			'La alta disponibilidad se consigue con redundancia activa: réplicas en varias Availability Zones, cada una con infraestructura independiente, y un balanceador que reparte el tráfico. Una sola Availability Zone, aunque tenga snapshots o más capacidad, sigue siendo un punto único de fallo, y el edge no aloja la aplicación. Si el escenario pidiera sobrevivir a la pérdida de una Región completa, la respuesta sería replicar en varias Regiones.',
 		porQueOpcion: [
 			'Incorrecto: los snapshots permiten recuperar datos, pero no evitan la interrupción al caer la Availability Zone.',
 			'Correcta: reparte la carga entre Availability Zones aisladas frente al fallo de un centro de datos.',
 			'Incorrecto: una instancia más grande en una sola Availability Zone no elimina el punto único de fallo.',
 			'Incorrecto: las edge locations sirven contenido, no alojan la aplicación ni cubren el fallo de la Availability Zone.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/whitepapers/latest/aws-overview/global-infrastructure.html',
 		],
 	},
 	{
@@ -56,18 +62,21 @@ export const profesionalTask32: PreguntaProfesionalClfC02[] = [
 			'¿Por qué se afirma que las Availability Zones de una Región no comparten un punto único de fallo?',
 		options: [
 			'Porque cada Availability Zone tiene su propia alimentación, refrigeración y red, de modo que un fallo físico de una no afecta a las demás.',
-			'Porque todas las Availability Zones dependen del mismo centro de datos para reducir la latencia.',
-			'Porque las Availability Zones solo existen en Regiones con más de una cuenta de AWS.',
-			'Porque AWS reubica automáticamente los recursos de la Availability Zone que falla hacia otra.',
+			'Porque todas las Availability Zones dependen del mismo centro de datos para reducir la latencia y comparten entre ellas la energía, la refrigeración y la red.',
+			'Porque las Availability Zones solo existen en las Regiones que tienen más de una cuenta de AWS asociada.',
+			'Porque AWS reubica automáticamente los recursos de la Availability Zone que falla hacia otra zona sana.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'El aislamiento físico es lo que evita el punto único de fallo: cada Availability Zone dispone de alimentación, refrigeración y red independientes, por lo que un fallo localizado no se propaga. AWS no reubica recursos automáticamente entre Availability Zones.',
+			'El aislamiento físico es lo que evita el punto único de fallo: cada Availability Zone dispone de alimentación, refrigeración y red independientes, por lo que un fallo localizado no se propaga. Compartir un único centro de datos sería justamente el punto único de fallo, y AWS no reubica recursos automáticamente entre zonas. Si el requisito fuera cubrir el fallo de una zona, la conmutación la diseña el cliente, no ocurre de forma automática.',
 		porQueOpcion: [
 			'Correcta: el aislamiento de infraestructura es la razón de que no compartan punto único de fallo.',
 			'Incorrecto: compartir centro de datos sería justamente el punto único de fallo que se evita.',
 			'Incorrecto: el número de cuentas no tiene relación con la existencia de las Availability Zones.',
 			'Incorrecto: la conmutación entre Availability Zones es responsabilidad del diseño del cliente, no una reubicación automática de AWS.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/whitepapers/latest/aws-overview/global-infrastructure.html',
 		],
 	},
 	{
@@ -79,18 +88,21 @@ export const profesionalTask32: PreguntaProfesionalClfC02[] = [
 			'Una empresa debe cumplir la residencia de datos en el país de sus clientes y, a la vez, disponer de recuperación ante el fallo de una Región completa. ¿Qué decisión de diseño es correcta?',
 		options: [
 			'Elegir una Región en el país para los datos y otra Región distinta con replicación para la recuperación ante desastres.',
-			'Usar solo edge locations, porque replican los datos por todo el mundo.',
-			'Concentrar todo en una única Availability Zone para simplificar el cumplimiento.',
-			'Guardar los snapshots en la misma Región y no replicar a otra.',
+			'Usar solo edge locations, porque replican los datos maestros por todo el mundo y garantizan la residencia en cada país donde hay usuarios.',
+			'Concentrar todo en una única Availability Zone para simplificar el cumplimiento y abaratar la réplica.',
+			'Guardar los snapshots en la misma Región y no replicar a otra para evitar costes de transferencia.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'La residencia de datos exige fijar la Región en el país o marco legal aplicable, y la continuidad frente al fallo regional exige replicar a otra Región. Las edge locations no replican datos maestros y una sola Availability Zone o los snapshots locales no cubren la pérdida de una Región.',
+			'La residencia de datos exige fijar la Región en el país o marco legal aplicable, y la continuidad frente al fallo regional exige replicar a otra Región. Las edge locations no replican datos maestros, y una sola Availability Zone o los snapshots locales no cubren la pérdida de una Región. Si el requisito fuera solo residencia sin necesidad de recuperación regional, bastaría con fijar la Región correcta.',
 		porQueOpcion: [
 			'Correcta: cubre residencia y recuperación regional con dos decisiones complementarias.',
 			'Incorrecto: las edge locations no alojan ni replican los datos maestros.',
 			'Incorrecto: una sola Availability Zone no cubre la pérdida de una Región completa.',
 			'Incorrecto: los snapshots en la misma Región se pierden si cae la Región.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/whitepapers/latest/aws-overview/global-infrastructure.html',
 		],
 	},
 	{
@@ -108,12 +120,15 @@ export const profesionalTask32: PreguntaProfesionalClfC02[] = [
 		],
 		correctAnswer: 0,
 		explanation:
-			'Las edge locations acercan el contenido al usuario final y reducen la latencia de entrega; de hecho, Amazon CloudFront se apoya en ellas. No alojan los datos maestros ni sustituyen a la Región, y no cambian la capacidad de cómputo.',
+			'Las edge locations acercan el contenido al usuario final y reducen la latencia de entrega; de hecho, Amazon CloudFront se apoya en ellas. No alojan los datos maestros ni sustituyen a la Región, y no cambian la capacidad de cómputo. Si el requisito fuera acercar también los datos de origen, la decisión sería elegir varias Regiones.',
 		porQueOpcion: [
 			'Correcta: el beneficio del edge es la proximidad al usuario y la menor latencia.',
 			'Incorrecto: el origen y los datos maestros siguen en la Región.',
 			'Incorrecto: el edge sirve contenido, no amplía el cómputo de la base de datos.',
 			'Incorrecto: Amazon CloudFront usa las edge locations, no las elimina.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html',
 		],
 	},
 	{
@@ -125,18 +140,21 @@ export const profesionalTask32: PreguntaProfesionalClfC02[] = [
 			'¿Qué contrapartida implica extender una arquitectura a varias Regiones en lugar de mantenerla en una sola?',
 		options: [
 			'Se gana separación geográfica para recuperación y latencia, pero aumentan la complejidad operativa y los costes de réplica y transferencia.',
-			'Se gana simplicidad operativa, porque las Regiones comparten la misma red y los mismos datos.',
-			'No hay contrapartida: usar varias Regiones siempre reduce la factura.',
-			'Se pierde la posibilidad de usar varias Availability Zones dentro de cada Región.',
+			'Se gana simplicidad operativa, porque las Regiones comparten la misma red, los mismos datos y las mismas Availability Zones sin replicación.',
+			'No hay contrapartida: usar varias Regiones siempre reduce la factura y elimina la necesidad de replicar datos.',
+			'Se pierde la posibilidad de usar varias Availability Zones dentro de cada Región replicada y de elegir el motor.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'El uso de varias Regiones aporta recuperación ante desastres, continuidad, menor latencia y cumplimiento de residencia, pero añade complejidad de operación y costes de replicación y transferencia de datos entre Regiones.',
+			'El uso de varias Regiones aporta recuperación ante desastres, continuidad, menor latencia y cumplimiento de residencia, pero añade complejidad de operación y costes de replicación y transferencia de datos entre Regiones. Las Regiones no comparten red ni datos, y cada una conserva sus Availability Zones. Si el requisito fuera solo resistir el fallo de una zona, bastaría con varias Availability Zones en una Región.',
 		porQueOpcion: [
 			'Correcta: resume el beneficio y su coste real.',
 			'Incorrecto: las Regiones no comparten red ni datos; replicarlos es precisamente el coste.',
 			'Incorrecto: la replicación y la transferencia entre Regiones tienen coste.',
 			'Incorrecto: cada Región conserva sus propias Availability Zones.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/whitepapers/latest/aws-overview/global-infrastructure.html',
 		],
 	},
 ];

@@ -6,21 +6,26 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 		taskId: '2.3',
 		objetivos: ['2.3#1'],
 		tipo: 'trampa',
-		question: '¿Qué controla AWS Identity and Access Management (IAM)?',
+		question:
+			'Una empresa necesita que cada identidad de su cuenta reciba únicamente los permisos que le corresponden sobre recursos concretos y que esos permisos se definan con políticas. ¿Qué controla esa capa de AWS?',
 		options: [
 			'Quién puede autenticarse y qué acciones puede realizar sobre qué recursos dentro de una cuenta.',
-			'El cifrado en reposo de los volúmenes de almacenamiento.',
-			'El enrutamiento del tráfico de red entre regiones de AWS.',
-			'La facturación consolidada de varias cuentas de AWS.',
+			'El cifrado en reposo de los volúmenes de almacenamiento y de las bases de datos de la cuenta.',
+			'El enrutamiento del tráfico de red entre las regiones y las Availability Zones de AWS.',
+			'La facturación consolidada de varias cuentas y el reparto de costes entre los equipos de la organización.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'IAM gobierna la autenticación y la autorización dentro de una cuenta mediante identidades (usuarios, grupos, roles) y políticas que indican qué acciones se permiten o deniegan sobre qué recursos. El cifrado, el enrutamiento y la facturación consolidada corresponden a otras capacidades.',
+			'El servicio de identidades y accesos gobierna la autenticación y la autorización dentro de una cuenta mediante identidades (usuarios, grupos, roles) y políticas que indican qué acciones se permiten o deniegan sobre qué recursos. El cifrado, el enrutamiento y la facturación consolidada corresponden a otras capacidades. Si cambia el escenario a empleados con directorio corporativo, entraría un centro de identidad centralizado.',
 		porQueOpcion: [
-			'Correcta: IAM define identidades y permisos sobre recursos de la cuenta.',
+			'Correcta: define identidades y permisos sobre recursos de la cuenta.',
 			'Incorrecta: el cifrado en reposo lo gestionan servicios como AWS KMS, no IAM.',
 			'Incorrecta: el enrutamiento pertenece a la capa de red, no a IAM.',
 			'Incorrecta: la facturación consolidada la ofrece AWS Organizations.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/kms/',
+			'https://docs.aws.amazon.com/organizations/',
 		],
 	},
 	{
@@ -32,18 +37,21 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 			'Un equipo planea usar la cuenta raíz (root user) para las tareas diarias porque siempre tiene permisos. ¿Por qué es una mala práctica?',
 		options: [
 			'Porque el root user tiene acceso total y sus permisos no se pueden restringir con políticas de IAM, de modo que comprometerlo compromete toda la cuenta.',
-			'Porque el root user no puede activar MFA ni cambiar el plan de soporte de la cuenta.',
-			'Porque el root user no queda registrado en los eventos de AWS CloudTrail.',
-			'Porque el root user solo puede iniciar sesión con claves de acceso, nunca con contraseña.',
+			'Porque el root user no puede activar MFA ni cambiar el plan de soporte de la cuenta, y además no admite contraseña propia.',
+			'Porque el root user no queda registrado en los eventos de AWS CloudTrail ni en ningún otro registro de la cuenta, de modo que sus acciones no se pueden auditar después.',
+			'Porque el root user solo puede iniciar sesión con claves de acceso y nunca con la contraseña de la cuenta.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'El root user conserva acceso completo y no admite restricciones mediante políticas de IAM, por lo que usarlo a diario amplía innecesariamente la superficie de riesgo. Su uso debe reservarse a las tareas que solo él puede realizar, con MFA activado.',
+			'El root user conserva acceso completo y no admite restricciones mediante políticas de IAM, por lo que usarlo a diario amplía innecesariamente la superficie de riesgo. Su uso debe reservarse a las tareas que solo él puede realizar, con MFA activado. Si cambia el escenario a un administrador de IAM, este sí puede ver sus permisos restringidos por políticas.',
 		porQueOpcion: [
 			'Correcta: su acceso irrestricto es la razón de protegerlo y no usarlo a diario.',
 			'Incorrecta: el root user sí puede activar MFA y cambiar el plan de soporte.',
 			'Incorrecta: las acciones del root user sí se registran en AWS CloudTrail.',
 			'Incorrecta: el root user inicia sesión con contraseña y puede requerir MFA.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/cloudtrail/',
 		],
 	},
 	{
@@ -52,7 +60,7 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 		objetivos: ['2.3#3'],
 		tipo: 'escenario',
 		question:
-			'Un analista solo necesita leer informes de facturación durante un trimestre. ¿Qué asignación respeta el principio de menor privilegio?',
+			'Aunque la normativa interna obliga a revisar los accesos cada trimestre, un analista solo necesita leer informes de facturación durante ese periodo. ¿Qué asignación respeta el principio de menor privilegio?',
 		options: [
 			'Un permiso temporal limitado a leer los informes de facturación, retirado al final del trimestre.',
 			'La política de administrador, porque evita tener que solicitar permisos adicionales.',
@@ -61,12 +69,15 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 		],
 		correctAnswer: 0,
 		explanation:
-			'El principio de menor privilegio concede únicamente las acciones necesarias, sobre los recursos necesarios y durante el tiempo necesario. La política de administrador, el acceso permanente a toda la cuenta y las credenciales del root user exceden con creces la necesidad.',
+			'El principio de menor privilegio concede únicamente las acciones necesarias, sobre los recursos necesarios y durante el tiempo necesario. La política de administrador, el acceso permanente a toda la cuenta y las credenciales del root user exceden con creces la necesidad. Si cambia el requisito a un solo recurso, el permiso se acotaría aún más.',
 		porQueOpcion: [
 			'Correcta: permiso mínimo, acotado y temporal.',
 			'Incorrecta: administrador otorga mucho más de lo necesario.',
 			'Incorrecta: el acceso permanente y amplio contradice el principio.',
 			'Incorrecta: compartir el root user elimina cualquier control.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html',
 		],
 	},
 	{
@@ -84,12 +95,18 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 		],
 		correctAnswer: 0,
 		explanation:
-			'AWS IAM Identity Center centraliza el inicio de sesión único, se integra con el directorio o proveedor de identidad corporativo y asigna permission sets por cuenta y por grupo. AWS Secrets Manager almacena secretos, AWS Certificate Manager (ACM) gestiona certificados y AWS Trusted Advisor revisa mejores prácticas.',
+			'AWS IAM Identity Center centraliza el inicio de sesión único, se integra con el directorio o proveedor de identidad corporativo y asigna permission sets por cuenta y por grupo. AWS Secrets Manager almacena secretos, AWS Certificate Manager (ACM) gestiona certificados y AWS Trusted Advisor revisa mejores prácticas. Si cambia el requisito a almacenar secretos, la respuesta sería AWS Secrets Manager.',
 		porQueOpcion: [
 			'Correcta: IAM Identity Center ofrece acceso federado y permisos por grupo y cuenta.',
 			'Incorrecta: AWS Secrets Manager almacena y rota secretos, no federación de personal.',
 			'Incorrecta: AWS Certificate Manager (ACM) aprovisiona certificados TLS.',
 			'Incorrecta: AWS Trusted Advisor hace recomendaciones, no gestiona identidades.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/singlesignon/',
+			'https://docs.aws.amazon.com/secretsmanager/',
+			'https://docs.aws.amazon.com/acm/',
+			'https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html',
 		],
 	},
 	{
@@ -100,19 +117,22 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 		question:
 			'El equipo debe decidir cómo manejar credenciales y secretos de una aplicación. ¿Qué afirmación es correcta?',
 		options: [
-			'Las claves de acceso de IAM son credenciales de larga duración y no deben incluirse en el código; los secretos deben almacenarse en AWS Secrets Manager, que admite cifrado y rotación.',
-			'Las claves de acceso deben incluirse en el código fuente para que la aplicación las lea al arrancar.',
-			'AWS Secrets Manager sustituye a las políticas de IAM y concede permisos por sí mismo.',
-			'Las contraseñas deben guardarse en las etiquetas de los recursos para poder consultarlas fácilmente.',
+			'Las claves de acceso son credenciales de larga duración y no deben incluirse en el código; los secretos se guardan en un almacén gestionado con cifrado y rotación.',
+			'Las claves de acceso deben incluirse en el código fuente para que la aplicación las lea al arrancar sin configuración adicional ni variables de entorno ni almacenes de secretos.',
+			'El almacén de secretos sustituye a las políticas de IAM y concede por sí mismo los permisos que necesita la aplicación para acceder a cada recurso.',
+			'Las contraseñas deben guardarse en las etiquetas de los recursos para poder consultarlas fácilmente desde la consola y desde los informes de costes.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'Las claves de acceso son credenciales programáticas de larga duración y su exposición en el código es un riesgo grave; los secretos se guardan en un almacén gestionado como AWS Secrets Manager, con cifrado, control de acceso y rotación. El almacén no otorga permisos por sí mismo.',
+			'Las claves de acceso son credenciales programáticas de larga duración y su exposición en el código es un riesgo grave; los secretos se guardan en un almacén gestionado con cifrado, control de acceso y rotación. El almacén no otorga permisos por sí mismo. Si cambia el requisito a una aplicación dentro de AWS, se preferiría un rol con credenciales temporales.',
 		porQueOpcion: [
 			'Correcta: separa el riesgo de las claves permanentes del uso de un almacén gestionado.',
 			'Incorrecta: incrustar claves en el código las expone a quien lea el repositorio.',
 			'Incorrecta: los permisos los definen las políticas de IAM, no el almacén.',
 			'Incorrecta: las etiquetas son metadatos visibles, no un lugar seguro para secretos.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html',
 		],
 	},
 	{
@@ -124,18 +144,21 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 			'La empresa exige un segundo factor para las personas y llamadas entre cuentas sin claves permanentes. ¿Qué combinación cumple ambos requisitos?',
 		options: [
 			'MFA para las personas y roles de IAM entre cuentas (o IAM Identity Center) que entregan credenciales temporales.',
-			'Contraseñas sin segundo factor y claves de acceso de larga duración compartidas entre las cuentas.',
+			'Contraseñas sin segundo factor y claves de acceso de larga duración compartidas entre las cuentas y repartidas entre los equipos de la organización.',
 			'Solo el root user con MFA para todas las operaciones de la organización.',
 			'Cifrado en reposo para las cuentas y certificados TLS para las personas.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'El MFA refuerza el inicio de sesión de las personas y los roles entre cuentas o IAM Identity Center entregan credenciales temporales a los servicios, sin claves permanentes. Concentrar todo en el root user o repartir claves de larga duración contradice el principio de menor privilegio.',
+			'El MFA refuerza el inicio de sesión de las personas y los roles entre cuentas o IAM Identity Center entregan credenciales temporales a los servicios, sin claves permanentes. Concentrar todo en el root user o repartir claves de larga duración contradice el principio de menor privilegio. Si cambia el requisito a autenticar clientes finales, la respuesta sería un servicio de identidades para aplicaciones.',
 		porQueOpcion: [
 			'Correcta: combina MFA para personas y credenciales temporales para servicios.',
 			'Incorrecta: ninguna de las dos medidas cumple los requisitos planteados.',
 			'Incorrecta: usar solo el root user multiplica el riesgo y no aporta credenciales temporales.',
 			'Incorrecta: el cifrado y los certificados no autentican personas ni servicios.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/singlesignon/',
 		],
 	},
 	{
@@ -146,18 +169,21 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 		question: '¿Qué afirmación describe correctamente grupos, usuarios y políticas en IAM?',
 		options: [
 			'El usuario es una identidad individual, el grupo reúne usuarios para asignarles permisos en común y la política define qué acciones se permiten o deniegan.',
-			'El grupo es una identidad que puede iniciar sesión y el usuario es solo una etiqueta de facturación.',
-			'La política siempre concede todos los permisos y no admite denegaciones explícitas.',
-			'Los usuarios de IAM heredan automáticamente todos los permisos del root user.',
+			'El grupo es una identidad que puede iniciar sesión con contraseña propia y el usuario es solo una etiqueta de facturación sin credenciales dentro de la cuenta.',
+			'La política siempre concede todos los permisos posibles sobre la cuenta y no admite denegaciones explícitas sobre recursos concretos.',
+			'Los usuarios de IAM heredan automáticamente todos los permisos del root user de la cuenta en el momento de crearse.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'El usuario representa a una persona o aplicación, el grupo agrupa usuarios para asignarles permisos de forma común y las políticas documentan los permisos permitidos o denegados. Los grupos no inician sesión, las políticas admiten denegaciones y ningún usuario hereda los permisos del root user.',
+			'El usuario representa a una persona o aplicación, el grupo agrupa usuarios para asignarles permisos de forma común y las políticas documentan los permisos permitidos o denegados. Los grupos no inician sesión, las políticas admiten denegaciones y ningún usuario hereda los permisos del root user. Si cambia el requisito a permisos temporales, la respuesta sería un rol.',
 		porQueOpcion: [
 			'Correcta: define correctamente usuario, grupo y política.',
 			'Incorrecta: el grupo no es una identidad con acceso propio ni el usuario es una etiqueta.',
 			'Incorrecta: las políticas admiten permisos y denegaciones explícitas.',
 			'Incorrecta: los permisos del root user no se heredan.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html',
 		],
 	},
 	{
@@ -174,12 +200,15 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 		],
 		correctAnswer: 0,
 		explanation:
-			'Tareas como cambiar el plan de soporte, cerrar la cuenta, modificar el correo o el nombre de la cuenta o restaurar los permisos de un administrador de IAM quedan reservadas al root user. Crear usuarios, adjuntar políticas e iniciar instancias son tareas delegables.',
+			'Tareas como cambiar el plan de soporte, cerrar la cuenta, modificar el correo o el nombre de la cuenta o restaurar los permisos de un administrador de IAM quedan reservadas al root user. Crear usuarios, adjuntar políticas e iniciar instancias son tareas delegables. Si cambia la tarea a restaurar los permisos de un administrador, seguiría siendo del root user.',
 		porQueOpcion: [
 			'Correcta: cambiar el plan de soporte y cerrar la cuenta son tareas exclusivas del root user.',
 			'Incorrecta: un administrador de IAM puede crear usuarios.',
 			'Incorrecta: adjuntar políticas es una tarea delegable.',
 			'Incorrecta: iniciar instancias lo permite una política de IAM adecuada.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/ec2/',
 		],
 	},
 	{
@@ -191,18 +220,21 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 			'Un cliente quiere proteger su root user sin dejar de administrar la cuenta. ¿Qué conjunto de medidas es correcto?',
 		options: [
 			'Activar MFA en el root user, no crear claves de acceso para él y usar una identidad administrativa de IAM para el trabajo diario.',
-			'Crear claves de acceso para el root user y usarlas en los scripts automatizados.',
-			'Compartir la contraseña del root user con todo el equipo de operaciones.',
-			'Desactivar AWS CloudTrail para que no quede registro de las acciones del root user.',
+			'Crear claves de acceso para el root user y usarlas en los scripts automatizados de despliegue de la organización.',
+			'Compartir la contraseña del root user con todo el equipo de operaciones para repartir la carga de administración y evitar bloqueos.',
+			'Desactivar AWS CloudTrail para que no quede registro de las acciones del root user ni de los cambios de la cuenta.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'Proteger el root user combina activar MFA, evitar claves de acceso de larga duración y reservarlo para las tareas que solo él puede hacer, realizando el trabajo diario con una identidad administrativa de IAM. Compartir credenciales o desactivar el registro aumenta el riesgo.',
+			'Proteger el root user combina activar MFA, evitar claves de acceso de larga duración y reservarlo para las tareas que solo él puede hacer, realizando el trabajo diario con una identidad administrativa de IAM. Compartir credenciales o desactivar el registro aumenta el riesgo. Si se necesitara federar el acceso, se usaría un centro de identidad centralizado.',
 		porQueOpcion: [
 			'Correcta: reúne las medidas recomendadas para proteger el root user.',
 			'Incorrecta: las claves de acceso del root user amplían el riesgo de exposición.',
 			'Incorrecta: compartir la contraseña elimina la trazabilidad individual.',
 			'Incorrecta: desactivar el registro dificulta la auditoría y la respuesta.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/cloudtrail/',
 		],
 	},
 	{
@@ -214,18 +246,21 @@ export const profesionalTask23: PreguntaProfesionalClfC02[] = [
 			'Los empleados deben iniciar sesión en AWS con las credenciales de su proveedor de identidad corporativo, sin usuarios de IAM propios. ¿Qué tipo de gestión de identidades es?',
 		options: [
 			'Identidad federada con un proveedor de identidad externo y credenciales temporales.',
-			'Autenticación local con una contraseña de IAM por empleado.',
+			'Autenticación local con una contraseña de IAM por empleado y con credenciales propias administradas en la cuenta.',
 			'Autenticación con la contraseña compartida del root user.',
 			'Cifrado en reposo de los directorios de cada usuario.',
 		],
 		correctAnswer: 0,
 		explanation:
-			'La identidad federada delega la autenticación en un proveedor de identidad externo y emite credenciales temporales para el acceso, de modo que no se crean contraseñas de IAM por empleado. La autenticación local y el uso compartido del root user son alternativas peores en seguridad.',
+			'La identidad federada delega la autenticación en un proveedor de identidad externo y emite credenciales temporales para el acceso, de modo que no se crean contraseñas de IAM por empleado. La autenticación local y el uso compartido del root user son alternativas peores en seguridad. Si cambia el escenario a clientes finales de una aplicación, la respuesta sería un servicio de identidades para aplicaciones.',
 		porQueOpcion: [
 			'Correcta: describe la federación con un proveedor de identidad externo.',
 			'Incorrecta: la autenticación local crea credenciales de IAM por persona, lo que se quiere evitar.',
 			'Incorrecta: compartir el root user no es federación ni ofrece credenciales temporales.',
 			'Incorrecta: el cifrado en reposo no tiene relación con la autenticación de personas.',
+		],
+		fuentes: [
+			'https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html',
 		],
 	},
 ];

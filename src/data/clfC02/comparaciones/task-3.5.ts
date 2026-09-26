@@ -61,4 +61,34 @@ export const paresTask35: ParConfusionClfC02[] = [
 		preguntaIds: ['3.5-q7'],
 		objetivos: ['3.5#3'],
 	},
+	{
+		id: 'route53-vs-cloudfront',
+		etiqueta: 'Amazon Route 53 vs Amazon CloudFront',
+		a: {
+			titulo: 'Amazon Route 53 (DNS)',
+			resumen:
+				'Servicio de DNS gestionado: registra dominios, traduce nombres a direcciones o destinos de AWS y aplica políticas de enrutamiento y comprobaciones de estado. No almacena ni sirve el contenido.',
+		},
+		b: {
+			titulo: 'Amazon CloudFront (entrega de contenido)',
+			resumen:
+				'Red de entrega de contenido: cachea los archivos en ubicaciones de borde cercanas al usuario y los sirve con baja latencia, reduciendo la carga sobre el origen. No resuelve nombres de dominio.',
+		},
+		diferenciaClave:
+			'El DNS decide a qué destino se dirige el usuario a partir del nombre; la red de entrega de contenido guarda y sirve el contenido cerca de ese usuario. Uno resuelve direcciones y el otro cachea y entrega datos.',
+		cuandoA: [
+			'Cuando necesitas publicar un dominio, resolver nombres y aplicar políticas como failover o latencia.',
+			'Cuando quieres desviar el tráfico a otro destino si el principal deja de responder.',
+		],
+		cuandoB: [
+			'Cuando sirves contenido estático o descargable a usuarios repartidos por el mundo y quieres reducir la latencia.',
+			'Cuando buscas descargar el origen y acelerar la entrega de imágenes, vídeo o archivos.',
+		],
+		escenarioA:
+			'Una empresa publica `app.ejemplo.com` y configura una comprobación de estado con failover para que el dominio apunte al servidor secundario si el principal deja de responder.',
+		escenarioB:
+			'La misma empresa distribuye las imágenes y los vídeos de su catálogo desde ubicaciones de borde, de modo que el usuario los recibe desde el punto más cercano.',
+		preguntaIds: ['3.5-q12'],
+		objetivos: ['3.5#4'],
+	},
 ];

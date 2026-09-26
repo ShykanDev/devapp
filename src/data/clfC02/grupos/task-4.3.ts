@@ -23,6 +23,10 @@ export const gruposTask43: GrupoTematico[] = [
 				],
 			},
 			{
+				tipo: 'comparacion',
+				parId: 'documentacion-oficial-vs-comunidad-y-guias',
+			},
+			{
 				tipo: 'errorComun',
 				error: 'Confundir AWS re:Post, que es una comunidad de preguntas y respuestas, con el AWS Support Center, que es el canal formal para abrir y gestionar casos de soporte.',
 				correccion:
@@ -46,7 +50,7 @@ export const gruposTask43: GrupoTematico[] = [
 		bloques: [
 			{
 				tipo: 'concepto',
-				md: '**AWS Support** ofrece varios planes que se escalonan según la asistencia que necesita el cliente:\n\n- **Basic Support**: incluido sin coste en toda cuenta. Da acceso a documentación, whitepapers, AWS re:Post, el AWS Health Dashboard y las comprobaciones básicas de AWS Trusted Advisor. No incluye casos técnicos: solo permite consultas de facturación y cuenta.\n- **AWS Developer Support**: asistencia técnica por correo en horario laboral, con un contacto designado y tiempos de respuesta de negocio; pensado para desarrollo y pruebas.\n- **AWS Business Support**: asistencia 24/7 por teléfono, chat y correo, todas las comprobaciones de AWS Trusted Advisor y tiempos de respuesta más cortos; adecuado para producción.\n- **AWS Enterprise On-Ramp Support**: para cargas moderadas que necesitan guía proactiva, con acceso a un grupo de Technical Account Managers (TAM).\n- **AWS Enterprise Support**: el nivel más completo, con TAM designado, revisión proactiva de la arquitectura y el menor tiempo de respuesta para sistemas críticos.\n\nMás allá de los planes, el cliente dispone de asistencia técnica con **AWS Professional Services** y los **AWS solutions architects** para proyectos de diseño e implementación.',
+				md: '**AWS Support** ofrece varios planes que se escalonan según la asistencia que necesita el cliente:\n\n- **Basic Support**: incluido sin coste en toda cuenta. Da acceso a documentación, whitepapers, AWS re:Post, el AWS Health Dashboard y las comprobaciones básicas de AWS Trusted Advisor. No incluye casos técnicos: solo permite consultas de facturación y cuenta.\n- **AWS Developer Support**: asistencia técnica por correo en horario laboral, con un contacto designado y tiempos de respuesta de negocio; pensado para desarrollo y pruebas.\n- **AWS Business Support**: asistencia 24/7 por teléfono, chat y correo, todas las comprobaciones de AWS Trusted Advisor y tiempos de respuesta más cortos; adecuado para producción.\n- **AWS Enterprise On-Ramp Support**: para cargas moderadas que necesitan guía proactiva, con acceso a un grupo de Technical Account Managers (TAM).\n- **AWS Enterprise Support**: el nivel más completo, con TAM designado, revisión proactiva de la arquitectura y el menor tiempo de respuesta para sistemas críticos.\n\nMás allá de los planes, el cliente dispone de asistencia técnica con **AWS Professional Services** y los **AWS solutions architects** para proyectos de diseño e implementación.\n\nAWS reorganiza periódicamente la familia de planes: renombra niveles y añade capacidades al nivel superior. Por eso lo evaluable no es memorizar la lista, sino la relación entre el nivel de soporte y estas dimensiones: canal y horario de atención, tiempo de respuesta por severidad, Technical Account Manager designado o compartido, revisión proactiva de la arquitectura y alcance de las comprobaciones de AWS Trusted Advisor. El exam guide vigente nombra AWS Developer Support, AWS Business Support, AWS Enterprise On-Ramp Support y AWS Enterprise Support; si al consultar la página actual ves otros nombres, la lógica de escalado es la misma.',
 			},
 			{
 				tipo: 'comparacion',
@@ -145,6 +149,24 @@ export const gruposTask43: GrupoTematico[] = [
 					'AWS Trusted Advisor solo recomienda; los cambios los decide y los ejecuta el cliente. El AWS Health Dashboard informa de eventos de los servicios de AWS que afectan a la cuenta, mientras que las métricas y alarmas de los recursos se gestionan con las herramientas de monitorización correspondientes.',
 			},
 			{
+				tipo: 'comparacion',
+				parId: 'trusted-advisor-vs-health-dashboard-y-api',
+			},
+			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa AWS Trusted Advisor para obtener recomendaciones de configuración y ahorro por categorías.',
+					'Usa el AWS Health Dashboard para ver el estado de los servicios de AWS y los eventos que afectan a tus recursos.',
+					'Usa la AWS Health API cuando necesites consumir esa información de salud de forma programática y automatizar alertas.',
+				],
+				noUsar: [
+					'No uses AWS Trusted Advisor para vigilar métricas o alarmas en tiempo real: eso es Amazon CloudWatch.',
+					'No uses el AWS Health Dashboard como sistema de monitorización de tus propios recursos: informa de eventos de AWS, no de tus métricas.',
+					'No esperes que la AWS Health API aplique cambios por sí sola: expone la información para que tú automatices la reacción.',
+					'No cuentes con las comprobaciones completas de Trusted Advisor ni con la API de salud si el plan de soporte no las incluye.',
+				],
+			},
+			{
 				tipo: 'clave',
 				items: [
 					'AWS Trusted Advisor recomienda en cinco categorías, incluida la optimización de costos.',
@@ -194,6 +216,10 @@ export const gruposTask43: GrupoTematico[] = [
 				error: 'Confundir el AWS Partner Network con AWS Marketplace y creer que AWS Trust and Safety ofrece soporte técnico.',
 				correccion:
 					'El AWS Partner Network es el programa de partners, con consultoras e ISV; AWS Marketplace es el catálogo digital donde se compran sus soluciones. AWS Trust and Safety gestiona denuncias de abuso de recursos de AWS, no incidencias técnicas de la cuenta.',
+			},
+			{
+				tipo: 'comparacion',
+				parId: 'partners-y-marketplace-vs-canales-de-soporte',
 			},
 			{
 				tipo: 'clave',

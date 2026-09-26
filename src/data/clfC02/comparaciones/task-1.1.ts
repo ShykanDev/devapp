@@ -31,4 +31,34 @@ export const paresTask11: ParConfusionClfC02[] = [
 		preguntaIds: ['1.1-q6'],
 		objetivos: ['1.1#3'],
 	},
+	{
+		id: 'velocidad-despliegue-vs-alcance-global',
+		etiqueta: 'Velocidad de despliegue vs alcance global',
+		a: {
+			titulo: 'Velocidad de despliegue',
+			resumen:
+				'La infraestructura global permite crear recursos en la región elegida en minutos, sin esperar a comprar ni montar hardware. Responde a cuánto tarda una idea en llegar a producción.',
+		},
+		b: {
+			titulo: 'Alcance global',
+			resumen:
+				'La misma plataforma está disponible en muchas zonas geográficas, de modo que una aplicación puede atender a usuarios de varios continentes sin abrir centros de datos propios.',
+		},
+		diferenciaClave:
+			'La velocidad de despliegue mide el tiempo de puesta en marcha; el alcance global mide la cobertura geográfica. Ambas nacen de la infraestructura global, pero responden a problemas distintos: el plazo y la audiencia.',
+		cuandoA: [
+			'Cuando el plazo es el requisito principal y hay que poner recursos en producción cuanto antes.',
+			'Cuando el equipo necesita experimentar rápido sin comprar infraestructura propia.',
+		],
+		cuandoB: [
+			'Cuando la audiencia está repartida por varios continentes y hay que servirla sin abrir centros de datos en cada país.',
+			'Cuando conviene desplegar en la región cercana a cada grupo de usuarios.',
+		],
+		escenarioA:
+			'Una startup debe publicar su aplicación en dos semanas: aprovisiona los recursos en minutos en lugar de esperar a comprar y montar servidores.',
+		escenarioB:
+			'La misma aplicación atiende después a clientes de tres continentes desplegando en varias regiones, sin construir infraestructura propia en cada país.',
+		preguntaIds: ['1.1-q10'],
+		objetivos: ['1.1#2'],
+	},
 ];

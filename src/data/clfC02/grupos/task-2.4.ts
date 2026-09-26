@@ -22,6 +22,12 @@ export const gruposTask24: GrupoTematico[] = [
 					'AWS protege la infraestructura; el cliente configura y usa estas capacidades sobre su parte del modelo de responsabilidad compartida.',
 				],
 			},
+			{
+				tipo: 'errorComun',
+				error: 'Creer que AWS ofrece un único servicio de seguridad que cubre a la vez identidad, red, datos y cumplimiento, y que basta con activarlo.',
+				correccion:
+					'Las capacidades de seguridad de AWS son complementarias y se reparten por dominios: identidad y acceso, protección, detección, protección de datos, visibilidad y cumplimiento. Ninguna cubre todo por sí sola y el cliente las habilita y configura según el riesgo que quiera reducir.',
+			},
 		],
 		preguntasGuia: [
 			'¿En qué dominios se agrupan las capacidades de seguridad de AWS?',
@@ -53,6 +59,24 @@ export const gruposTask24: GrupoTematico[] = [
 				analisis:
 					'El filtrado de peticiones HTTP(S) maliciosas corresponde a **AWS WAF**, que se asocia a la distribución o al balanceador y bloquea las peticiones que coinciden con reglas. La absorción del tráfico de saturación corresponde a **AWS Shield**. Son capas distintas: WAF inspecciona el contenido de la petición; Shield protege frente al volumen del ataque.',
 				servicio: 'AWS WAF',
+			},
+			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa AWS WAF cuando el requisito sea inspeccionar y bloquear el contenido de peticiones HTTP(S), no el volumen de tráfico.',
+					'Usa AWS Shield cuando el requisito sea mitigar un ataque de denegación de servicio distribuido que busca saturar el servicio.',
+					'Usa Amazon Inspector cuando el requisito sea conocer vulnerabilidades y exposición de las cargas de trabajo.',
+					'Usa Amazon GuardDuty cuando el requisito sea detectar actividad maliciosa o sospechosa en la cuenta.',
+					'Usa AWS Security Hub cuando el requisito sea reunir y priorizar hallazgos de varias fuentes en un solo lugar.',
+					'Usa Amazon Macie para descubrir datos sensibles y Amazon Detective para investigar la causa de un hallazgo.',
+				],
+				noUsar: [
+					'No elijas Amazon GuardDuty para saber si una instancia tiene software desactualizado: eso es Inspector.',
+					'No elijas Amazon Inspector ni AWS Security Hub para absorber un ataque de volumen: eso es Shield.',
+					'No elijas AWS WAF para bloquear tráfico de red no HTTP (por ejemplo otro puerto): WAF trabaja sobre peticiones web.',
+					'No elijas AWS Firewall Manager como protección por sí sola: centraliza políticas, no sustituye al servicio que las aplica.',
+					'No elijas Amazon Macie para detectar amenazas activas ni Amazon Detective para configurar reglas: cada uno responde a una pregunta distinta.',
+				],
 			},
 			{
 				tipo: 'errorComun',

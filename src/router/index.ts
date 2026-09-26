@@ -181,6 +181,21 @@ const routes: Array<RouteRecordRaw> = [
     path: '/cloud-practitioner/profesional',
     name: 'clf-professional',
     component: () => import ('../views/clfC02/ClfProfessional.vue')
+  },
+  {
+    path: '/cloud-practitioner/reconocimiento',
+    name: 'clf-recognition',
+    component: () => import ('../views/clfC02/ClfRecognition.vue')
+  },
+  {
+    path: '/cloud-practitioner/evaluables',
+    name: 'clf-evaluables',
+    component: () => import ('../views/clfC02/ClfEvaluables.vue')
+  },
+  {
+    path: '/cloud-practitioner/transferencia',
+    name: 'clf-transfer',
+    component: () => import ('../views/clfC02/ClfTransfer.vue')
   }
 ]
 

@@ -37,12 +37,33 @@
 					<p class="clf-result__fallada-q">{{ fallada.question }}</p>
 					<p class="clf-result__fallada-a">
 						<AppIcon :icon="checkmarkCircleOutline" />
-						<span>{{ fallada.options[fallada.correctAnswer] }}</span>
+						<span>{{ textoCorrectas(fallada) }}</span>
 					</p>
-					<p v-if="respuestaDe(fallada.id) !== undefined" class="clf-result__fallada-elegida">
-						Tu respuesta: {{ fallada.options[respuestaDe(fallada.id)!] }}
+					<p v-if="textoElegidas(fallada)" class="clf-result__fallada-elegida">
+						Tu respuesta: {{ textoElegidas(fallada) }}
 					</p>
 					<p class="clf-result__fallada-exp">{{ fallada.explanation }}</p>
+					<div v-if="fallada.porQueOpcion" class="clf-result__opciones">
+						<p
+							v-for="(motivo, indice) in fallada.porQueOpcion"
+							:key="indice"
+							class="clf-result__opcion"
+							:class="{ 'clf-result__opcion--correcta': esCorrecta(fallada, indice) }"
+						>
+							<span class="clf-result__opcion-letra">{{ letra(indice) }}</span>
+							<span>{{ motivo }}</span>
+						</p>
+					</div>
+					<p v-if="fallada.fuentes && fallada.fuentes.length > 0" class="clf-result__fuentes">
+						<span>Más información:</span>
+						<a
+							v-for="(url, fuenteIndice) in fallada.fuentes"
+							:key="fuenteIndice"
+							:href="url"
+							target="_blank"
+							rel="noopener noreferrer"
+						>{{ fuenteIndice + 1 }}</a>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -69,7 +90,8 @@ import {
 	repeatOutline,
 } from 'ionicons/icons';
 import type { PreguntaBaseClfC02 } from '@/data/clfC02/types';
-import type { PuntajeIntento } from '@/lib/clfC02Practice';
+import { respuestasCorrectas } from '@/data/clfC02/types';
+import type { PuntajeIntento, RespuestaClfC02 } from '@/lib/clfC02Practice';
 import AppButton from '@/components/ui/AppButton.vue';
 import AppIcon from '@/components/ui/AppIcon.vue';
 import ClfProgressBar from './ClfProgressBar.vue';
@@ -78,7 +100,7 @@ const props = withDefaults(
 	defineProps<{
 		puntaje: PuntajeIntento;
 		preguntas: PreguntaBaseClfC02[];
-		respuestas?: Record<string, number>;
+		respuestas?: Record<string, RespuestaClfC02>;
 		etiqueta?: string;
 	}>(),
 	{ respuestas: () => ({}) }
@@ -92,8 +114,25 @@ const falladas = computed(() =>
 		.filter((pregunta): pregunta is PreguntaBaseClfC02 => Boolean(pregunta))
 );
 
-function respuestaDe(id: string): number | undefined {
-	return props.respuestas[id];
+function textoCorrectas(pregunta: PreguntaBaseClfC02): string {
+	return respuestasCorrectas(pregunta)
+		.map((indice) => pregunta.options[indice])
+		.join(' · ');
+}
+
+function textoElegidas(pregunta: PreguntaBaseClfC02): string {
+	const valor = props.respuestas[pregunta.id];
+	const indices = Array.isArray(valor) ? valor : typeof valor === 'number' ? [valor] : [];
+	if (indices.length === 0) return '';
+	return indices.map((indice) => pregunta.options[indice]).join(' · ');
+}
+
+function esCorrecta(pregunta: PreguntaBaseClfC02, indice: number): boolean {
+	return respuestasCorrectas(pregunta).includes(indice);
+}
+
+function letra(posicion: number): string {
+	return String.fromCharCode(65 + posicion);
 }
 </script>
 
@@ -266,6 +305,57 @@ function respuestaDe(id: string): number | undefined {
 	font-size: 12.5px;
 	line-height: 1.55;
 	color: var(--mt-ink-2);
+}
+
+.clf-result__opciones {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	padding-top: 6px;
+	border-top: 1px dashed var(--mt-line);
+}
+
+.clf-result__opcion {
+	display: flex;
+	align-items: flex-start;
+	gap: 7px;
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--mt-ink-3);
+}
+
+.clf-result__opcion--correcta {
+	color: var(--mt-success);
+}
+
+.clf-result__opcion-letra {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	flex-shrink: 0;
+	border-radius: 999px;
+	background: var(--mt-surface);
+	font-size: 10.5px;
+	font-weight: 700;
+}
+
+.clf-result__fuentes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+	margin: 0;
+	font-size: 12px;
+	color: var(--mt-ink-3);
+}
+
+.clf-result__fuentes a {
+	color: var(--mt-accent);
+	text-decoration: none;
+	font-weight: 600;
 }
 
 .clf-result__acciones {

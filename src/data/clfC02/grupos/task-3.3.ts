@@ -14,6 +14,25 @@ export const gruposTask33: GrupoTematico[] = [
 			{ tipo: 'servicio', nombre: 'AWS Lambda' },
 			{ tipo: 'servicio', nombre: 'AWS Elastic Beanstalk' },
 			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa máquinas virtuales cuando necesites control del sistema operativo, instalar software específico o procesos de larga duración.',
+					'Usa contenedores cuando quieras empaquetar la aplicación con sus dependencias y ejecutarla de forma portable.',
+					'Usa cómputo serverless cuando la carga llegue por eventos, sea corta y no necesite conservar estado.',
+				],
+				noUsar: [
+					'No uses cómputo serverless para procesos continuos, de larga duración o que necesiten conservar estado entre invocaciones.',
+					'No elijas máquinas virtuales solo por costumbre si la carga es corta y esporádica: mantener capacidad encendida desperdicia dinero.',
+					'No elijas un modelo por su tamaño o novedad: primero identifica el recurso limitante y el patrón de uso.',
+				],
+			},
+			{
+				tipo: 'errorComun',
+				error: 'Elegir el cómputo más potente o más nuevo en lugar de ajustar el modelo al requisito de control y al patrón de uso.',
+				correccion:
+					'El modelo se elige por cuánto control necesitas y cómo llega la carga: máquina virtual para control del sistema operativo y procesos largos, contenedores para empaquetado portable y serverless para eventos cortos y sin estado. Sobredimensionar o forzar serverless en cargas con estado no arregla el problema.',
+			},
+			{
 				tipo: 'clave',
 				items: [
 					'El cómputo en AWS va del control total de la máquina virtual al cómputo serverless sin servidores.',

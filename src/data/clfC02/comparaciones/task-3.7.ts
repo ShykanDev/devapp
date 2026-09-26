@@ -89,7 +89,7 @@ export const paresTask37: ParConfusionClfC02[] = [
 		escenarioB:
 			'Una aplicación agrega un buscador por palabras clave en imágenes etiquetando automáticamente su contenido sin entrenar nada.',
 		preguntaIds: ['3.7-q4'],
-		objetivos: ['3.7#3'],
+		objetivos: ['3.7#1', '3.7#3'],
 	},
 	{
 		id: 'athena-vs-glue-vs-kinesis',
@@ -119,6 +119,6 @@ export const paresTask37: ParConfusionClfC02[] = [
 		escenarioB:
 			'Una plataforma recibe miles de eventos por segundo y necesita calcular métricas en tiempo real sobre ese flujo continuo.',
 		preguntaIds: ['3.7-q8'],
-		objetivos: ['3.7#4'],
+		objetivos: ['3.7#2', '3.7#4'],
 	},
 ];

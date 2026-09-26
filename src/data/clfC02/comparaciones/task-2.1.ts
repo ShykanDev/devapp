@@ -29,7 +29,7 @@ export const paresTask21: ParConfusionClfC02[] = [
 		escenarioB:
 			'AWS mantiene las instalaciones, el hardware, la red y la capa de virtualización que alojan las instancias, algo que el cliente no puede controlar ni delegar.',
 		preguntaIds: ['2.1-q2'],
-		objetivos: ['2.1#2', '2.1#3', '2.1#4'],
+		objetivos: ['2.1#1', '2.1#2', '2.1#3', '2.1#4'],
 	},
 	{
 		id: 'seguridad-de-la-nube-vs-seguridad-en-la-nube',

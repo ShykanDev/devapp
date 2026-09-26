@@ -46,12 +46,44 @@ export type TipoPreguntaClfC02 =
 /**
  * Campos comunes a cualquier pregunta del módulo (banco normal y banco
  * profesional). Permite que un mismo runner puntúe ambos bancos.
+ *
+ * `formato` distingue la opción única oficial (4 opciones / 1 correcta) de la
+ * respuesta múltiple oficial (5 opciones / 2+ correctas, etiquetada
+ * `(Elige DOS)`/`(Elige TRES)` en el enunciado). En respuesta múltiple
+ * `correctAnswers` lleva los índices correctos y `correctAnswer` conserva el
+ * primero como respaldo de presentación.
  */
+export type FormatoPreguntaClfC02 = 'single' | 'multiple';
+
 export interface PreguntaBaseClfC02 extends ExamenQuestion {
 	id: string;
 	taskId: string;
 	objetivos: string[];
 	explanation: string;
+	/** Ausente equivale a `'single'`. */
+	formato?: FormatoPreguntaClfC02;
+	/** Solo cuando `formato === 'multiple'`: 2+ índices, incluye `correctAnswer`. */
+	correctAnswers?: number[];
+	/**
+	 * Razonamiento por opción ("Por qué es correcta" / "Por qué es incorrecta"),
+	 * alineado con `options`. Sustituye a la explicación única como mecanismo
+	 * principal (la explicación se conserva como resumen).
+	 */
+	porQueOpcion?: string[];
+	/** Fuentes oficiales (`docs.aws.amazon.com`) que respaldan el ítem. */
+	fuentes?: string[];
+}
+
+export function esPreguntaMultiple(pregunta: PreguntaBaseClfC02): boolean {
+	return pregunta.formato === 'multiple';
+}
+
+/** Índices correctos de una pregunta, sea single o multiple. */
+export function respuestasCorrectas(pregunta: PreguntaBaseClfC02): number[] {
+	if (esPreguntaMultiple(pregunta)) {
+		return pregunta.correctAnswers ?? [pregunta.correctAnswer];
+	}
+	return [pregunta.correctAnswer];
 }
 
 export interface PreguntaClfC02 extends PreguntaBaseClfC02 {

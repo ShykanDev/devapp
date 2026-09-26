@@ -14,6 +14,9 @@ import {
 } from '@/data/clfC02/registroContenido';
 import { glosarioGeneralClfC02 } from '@/data/clfC02/glosario/general';
 import { serviciosGeneralClfC02 } from '@/data/clfC02/servicios/general';
+import { reconocimientoClfC02 } from '@/data/clfC02/reconocimiento';
+import { evaluablesClfC02 } from '@/data/clfC02/evaluables';
+import { transferenciaClfC02 } from '@/data/clfC02/transferencia';
 import type { Bloque, GrupoTematico } from '@/data/clfC02/types';
 
 export type TipoEntradaIndice =
@@ -23,7 +26,10 @@ export type TipoEntradaIndice =
 	| 'pregunta'
 	| 'comparacion'
 	| 'glosario'
-	| 'servicio';
+	| 'servicio'
+	| 'reconocimiento'
+	| 'evaluable'
+	| 'transferencia';
 
 export interface EntradaIndice {
 	id: string;
@@ -34,6 +40,9 @@ export interface EntradaIndice {
 	taskId: string;
 	ruta: string;
 	pesoDominio: number;
+	/** Texto prenormalizado para evitar re-normalizar el índice en cada búsqueda. */
+	tituloNormalizado?: string;
+	textoNormalizado?: string;
 }
 
 export interface ResultadoBusqueda extends EntradaIndice {
@@ -48,6 +57,9 @@ const ETIQUETA_TIPO: Record<TipoEntradaIndice, string> = {
 	comparacion: 'Comparación',
 	glosario: 'Glosario',
 	servicio: 'Servicio',
+	reconocimiento: 'Reconocimiento',
+	evaluable: 'Qué evalúa AWS',
+	transferencia: 'Transferencia',
 };
 
 export function etiquetaTipoEntrada(tipo: TipoEntradaIndice): string {
@@ -205,7 +217,72 @@ export function construirIndice(): EntradaIndice[] {
 		});
 	}
 
-	return entradas;
+	for (const familia of reconocimientoClfC02) {
+		entradas.push({
+			id: `reconocimiento-${familia.id}`,
+			tipo: 'reconocimiento',
+			titulo: familia.titulo,
+			texto: [
+				familia.preguntaClave,
+				familia.regla,
+				...familia.casos.flatMap((caso) => [
+					caso.requisito,
+					caso.servicio,
+					caso.porque,
+					...caso.descartar.map((item) => `${item.servicio} ${item.motivo}`),
+					caso.cambioQueInvertiria ?? '',
+				]),
+			].join(' '),
+			dominios: [dominioDeTaskId(familia.taskId)],
+			taskId: familia.taskId,
+			ruta: '/cloud-practitioner/reconocimiento',
+			pesoDominio: ponderacionDeTaskId(familia.taskId),
+		});
+	}
+
+	for (const entrada of evaluablesClfC02) {
+		entradas.push({
+			id: `evaluable-${entrada.taskId}`,
+			tipo: 'evaluable',
+			titulo: `Qué evalúa AWS · Task ${entrada.taskId}`,
+			texto: [
+				entrada.titulo,
+				...entrada.queDebesPoder.map(
+					(capacidad) => `${capacidad.verbo} ${capacidad.capacidad}`,
+				),
+				...entrada.senalesDeEscenario,
+			].join(' '),
+			dominios: [entrada.dominioId],
+			taskId: entrada.taskId,
+			ruta: '/cloud-practitioner/evaluables',
+			pesoDominio: entrada.pesoDominio,
+		});
+	}
+
+	for (const escenario of transferenciaClfC02) {
+		const taskId = escenario.objetivos[0]?.split('#')[0] ?? '';
+		entradas.push({
+			id: escenario.id,
+			tipo: 'transferencia',
+			titulo: `${prefijoDeTask(taskId)} · transferencia`,
+			texto: [
+				escenario.requisito,
+				...escenario.opciones,
+				escenario.porque,
+				escenario.cambioQueInvertiria,
+			].join(' '),
+			dominios: [dominioDeTaskId(taskId)],
+			taskId,
+			ruta: '/cloud-practitioner/transferencia',
+			pesoDominio: ponderacionDeTaskId(taskId),
+		});
+	}
+
+	return entradas.map((entrada) => ({
+		...entrada,
+		tituloNormalizado: normalizar(entrada.titulo),
+		textoNormalizado: normalizar(entrada.texto),
+	}));
 }
 
 export function buscarEnIndice(
@@ -222,8 +299,8 @@ export function buscarEnIndice(
 
 	const resultados: ResultadoBusqueda[] = [];
 	for (const entrada of indice) {
-		const titulo = normalizar(entrada.titulo);
-		const texto = normalizar(entrada.texto);
+		const titulo = entrada.tituloNormalizado ?? normalizar(entrada.titulo);
+		const texto = entrada.textoNormalizado ?? normalizar(entrada.texto);
 		let peso = 0;
 		let coincideTodo = true;
 
@@ -263,6 +340,9 @@ export function agruparResultados(
 		'comparacion',
 		'glosario',
 		'servicio',
+		'reconocimiento',
+		'evaluable',
+		'transferencia',
 	];
 	return orden
 		.map((tipo) => ({ tipo, resultados: resultados.filter((resultado) => resultado.tipo === tipo) }))

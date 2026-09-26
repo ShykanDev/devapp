@@ -61,4 +61,34 @@ export const paresTask31: ParConfusionClfC02[] = [
 		preguntaIds: ['3.1-q8'],
 		objetivos: ['3.1#5'],
 	},
+	{
+		id: 'nube-vs-hibrido-vs-onpremises',
+		etiqueta: 'Modelos de despliegue: nube, híbrido y on-premises',
+		a: {
+			titulo: 'Nube',
+			resumen:
+				'Todo el entorno se ejecuta en la nube de AWS: el cliente no compra servidores y obtiene elasticidad, alcance global y pago por uso. Es el modelo por defecto cuando no hay ataduras de hardware ni de cumplimiento.',
+		},
+		b: {
+			titulo: 'Híbrido y on-premises',
+			resumen:
+				'El híbrido combina instalaciones propias con la nube de AWS, normalmente por normativa, latencia o inversión ya realizada. On-premises mantiene todo en las instalaciones del cliente y da control total a cambio de comprar y mantener la capacidad.',
+		},
+		diferenciaClave:
+			'Nube pone todo en la nube; on-premises lo mantiene todo en instalaciones propias; el híbrido reparte la carga entre ambos mundos. No confundir híbrido (local más nube) con multinube (varios proveedores de nube).',
+		cuandoA: [
+			'Cuando no hay requisitos de permanencia física y se busca elasticidad, alcance global y pago por uso.',
+			'Cuando el equipo quiere delegar la operación de la infraestructura y centrarse en la aplicación.',
+		],
+		cuandoB: [
+			'Cuando parte de los datos debe quedarse en las instalaciones por normativa o por latencia.',
+			'Cuando existe una inversión ya amortizada que conviene reutilizar mientras se adopta la nube.',
+		],
+		escenarioA:
+			'Una startup despliega toda su plataforma en la nube y crece añadiendo recursos según la demanda, sin comprar ni mantener servidores propios.',
+		escenarioB:
+			'Un hospital conserva su sistema clínico en el centro de datos por normativa y ejecuta el análisis y las aplicaciones nuevas en la nube, conectando ambos entornos mediante un enlace dedicado.',
+		preguntaIds: ['3.1-q14'],
+		objetivos: ['3.1#3', '3.1#6'],
+	},
 ];

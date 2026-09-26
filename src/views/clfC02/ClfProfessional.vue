@@ -118,8 +118,10 @@ import type { PreguntaProfesionalClfC02 } from '@/data/clfC02/profesional/types'
 import {
 	construirExamenProfesional,
 	distribucionPorDominio,
+	esRespuestaCorrecta,
 	type FinalizacionPractica,
 	type PuntajeIntento,
+	type RespuestaClfC02,
 	type ResultadoProfesional,
 } from '@/lib/clfC02Practice';
 import {
@@ -141,7 +143,7 @@ const totalDominios = dominiosClfC02.length;
 
 const construccion = ref<ResultadoProfesional | null>(null);
 const preguntas = ref<PreguntaProfesionalClfC02[]>([]);
-const respuestas = ref<Record<string, number>>({});
+const respuestas = ref<Record<string, RespuestaClfC02>>({});
 const resultado = ref<PuntajeIntento | null>(null);
 const fase = ref<'intro' | 'enCurso' | 'resultado'>('intro');
 const claveSesion = ref(0);
@@ -198,7 +200,7 @@ function repetirFalladas() {
 
 function alFinalizar(payload: FinalizacionPractica) {
 	for (const pregunta of preguntas.value) {
-		const correcto = payload.respuestas[pregunta.id] === pregunta.correctAnswer;
+		const correcto = esRespuestaCorrecta(pregunta, payload.respuestas[pregunta.id]);
 		for (const objetivoId of pregunta.objetivos) {
 			registrarRespuesta(objetivoId, correcto);
 		}

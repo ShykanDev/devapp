@@ -4,11 +4,10 @@ import {
 	serviciosEnAlcanceClfC02,
 	taskStatementsClfC02,
 } from '@/data/clfC02';
+import { esEtiquetaEnAlcance, esServicioReconocible } from '@/data/clfC02/alcance';
 import {
 	DOMINIO_POR_ID,
-	FEATURES_EN_ALCANCE_CLFC02,
 	PESO_TOTAL_CLFC02,
-	SERVICIOS_PERMITIDOS,
 	TASK_POR_ID,
 	TODOS_LOS_IDS_OBJETIVO,
 	TOTAL_OBJETIVOS_CLFC02,
@@ -27,6 +26,8 @@ import {
 } from '@/data/clfC02/registroContenido';
 import { glosarioGeneralClfC02 } from '@/data/clfC02/glosario/general';
 import { serviciosGeneralClfC02 } from '@/data/clfC02/servicios/general';
+import { reconocimientoClfC02 } from '@/data/clfC02/reconocimiento';
+import { clfC02QuestionSchema } from '@/schemas/clfC02';
 import type {
 	GrupoTematico,
 	TarjetaClfC02,
@@ -119,22 +120,12 @@ export function serviciosCitadosEnTexto(texto: string): string[] {
 }
 
 /**
- * Una cita de texto es válida si coincide con un servicio o capacidad en
- * alcance, si lo extiende con palabras de capacidad o si el detector la
- * truncó por mayúsculas.
+ * Una cita de texto es válida si la etiqueta está en alcance: servicio
+ * permitido (con tolerancia a prefijos y truncamientos), capacidad del
+ * blueprint o concepto de la capa de reconocimiento.
  */
 function servicioCitadoValido(cita: string): boolean {
-	if (SERVICIOS_PERMITIDOS.has(cita)) return true;
-	for (const nombre of SERVICIOS_PERMITIDOS) {
-		if (cita.startsWith(`${nombre} `)) return true;
-		if (nombre.startsWith(`${cita} `)) return true;
-	}
-	return FEATURES_EN_ALCANCE_CLFC02.some(
-		(feature) =>
-			cita === feature ||
-			cita.startsWith(`${feature} `) ||
-			feature.startsWith(`${cita} `),
-	);
+	return esEtiquetaEnAlcance(cita);
 }
 
 function textoDeGrupo(grupo: GrupoTematico): string {
@@ -288,9 +279,31 @@ function validarGrupos(hallazgos: HallazgoValidacion[]): void {
 
 			for (const objetivoId of grupo.objetivos) {
 				if (bloque.tipo === 'escenario') objetivosConEscenario.add(objetivoId);
-				if (bloque.tipo === 'comparacion') objetivosConComparacion.add(objetivoId);
 				if (bloque.tipo === 'errorComun') objetivosConErrorComun.add(objetivoId);
 				if (bloque.tipo === 'concepto') objetivosConConcepto.add(objetivoId);
+			}
+
+			// Un bloque de comparación solo diferencia a los objectives del grupo
+			// que el par referenciado declara en sus propios `objetivos`. Antes se
+			// marcaban todos los objectives del grupo por el mero hecho de contener
+			// un bloque `comparacion`, lo que permitía colar un par "lookalike"
+			// (p. ej. `2.3#3` con un par de `2.3#1`).
+			if (bloque.tipo === 'comparacion') {
+				const par = TODOS_LOS_PARES.find((candidato) => candidato.id === bloque.parId);
+				if (par) {
+					const interseccion = par.objetivos.filter((objetivoId) =>
+						grupo.objetivos.includes(objetivoId),
+					);
+					if (interseccion.length === 0) {
+						hallazgos.push({
+							codigo: 'bloque.comparacionDesalineada',
+							mensaje: `El grupo ${grupo.id} muestra el par ${bloque.parId}, cuyos objectives no coinciden con los del grupo.`,
+						});
+					}
+					for (const objetivoId of interseccion) {
+						objetivosConComparacion.add(objetivoId);
+					}
+				}
 			}
 
 			if (bloque.tipo === 'comparacion' && !paresExisten(bloque.parId)) {
@@ -388,17 +401,14 @@ function validarPreguntas(hallazgos: HallazgoValidacion[]): void {
 				mensaje: `Tipo de pregunta desconocido en ${pregunta.id}: ${pregunta.tipo}.`,
 			});
 		}
-		if (pregunta.options.length !== 4) {
-			hallazgos.push({
-				codigo: 'pregunta.opciones',
-				mensaje: `La pregunta ${pregunta.id} debe tener 4 opciones.`,
-			});
-		}
-		if (!Number.isInteger(pregunta.correctAnswer) || pregunta.correctAnswer < 0 || pregunta.correctAnswer > 3) {
-			hallazgos.push({
-				codigo: 'pregunta.correcta',
-				mensaje: `La pregunta ${pregunta.id} tiene correctAnswer fuera de 0-3.`,
-			});
+		const resultadoEsquema = clfC02QuestionSchema.safeParse(pregunta);
+		if (!resultadoEsquema.success) {
+			for (const problema of resultadoEsquema.error.issues) {
+				hallazgos.push({
+					codigo: 'pregunta.esquema',
+					mensaje: `La pregunta ${pregunta.id} no cumple el esquema CLF (${problema.path.join('.')}): ${problema.message}`,
+				});
+			}
 		}
 		if (!pregunta.explanation || pregunta.explanation.trim().length === 0) {
 			hallazgos.push({
@@ -551,6 +561,49 @@ function validarTarjeta(tarjeta: TarjetaClfC02, ids: Set<string>, hallazgos: Hal
 	}
 }
 
+function validarReconocimiento(hallazgos: HallazgoValidacion[]): void {
+	for (const familia of reconocimientoClfC02) {
+		if (!TASK_POR_ID[familia.taskId]) {
+			hallazgos.push({
+				codigo: 'reconocimiento.taskInexistente',
+				mensaje: `La familia ${familia.id} referencia el task inexistente ${familia.taskId}.`,
+			});
+		}
+		familia.casos.forEach((caso, indice) => {
+			const etiqueta = `${familia.id}[${indice}]`;
+			if (!esServicioReconocible(caso.servicio)) {
+				hallazgos.push({
+					codigo: 'reconocimiento.servicioFueraDeAlcance',
+					mensaje: `El caso ${etiqueta} propone "${caso.servicio}", que no es un servicio en alcance.`,
+				});
+			}
+			if (!caso.objetivos || caso.objetivos.length === 0) {
+				hallazgos.push({
+					codigo: 'reconocimiento.sinObjetivos',
+					mensaje: `El caso ${etiqueta} (${caso.servicio}) no declara objectives.`,
+				});
+			} else {
+				for (const objetivoId of caso.objetivos) {
+					if (!existeObjetivo(objetivoId)) {
+						hallazgos.push({
+							codigo: 'reconocimiento.objetivoHuerfano',
+							mensaje: `El caso ${etiqueta} referencia el objective inexistente ${objetivoId}.`,
+						});
+					}
+				}
+			}
+			for (const item of caso.descartar) {
+				if (!esEtiquetaEnAlcance(item.servicio)) {
+					hallazgos.push({
+						codigo: 'reconocimiento.descarteFueraDeAlcance',
+						mensaje: `El caso ${etiqueta} descarta "${item.servicio}", fuera de alcance.`,
+					});
+				}
+			}
+		});
+	}
+}
+
 function validarServicios(hallazgos: HallazgoValidacion[]): void {
 	for (const grupo of TODOS_LOS_GRUPOS) {
 		if (tareaEstaPendiente(grupo.id.split('-')[0])) continue;
@@ -684,6 +737,7 @@ export function validarClfC02(): HallazgoValidacion[] {
 	validarGrupos(hallazgos);
 	validarPreguntas(hallazgos);
 	validarTarjetas(hallazgos);
+	validarReconocimiento(hallazgos);
 	validarServicios(hallazgos);
 	validarGlosario(hallazgos);
 	return hallazgos;

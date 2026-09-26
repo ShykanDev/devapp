@@ -11,6 +11,10 @@ export const gruposTask34: GrupoTematico[] = [
 				md: 'Las bases de datos en AWS se eligen por **cómo modelan el dato** y por **quién las administra**:\n\n- **Relacionales**: organizan los datos en tablas con esquema fijo y se consultan con SQL. Aquí están las gestionadas `Amazon RDS` (MySQL, PostgreSQL, MariaDB, Oracle, SQL Server) y `Amazon Aurora`, compatible con MySQL y PostgreSQL y pensada para alto rendimiento.\n- **NoSQL**: no exigen esquema relacional y escalan horizontalmente. `Amazon DynamoDB` es clave-valor y documento; `Amazon DocumentDB` es documental; `Amazon Neptune` es de grafos.\n- **En memoria**: mantienen los datos en RAM para dar latencias muy bajas. `Amazon ElastiCache` es la opción típica como caché delante de otra base.\n- **Analíticas**: `Amazon Redshift` es un almacén de datos columnar orientado a consultas analíticas sobre grandes volúmenes.\n\nEl segundo eje es **quién administra**: una base gestionada deja en manos de AWS parches, copias de seguridad, alta disponibilidad y escalado; una base **alojada en `Amazon EC2`** corre en una instancia que el equipo debe mantener. AWS no obliga a elegir un único motor: lo normal es combinar una base transaccional con una caché en memoria.',
 			},
 			{
+				tipo: 'comparacion',
+				parId: 'base-gestionada-vs-base-en-ec2',
+			},
+			{
 				tipo: 'cuandoUsar',
 				usar: [
 					'Usa una base gestionada de AWS cuando quieras delegar parches, copias de seguridad, alta disponibilidad y escalado, y centrar el equipo en la aplicación.',

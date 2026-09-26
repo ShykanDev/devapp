@@ -15,6 +15,10 @@ export const gruposTask23: GrupoTematico[] = [
 				parId: 'iam-user-vs-iam-role',
 			},
 			{
+				tipo: 'comparacion',
+				parId: 'managed-policy-vs-inline-policy',
+			},
+			{
 				tipo: 'escenario',
 				situacion:
 					'Una empresa incorpora a veinte personas al equipo de soporte durante un proyecto de tres meses. Necesitan consultar paneles y reiniciar instancias, pero el equipo de seguridad no quiere repartir credenciales permanentes ni conceder permisos de administrador.',
@@ -51,11 +55,11 @@ export const gruposTask23: GrupoTematico[] = [
 		bloques: [
 			{
 				tipo: 'concepto',
-				md: 'La cuenta de AWS nace con una identidad especial, el **root user**, creada con el correo y la contraseña de la cuenta. Ese usuario tiene **acceso completo** a todos los recursos y servicios, y sus permisos **no se pueden limitar** con políticas de IAM, de modo que comprometerlo compromete la cuenta entera. Por eso se protege con MFA, no se le crean claves de acceso y no se usa para el trabajo diario.\n\nEl **principio de menor privilegio** consiste en conceder a cada identidad solo los permisos que necesita, sobre los recursos que necesita y durante el tiempo necesario. Se aplica con políticas específicas, grupos con permisos mínimos, roles con credenciales temporales y una revisión periódica que retira los permisos sobrantes. Un permiso de administrador permanente «por comodidad» es la negación del principio.',
+				md: 'La cuenta de AWS nace con una identidad especial, el **root user**, creada con el correo y la contraseña de la cuenta. Ese usuario tiene **acceso completo** a todos los recursos y servicios y sus permisos no se pueden limitar con políticas de IAM (solo las políticas de control de servicios de AWS Organizations pueden restringir sus acciones), de modo que comprometerlo compromete la cuenta entera. Por eso se protege con MFA, no se le crean claves de acceso y no se usa para el trabajo diario.\n\nEl **principio de menor privilegio** consiste en conceder a cada identidad solo los permisos que necesita, sobre los recursos que necesita y durante el tiempo necesario. Se aplica con políticas específicas, grupos con permisos mínimos, roles con credenciales temporales y una revisión periódica que retira los permisos sobrantes. Un permiso de administrador permanente «por comodidad» es la negación del principio.',
 			},
 			{
 				tipo: 'comparacion',
-				parId: 'iam-user-vs-iam-role',
+				parId: 'root-user-vs-identidad-administrativa-iam',
 			},
 			{
 				tipo: 'escenario',
@@ -74,7 +78,7 @@ export const gruposTask23: GrupoTematico[] = [
 			{
 				tipo: 'clave',
 				items: [
-					'El root user tiene acceso total y no se le pueden denegar permisos con políticas de IAM.',
+					'El root user tiene acceso total y no se le pueden denegar permisos con políticas de IAM (solo las SCP de AWS Organizations pueden restringirlo).',
 					'Protección del root user: MFA activado, sin claves de acceso y sin uso diario.',
 					'Solo el root user puede, por ejemplo, cambiar el plan de soporte o cerrar la cuenta.',
 					'Menor privilegio = permisos mínimos, sobre recursos concretos y durante el tiempo necesario.',
@@ -95,7 +99,7 @@ export const gruposTask23: GrupoTematico[] = [
 		bloques: [
 			{
 				tipo: 'concepto',
-				md: 'Las **claves de acceso** (access keys) son credenciales de larga duración para llamadas programáticas: un **access key ID** y un **secret access key**. No sirven para iniciar sesión en la consola y, si se filtran, cualquiera puede actuar con los permisos de su propietario; por eso no se escriben en el código ni en archivos de texto, se rotan y se guardan en un almacén gestionado como **AWS Secrets Manager** o **AWS Systems Manager**.\n\nLas **password policies** definen los requisitos de las contraseñas de las personas (longitud mínima, mayúsculas, números, símbolos, caducidad y reutilización). El **MFA** añade un factor adicional al inicio de sesión y protege aunque la contraseña se filtre. La clave de acceso y el MFA no compiten: uno autentica programas, el otro refuerza el acceso humano.',
+				md: 'Las **claves de acceso** (access keys) son credenciales de larga duración para llamadas programáticas: un **access key ID** y un **secret access key**. No sirven para iniciar sesión en la consola y, si se filtran, cualquiera puede actuar con los permisos de su propietario; por eso no se escriben en el código ni en archivos de texto, se rotan y se guardan en un almacén gestionado como **AWS Secrets Manager** o el **Parameter Store de AWS Systems Manager**.\n\nLas **password policies** definen los requisitos de las contraseñas de las personas (longitud mínima, mayúsculas, números, símbolos, caducidad y reutilización). El **MFA** añade un factor adicional al inicio de sesión y protege aunque la contraseña se filtre. La clave de acceso y el MFA no compiten: uno autentica programas, el otro refuerza el acceso humano.',
 			},
 			{
 				tipo: 'comparacion',
@@ -117,7 +121,7 @@ export const gruposTask23: GrupoTematico[] = [
 				tipo: 'errorComun',
 				error: 'Guardar la clave de acceso en el código fuente o en un archivo dentro del repositorio y considerarlo aceptable porque el repositorio es privado.',
 				correccion:
-					'Los secretos no viven en el código. Se guardan en AWS Secrets Manager o AWS Systems Manager, se accede a ellos mediante permisos mínimos y se rotan; el código solo contiene una referencia al secreto, nunca el valor.',
+					'Los secretos no viven en el código. Se guardan en AWS Secrets Manager o en el Parameter Store de AWS Systems Manager, se accede a ellos mediante permisos mínimos y se rotan; el código solo contiene una referencia al secreto, nunca el valor.',
 			},
 		],
 		preguntasGuia: [

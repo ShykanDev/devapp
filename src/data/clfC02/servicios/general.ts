@@ -196,7 +196,7 @@ export const serviciosGeneralClfC02: ServicioClfC02[] = [
 			'Es un catálogo digital donde adquirir software de terceros que se factura junto con AWS.',
 		paraQueSeUsa:
 			'Encontrar y desplegar soluciones de proveedores con compra y gobernanza centralizadas.',
-		seDiferenciaDe: ['AWS Support'],
+		seDiferenciaDe: [],
 		tareas: ['4.3'],
 		relacionados: [],
 	},

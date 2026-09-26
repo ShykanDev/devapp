@@ -136,8 +136,10 @@ import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import {
 	alertCircleOutline,
+	bulbOutline,
 	chevronForward,
 	clipboardOutline,
+	compassOutline,
 	gitCompareOutline,
 	libraryOutline,
 	listOutline,
@@ -147,6 +149,7 @@ import {
 	searchOutline,
 	sparklesOutline,
 	storefrontOutline,
+	swapHorizontalOutline,
 } from 'ionicons/icons';
 import {
 	certificadoClfC02,
@@ -283,6 +286,24 @@ const accesos = [
 		titulo: 'Comparaciones',
 		pista: 'Pares que se confunden',
 		icon: gitCompareOutline,
+	},
+	{
+		to: '/cloud-practitioner/reconocimiento',
+		titulo: 'Reconocer servicios',
+		pista: 'Del requisito al servicio, y por qué no los parecidos',
+		icon: compassOutline,
+	},
+	{
+		to: '/cloud-practitioner/evaluables',
+		titulo: 'Qué evalúa AWS',
+		pista: 'Capacidades por task statement',
+		icon: bulbOutline,
+	},
+	{
+		to: '/cloud-practitioner/transferencia',
+		titulo: 'Transferencia',
+		pista: 'Mismo criterio, escenario y redacción nuevos',
+		icon: swapHorizontalOutline,
 	},
 	{
 		to: '/cloud-practitioner/repaso',

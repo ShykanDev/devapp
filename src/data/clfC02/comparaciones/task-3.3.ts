@@ -61,4 +61,64 @@ export const paresTask33: ParConfusionClfC02[] = [
 		preguntaIds: ['3.3-q6'],
 		objetivos: ['3.3#4'],
 	},
+	{
+		id: 'servidores-virtuales-vs-serverless',
+		etiqueta: 'Máquinas virtuales vs cómputo serverless',
+		a: {
+			titulo: 'Máquinas virtuales (control y capacidad continua)',
+			resumen:
+				'El cliente elige el tipo de instancia, administra el sistema operativo y el software, y la capacidad está disponible de forma continua. Es el extremo del espectro con más control y más responsabilidad operativa.',
+		},
+		b: {
+			titulo: 'Cómputo serverless (sin servidores y pago por uso)',
+			resumen:
+				'No se aprovisionan ni administran servidores: el servicio ejecuta funciones o contenedores ante eventos, escala de forma automática y solo se paga por el uso. Se gana comodidad y elasticidad a cambio de menos control.',
+		},
+		diferenciaClave:
+			'El eje es control frente a gestión: la máquina virtual da control total del sistema operativo y capacidad permanente; el cómputo serverless elimina la administración de servidores y cobra por uso, con menos control del entorno de ejecución.',
+		cuandoA: [
+			'Cuando necesitas instalar software específico, controlar el sistema operativo o mantener un proceso de larga duración.',
+			'Cuando la carga es continua o el proceso necesita conservar estado en la propia máquina.',
+		],
+		cuandoB: [
+			'Cuando la lógica responde a eventos, es corta y sin estado, y quieres escalar sin gestionar servidores.',
+			'Cuando prefieres pagar solo por lo que se usa y no mantener capacidad encendida entre eventos.',
+		],
+		escenarioA:
+			'Un equipo ejecuta un sistema heredado que exige una versión concreta del sistema operativo y procesos nocturnos de larga duración; lo mantiene en instancias que administra él mismo.',
+		escenarioB:
+			'Otro equipo procesa cada archivo subido con lógica breve y sin estado; usa cómputo serverless para no mantener servidores encendidos entre eventos.',
+		preguntaIds: ['3.3-q11'],
+		objetivos: ['3.3#1'],
+	},
+	{
+		id: 'familias-instancia-compute-memory-storage',
+		etiqueta: 'Familias de instancias: compute, memory y storage optimized',
+		a: {
+			titulo: 'Compute optimized y memory optimized',
+			resumen:
+				'Compute optimized prioriza la CPU: cálculo intensivo, procesamiento por lotes, codificación o servidores web muy exigentes. Memory optimized prioriza la RAM para conjuntos de datos activos, cachés y bases de datos en memoria.',
+		},
+		b: {
+			titulo: 'Storage optimized',
+			resumen:
+				'Prioriza la entrada/salida de disco y el almacenamiento local de alto rendimiento. Es la familia para bases de datos con muchas lecturas y escrituras, sistemas de archivos de alto rendimiento y cargas intensivas de disco.',
+		},
+		diferenciaClave:
+			'La familia se elige por el recurso limitante: CPU (compute optimized), memoria (memory optimized) o entrada/salida de disco (storage optimized). Elegir por tamaño en lugar de por perfil deja recursos sin aprovechar.',
+		cuandoA: [
+			'Cuando el cuello de botella es el cálculo o el conjunto de datos activo vive en memoria.',
+			'Cuando la carga no depende del rendimiento de disco local ni de un almacenamiento local intensivo.',
+		],
+		cuandoB: [
+			'Cuando el cuello de botella es la entrada/salida de disco o se necesita almacenamiento local de alto rendimiento.',
+			'Cuando la carga realiza muchas operaciones de lectura y escritura sobre discos locales.',
+		],
+		escenarioA:
+			'Un equipo ejecuta un trabajo de procesamiento por lotes que satura la CPU de forma constante; elige instancias compute optimized y no necesita memoria ni disco especiales.',
+		escenarioB:
+			'Otro equipo mantiene un clúster de datos con requisitos muy altos de IOPS y gran capacidad local; elige instancias storage optimized.',
+		preguntaIds: ['3.3-q12'],
+		objetivos: ['3.3#2'],
+	},
 ];

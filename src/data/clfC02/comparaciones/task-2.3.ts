@@ -61,4 +61,94 @@ export const paresTask23: ParConfusionClfC02[] = [
 		preguntaIds: ['2.3-q10'],
 		objetivos: ['2.3#5', '2.3#6'],
 	},
+	{
+		id: 'iam-identity-center-vs-usuario-iam',
+		etiqueta: 'Acceso federado centralizado vs usuario de IAM por persona y por cuenta',
+		a: {
+			titulo: 'Acceso federado centralizado',
+			resumen:
+				'Conecta el directorio o proveedor de identidad corporativo y entrega inicio de sesión único y permission sets por cuenta y por grupo. La persona se valida fuera de AWS y recibe credenciales temporales.',
+		},
+		b: {
+			titulo: 'Usuario de IAM por persona y por cuenta',
+			resumen:
+				'Crea una identidad local en cada cuenta, con contraseña y, si se necesita, claves de acceso de larga duración. Hay que administrar y rotar esas credenciales cuenta por cuenta.',
+		},
+		diferenciaClave:
+			'La federación delega la autenticación en un proveedor externo y emite credenciales temporales; el usuario local guarda credenciales duraderas dentro de cada cuenta. La federación reduce la administración y el riesgo, pero no elimina la necesidad de definir permisos.',
+		cuandoA: [
+			'Cuando la plantilla ya está en un directorio corporativo y necesita acceder a varias cuentas con permisos por función.',
+			'Cuando se quiere retirar el acceso de inmediato al desactivar la persona en el directorio de origen.',
+		],
+		cuandoB: [
+			'Cuando no existe un proveedor de identidad federado y una persona necesita credenciales propias en una cuenta concreta.',
+			'Cuando se requiere una identidad local concreta y se acepta administrar su contraseña, MFA y rotación de claves.',
+		],
+		escenarioA:
+			'La empresa conecta su directorio corporativo, agrupa a la plantilla y asigna permission sets por cuenta; al desactivar a una persona en el directorio, pierde el acceso sin borrar usuarios uno a uno.',
+		escenarioB:
+			'Una persona sin directorio federado recibe un usuario de IAM con contraseña, MFA y permisos mínimos a través de un grupo de su cuenta.',
+		preguntaIds: ['2.3-q21'],
+		objetivos: ['2.3#4', '2.3#10'],
+	},
+	{
+		id: 'root-user-vs-identidad-administrativa-iam',
+		etiqueta: 'Root user vs identidad administrativa de IAM',
+		a: {
+			titulo: 'Root user (cuenta raíz)',
+			resumen:
+				'Identidad que crea la cuenta con el correo y la contraseña de registro. Tiene acceso completo a todos los recursos y servicios, sus permisos no se limitan con políticas de IAM y concentra tareas que no se delegan, como cambiar el plan de soporte o cerrar la cuenta.',
+		},
+		b: {
+			titulo: 'Identidad administrativa de IAM',
+			resumen:
+				'Usuario o rol con permisos elevados concedidos mediante políticas, creado para el trabajo diario. No hereda el acceso irrestricto de la cuenta raíz, se rige por el principio de menor privilegio y puede reforzarse con MFA y credenciales temporales.',
+		},
+		diferenciaClave:
+			'La cuenta raíz no admite restricciones por políticas y queda reservada a las tareas que solo ella puede realizar; la identidad administrativa de IAM recibe permisos acotados y asume el trabajo cotidiano. Proteger la raíz con MFA y sin claves de acceso es lo que permite delegar la operación en una identidad administrativa.',
+		cuandoA: [
+			'Cuando hay que cambiar el plan de soporte, cerrar la cuenta, cambiar el correo de contacto o restaurar los permisos de un administrador de IAM.',
+			'Cuando una tarea exige actuar como propietario de la cuenta y no existe una alternativa delegable.',
+		],
+		cuandoB: [
+			'Cuando el equipo necesita administrar recursos a diario aplicando el principio de menor privilegio.',
+			'Cuando se quiere operar la cuenta sin exponer las credenciales de la cuenta raíz.',
+		],
+		escenarioA:
+			'El equipo de seguridad modifica el plan de soporte contratado: como es una tarea reservada, la ejecuta la cuenta raíz con MFA activado y sin claves de acceso.',
+		escenarioB:
+			'El trabajo diario de crear recursos y revisar políticas lo realiza un usuario administrativo de IAM con MFA y permisos mínimos, mientras la cuenta raíz permanece sin uso.',
+		preguntaIds: ['2.3-q22'],
+		objetivos: ['2.3#2', '2.3#3', '2.3#8', '2.3#9'],
+	},
+	{
+		id: 'managed-policy-vs-inline-policy',
+		etiqueta: 'Managed policy vs política inline',
+		a: {
+			titulo: 'Managed policy',
+			resumen:
+				'Documento de permisos independiente y reutilizable que AWS administra o que crea el cliente. Se adjunta a varias identidades, se actualiza en un solo lugar y permite mantener el permiso mínimo de forma consistente.',
+		},
+		b: {
+			titulo: 'Política inline',
+			resumen:
+				'Política incrustada en una única identidad que no se puede reutilizar ni adjuntar a otra. Se usa para permisos muy concretos de esa identidad, a costa de duplicar cambios si se necesita el mismo permiso en más sitios.',
+		},
+		diferenciaClave:
+			'La managed policy vive fuera de las identidades y se comparte entre ellas; la inline vive dentro de una sola identidad. Para definir grupos, usuarios y permisos conforme al mínimo privilegio conviene reutilizar managed policies y reservar la inline para excepciones.',
+		cuandoA: [
+			'Cuando el mismo conjunto de permisos debe aplicarse a varios usuarios, grupos o roles.',
+			'Cuando se quiere cambiar el permiso en un único punto y que todas las identidades lo hereden.',
+		],
+		cuandoB: [
+			'Cuando un permiso muy concreto no debe compartirse ni reutilizarse en otra identidad.',
+			'Cuando se necesita un ajuste puntual que no tiene sentido mantener a escala de toda la organización.',
+		],
+		escenarioA:
+			'Una empresa crea una managed policy de solo lectura de paneles y la adjunta al grupo de analistas; al añadir una vista nueva, actualiza la política una vez y todo el grupo la hereda.',
+		escenarioB:
+			'Un script concreto recibe una política inline con permiso exclusivo para una acción puntual sobre un recurso, sin reutilizarla en ninguna otra identidad.',
+		preguntaIds: ['2.3-q23'],
+		objetivos: ['2.3#7'],
+	},
 ];

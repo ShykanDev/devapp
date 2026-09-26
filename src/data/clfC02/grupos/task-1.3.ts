@@ -113,6 +113,19 @@ export const gruposTask13: GrupoTematico[] = [
 					'El **AWS Cloud Adoption Framework (AWS CAF)** encaja porque cubre las seis perspectivas: Business y Governance para justificar la inversión y gestionar el riesgo, People para el cambio cultural y la formación, y Platform, Security y Operations para la parte técnica. El AWS CAF aporta el mapa organizativo; el diseño técnico detallado de cada carga llega después con el AWS Well-Architected Framework.',
 			},
 			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa el AWS CAF cuando el requisito sea ordenar la adopción en toda la organización y alinear negocio, personas y tecnología.',
+					'Usa el AWS Well-Architected Framework cuando el requisito sea evaluar el diseño técnico de una carga de trabajo concreta.',
+					'Usa AWS Prescriptive Guidance cuando el requisito sea una guía práctica de implementación para un escenario concreto.',
+				],
+				noUsar: [
+					'No uses el AWS CAF para elegir un tipo de instancia, una clase de almacenamiento o un motor de base de datos: eso es diseño técnico.',
+					'No uses el AWS CAF como sustituto de un plan de proyecto: aporta el marco de perspectivas y capacidades, no las tareas del plan.',
+					'No confundas «mejorar el desempeño ESG» con un pilar del Well-Architected: es un beneficio de negocio del AWS CAF.',
+				],
+			},
+			{
 				tipo: 'errorComun',
 				error: 'Confundir el AWS CAF con un marco de diseño técnico y usarlo para decidir tipos de instancias o clases de almacenamiento.',
 				correccion:

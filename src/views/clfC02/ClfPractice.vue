@@ -116,8 +116,10 @@ import {
 	construirPracticaDominio,
 	construirPracticaTask,
 	distribucionPorDominio,
+	esRespuestaCorrecta,
 	type FinalizacionPractica,
 	type PuntajeIntento,
+	type RespuestaClfC02,
 	type ResultadoConstruccion,
 } from '@/lib/clfC02Practice';
 import {
@@ -185,7 +187,7 @@ function preguntasFalladasDeObjetivos(objetivoIds: string[]): string[] {
 
 const construccion = ref<ResultadoConstruccion | null>(null);
 const preguntas = ref<PreguntaClfC02[]>([]);
-const respuestas = ref<Record<string, number>>({});
+const respuestas = ref<Record<string, RespuestaClfC02>>({});
 const resultado = ref<PuntajeIntento | null>(null);
 const fase = ref<'intro' | 'enCurso' | 'resultado'>('enCurso');
 const claveSesion = ref(0);
@@ -281,7 +283,7 @@ function repetirFalladas() {
 function alFinalizar(payload: FinalizacionPractica) {
 	// Evidencia por objective: cada intento mueve el estado de la unidad.
 	for (const pregunta of preguntas.value) {
-		const correcto = payload.respuestas[pregunta.id] === pregunta.correctAnswer;
+		const correcto = esRespuestaCorrecta(pregunta, payload.respuestas[pregunta.id]);
 		for (const objetivoId of pregunta.objetivos) {
 			registrarRespuesta(objetivoId, correcto);
 		}

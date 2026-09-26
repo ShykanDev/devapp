@@ -159,9 +159,18 @@ describe('clfC02 · cobertura del contenido registrado', () => {
 			expect(ids.has(pregunta.id)).toBe(false);
 			ids.add(pregunta.id);
 			expect(TASK_POR_ID[pregunta.taskId]).toBeDefined();
-			expect(pregunta.options).toHaveLength(4);
-			expect(pregunta.correctAnswer).toBeGreaterThanOrEqual(0);
-			expect(pregunta.correctAnswer).toBeLessThanOrEqual(3);
+			const multiple = pregunta.formato === 'multiple';
+			expect(pregunta.options).toHaveLength(multiple ? 5 : 4);
+			if (multiple) {
+				expect(pregunta.correctAnswers?.length ?? 0).toBeGreaterThanOrEqual(2);
+				for (const indice of pregunta.correctAnswers ?? []) {
+					expect(indice).toBeGreaterThanOrEqual(0);
+					expect(indice).toBeLessThan(5);
+				}
+			} else {
+				expect(pregunta.correctAnswer).toBeGreaterThanOrEqual(0);
+				expect(pregunta.correctAnswer).toBeLessThanOrEqual(3);
+			}
 			expect(pregunta.explanation.trim().length).toBeGreaterThan(0);
 			expect(pregunta.objetivos.length).toBeGreaterThan(0);
 		}

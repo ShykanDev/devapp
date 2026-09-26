@@ -91,4 +91,34 @@ export const paresTask34: ParConfusionClfC02[] = [
 		preguntaIds: ['3.4-q13'],
 		objetivos: ['3.4#2', '3.4#7'],
 	},
+	{
+		id: 'base-gestionada-vs-base-en-ec2',
+		etiqueta: 'Base de datos gestionada por AWS vs base autogestionada en Amazon EC2',
+		a: {
+			titulo: 'Base de datos gestionada de AWS',
+			resumen:
+				'El proveedor administra la infraestructura del motor: aprovisionamiento, parches, copias de seguridad de plataforma, alta disponibilidad y parte del escalado. El equipo se concentra en el esquema, los índices, los datos y las consultas.',
+		},
+		b: {
+			titulo: 'Base autogestionada en Amazon EC2',
+			resumen:
+				'El equipo instala y opera el motor en una instancia que controla por completo, con acceso total al sistema operativo y a la versión del motor. A cambio, asume parches, copias, escalado y alta disponibilidad por su cuenta.',
+		},
+		diferenciaClave:
+			'El eje es quién administra la infraestructura: la base gestionada delega parches, copias y alta disponibilidad en AWS, mientras que la base en Amazon EC2 traslada toda la operación al equipo. Se elige Amazon EC2 cuando hay un requisito de control del motor o del sistema operativo que el servicio gestionado no cubre.',
+		cuandoA: [
+			'Cuando se prefiere delegar la operación del motor y centrar al equipo en la aplicación.',
+			'Cuando el motor o la versión que se necesita está disponible en el servicio gestionado.',
+		],
+		cuandoB: [
+			'Cuando se necesita un motor, una versión o una configuración del sistema operativo que el servicio gestionado no ofrece.',
+			'Cuando se acepta asumir parches, copias y alta disponibilidad a cambio de control total.',
+		],
+		escenarioA:
+			'Una plataforma usa una base gestionada para no ocuparse de parches ni de copias y dedicar el equipo al modelo de datos y a las consultas.',
+		escenarioB:
+			'Otro equipo requiere una versión concreta del motor y extensiones del sistema operativo que el servicio gestionado no permite, así que la instala en una instancia que administra y asume su mantenimiento.',
+		preguntaIds: ['3.4-q17'],
+		objetivos: ['3.4#3'],
+	},
 ];

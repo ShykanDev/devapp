@@ -84,7 +84,7 @@ export const gruposTask41: GrupoTematico[] = [
 			},
 			{
 				tipo: 'ejemplo',
-				md: '```text\nRI regional de m5.large (Linux/Unix, tenancy compartida)\n  -> cubre m5.large en cualquier Availability Zone de la región\n  -> su tamaño normalizado se reparte: puede cubrir un m5.xlarge\n  -> una RI zonal solo cubre la AZ donde se compró\n\nOrganizations con uso compartido\n  cuenta A compra RI -> cubre primero su uso\n  sobra descuento     -> se aplica al uso de la cuenta B\n```',
+				md: '```text\nRI regional de m5.large (Linux/Unix, tenancy compartida)\n  -> cubre m5.large en cualquier Availability Zone de la región\n  -> su tamaño normalizado se reparte: una m5.large cubre la mitad (0,5)\n     de un m5.xlarge, por lo que harían falta dos para cubrirlo entero\n  -> una RI zonal solo cubre la AZ donde se compró\n\nOrganizations con uso compartido\n  cuenta A compra RI -> cubre primero su uso\n  sobra descuento     -> se aplica al uso de la cuenta B\n```',
 			},
 			{
 				tipo: 'errorComun',

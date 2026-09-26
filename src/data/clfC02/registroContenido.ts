@@ -44,6 +44,8 @@ import { preguntasTask38 } from '@/data/clfC02/preguntas/task-3.8';
 import { preguntasTask41 } from '@/data/clfC02/preguntas/task-4.1';
 import { preguntasTask42 } from '@/data/clfC02/preguntas/task-4.2';
 import { preguntasTask43 } from '@/data/clfC02/preguntas/task-4.3';
+import { preguntasMultipleClfC02 } from '@/data/clfC02/preguntas/multiple';
+import { preguntasServiciosG2 } from '@/data/clfC02/preguntas/servicios-g2';
 import { tarjetasTask11 } from '@/data/clfC02/tarjetas/task-1.1';
 import { tarjetasTask12 } from '@/data/clfC02/tarjetas/task-1.2';
 import { tarjetasTask13 } from '@/data/clfC02/tarjetas/task-1.3';
@@ -172,6 +174,15 @@ export const PARES_POR_TASK: Record<string, ParConfusionClfC02[]> = {
 };
 
 export const TODOS_LOS_GRUPOS: GrupoTematico[] = Object.values(GRUPOS_POR_TASK).flat();
+
+for (const pregunta of [...preguntasMultipleClfC02, ...preguntasServiciosG2]) {
+	if (PREGUNTAS_POR_TASK[pregunta.taskId]) {
+		PREGUNTAS_POR_TASK[pregunta.taskId].push(pregunta);
+	} else {
+		PREGUNTAS_POR_TASK[pregunta.taskId] = [pregunta];
+	}
+}
+
 export const TODAS_LAS_PREGUNTAS: PreguntaClfC02[] = Object.values(PREGUNTAS_POR_TASK).flat();
 export const TODAS_LAS_TARJETAS: TarjetaClfC02[] = Object.values(TARJETAS_POR_TASK).flat();
 export const TODOS_LOS_PARES: ParConfusionClfC02[] = Object.values(PARES_POR_TASK).flat();

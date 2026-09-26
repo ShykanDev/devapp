@@ -1,0 +1,752 @@
+import { taskStatementsClfC02 } from '@/data/clfC02';
+
+/**
+ * Capa «Qué puede evaluar AWS».
+ *
+ * No predice preguntas: describe, task por task, las capacidades que el exam
+ * guide espera que el candidato pueda demostrar (reconocer, explicar,
+ * distinguir, seleccionar, descartar). Sirve para estudiar por conocimiento y
+ * no por preguntas vistas.
+ */
+export interface CapacidadEvaluable {
+	/** Verbo de la capacidad: reconocer, explicar, distinguir, seleccionar, descartar. */
+	verbo: string;
+	/** Qué debe poder hacer el candidato, en lenguaje de requisito. */
+	capacidad: string;
+	/** Ids de objective del blueprint que respaldan la capacidad. */
+	objetivos: string[];
+}
+
+export interface EvaluablesClfC02 {
+	taskId: string;
+	titulo: string;
+	dominioId: string;
+	dominioNumero: number;
+	pesoDominio: number;
+	queDebesPoder: CapacidadEvaluable[];
+	/** Servicios y familias que el escenario puede mencionar sin nombrarlos. */
+	senalesDeEscenario: string[];
+}
+
+export const evaluablesClfC02: EvaluablesClfC02[] = [
+	{
+		taskId: '1.1',
+		titulo: 'Define the benefits of the AWS Cloud.',
+		dominioId: 'dominio-1',
+		dominioNumero: 1,
+		pesoDominio: 24,
+		queDebesPoder: [
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer en un escenario de negocio qué beneficio concreto aporta la nube (velocidad de despliegue, alcance global, elasticidad, agilidad) aunque no se nombre el beneficio.',
+				objetivos: ['1.1#1', '1.1#2', '1.1#3'],
+			},
+			{
+				verbo: 'explicar',
+				capacidad:
+					'Explicar por qué la infraestructura global reduce la latencia o mejora la recuperación sin describir la arquitectura.',
+				objetivos: ['1.1#2'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir alta disponibilidad, elasticidad y agilidad cuando el escenario describe un síntoma distinto para cada una.',
+				objetivos: ['1.1#3'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar beneficios que la nube no garantiza por sí sola (por ejemplo, eliminar toda responsabilidad de seguridad o reducir costes sin cambiar el diseño).',
+				objetivos: ['1.1#1'],
+			},
+		],
+		senalesDeEscenario: [
+			'crecimiento impredecible de la demanda',
+			'presencia en varios países',
+			'necesidad de lanzar antes',
+			'capacidad comprada para el pico',
+		],
+	},
+	{
+		taskId: '1.2',
+		titulo: 'Identify design principles of the AWS Cloud.',
+		dominioId: 'dominio-1',
+		dominioNumero: 1,
+		pesoDominio: 24,
+		queDebesPoder: [
+			{
+				verbo: 'reconocer',
+				capacidad: 'Reconocer el Well-Architected Framework y sus pilares.',
+				objetivos: ['1.2#1', '1.2#2'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Asignar una decisión de diseño al pilar correcto (excelencia operativa, seguridad, fiabilidad, eficiencia del rendimiento, optimización de costes, sostenibilidad) aunque el pilar no se nombre.',
+				objetivos: ['1.2#2', '1.2#3'],
+			},
+			{
+				verbo: 'explicar',
+				capacidad:
+					'Explicar que los pilares son principios de decisión, no servicios, y que no existe un pilar «de red» o «de datos».',
+				objetivos: ['1.2#3'],
+			},
+		],
+		senalesDeEscenario: [
+			'reducir impacto ambiental',
+			'medir mejora continua de procesos',
+			'elegir el recurso adecuado al rendimiento',
+			'recuperarse de fallos',
+		],
+	},
+	{
+		taskId: '1.3',
+		titulo: 'Understand the benefits of and strategies for migration to the AWS Cloud.',
+		dominioId: 'dominio-1',
+		dominioNumero: 1,
+		pesoDominio: 24,
+		queDebesPoder: [
+			{
+				verbo: 'reconocer',
+				capacidad: 'Reconocer las perspectivas del AWS CAF y qué decisión cubre cada una.',
+				objetivos: ['1.3#3'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar la estrategia de migración adecuada (rehost, replatform, refactor, repurchase, retain, retire) a partir del requisito descrito.',
+				objetivos: ['1.3#4'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir la migración de bases de datos (replicación y conversión de esquema) de la de servidores.',
+				objetivos: ['1.3#4'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar la herramienta de migración equivocada según el origen de los datos (base de datos, servidor, almacenamiento).',
+				objetivos: ['1.3#2'],
+			},
+		],
+		senalesDeEscenario: [
+			'plan plurianual de adopción',
+			'cambiar de motor de base de datos',
+			'mover servidores sin rediseñar',
+			'retirar aplicaciones sin uso',
+		],
+	},
+	{
+		taskId: '1.4',
+		titulo: 'Understand concepts of cloud economics.',
+		dominioId: 'dominio-1',
+		dominioNumero: 1,
+		pesoDominio: 24,
+		queDebesPoder: [
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir coste fijo (capex) de coste variable (opex) ante un gasto concreto.',
+				objetivos: ['1.4#3', '1.4#4'],
+			},
+			{
+				verbo: 'explicar',
+				capacidad: 'Explicar el ahorro por economías de escala y por derechosizing.',
+				objetivos: ['1.4#7', '1.4#8'],
+			},
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer cuándo la licencia propia (BYOL) es mejor que la incluida y qué implica cada modelo.',
+				objetivos: ['1.4#5'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar que mover a la nube reduzca costes automáticamente sin redimensionar ni apagar recursos.',
+				objetivos: ['1.4#6'],
+			},
+		],
+		senalesDeEscenario: [
+			'comprar para el pico',
+			'licencias perpetuas existentes',
+			'capacidad ociosa',
+			'automatizar tareas repetitivas',
+		],
+	},
+	{
+		taskId: '2.1',
+		titulo: 'Understand the AWS shared responsibility model.',
+		dominioId: 'dominio-2',
+		dominioNumero: 2,
+		pesoDominio: 30,
+		queDebesPoder: [
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir la responsabilidad del cliente de la de AWS para el mismo servicio cuando cambia el modelo de servicio.',
+				objetivos: ['2.1#3', '2.1#6'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar quién parchea el sistema operativo, el motor de base de datos o el runtime según el servicio (EC2, RDS, Lambda, Fargate, S3).',
+				objetivos: ['2.1#6'],
+			},
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer que «seguridad de la nube» es responsabilidad de AWS y «seguridad en la nube» del cliente.',
+				objetivos: ['2.1#1', '2.1#2'],
+			},
+		],
+		senalesDeEscenario: [
+			'parchear el sistema operativo',
+			'configurar el grupo de seguridad',
+			'cifrar los datos del cliente',
+			'actualizar el motor gestionado',
+		],
+	},
+	{
+		taskId: '2.2',
+		titulo: 'Understand AWS Cloud security, governance, and compliance concepts.',
+		dominioId: 'dominio-2',
+		dominioNumero: 2,
+		pesoDominio: 30,
+		queDebesPoder: [
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer dónde se auditan las acciones de la cuenta (CloudTrail), dónde se registran métricas y logs (CloudWatch) y dónde se evalúa el cumplimiento de configuración (AWS Config).',
+				objetivos: ['2.2#3', '2.2#8'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar la herramienta de seguridad correcta según el requisito: Inspector (vulnerabilidades), GuardDuty (amenazas), Security Hub (agregación), Shield (DDoS), Macie (datos sensibles), Detective (investigación).',
+				objetivos: ['2.2#6', '2.4#3'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir cifrado en reposo de cifrado en tránsito y elegir el control adecuado (KMS/CloudHSM frente a ACM/TLS).',
+				objetivos: ['2.2#7'],
+			},
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer AWS Artifact como fuente de informes de cumplimiento y dónde consultar requisitos por región o sector.',
+				objetivos: ['2.2#4', '2.2#5'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar servicios de otra categoría (cómputo, red) cuando la pregunta pide gobernanza o cumplimiento.',
+				objetivos: ['2.2#1'],
+			},
+		],
+		senalesDeEscenario: [
+			'reconstruir quién cambió una configuración',
+			'demostrar cumplimiento ante un auditor',
+			'detectar datos personales en un bucket',
+			'proteger una aplicación de tráfico malicioso',
+		],
+	},
+	{
+		taskId: '2.3',
+		titulo: 'Identify AWS access management capabilities.',
+		dominioId: 'dominio-2',
+		dominioNumero: 2,
+		pesoDominio: 30,
+		queDebesPoder: [
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir usuario IAM, rol IAM, grupo, IAM Identity Center, identidad federada y Cognito según quién se autentica (empleado, aplicación, cliente final).',
+				objetivos: ['2.3#1', '2.3#10'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el método de autenticación adecuado (MFA, roles entre cuentas, federación) y el almacén de credenciales (Secrets Manager, Parameter Store, KMS).',
+				objetivos: ['2.3#5', '2.3#6'],
+			},
+			{
+				verbo: 'explicar',
+				capacidad:
+					'Explicar el principio de mínimo privilegio y qué tareas solo puede realizar el usuario raíz.',
+				objetivos: ['2.3#3', '2.3#8'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar el uso de credenciales de largo plazo donde un rol temporal resuelve el requisito.',
+				objetivos: ['2.3#5', '2.3#7'],
+			},
+		],
+		senalesDeEscenario: [
+			'acceso temporal entre cuentas',
+			'iniciar sesión con el directorio corporativo',
+			'rotar credenciales de base de datos',
+			'proteger la cuenta raíz',
+		],
+	},
+	{
+		taskId: '2.4',
+		titulo: 'Identify components and resources for security.',
+		dominioId: 'dominio-2',
+		dominioNumero: 2,
+		pesoDominio: 30,
+		queDebesPoder: [
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el control de seguridad correcto para el borde (WAF, Shield, Firewall Manager) frente a la detección interna (GuardDuty, Inspector).',
+				objetivos: ['2.4#3'],
+			},
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer AWS Marketplace como origen de productos de seguridad de terceros y qué implica ser responsable del producto.',
+				objetivos: ['2.4#4'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir dónde encontrar información de seguridad (Knowledge Center, Security Center, Security Blog) y el papel de Trusted Advisor.',
+				objetivos: ['2.4#5', '2.4#6'],
+			},
+		],
+		senalesDeEscenario: [
+			'bloquear inyecciones en una API pública',
+			'mitigar un ataque de denegación de servicio',
+			'aplicar una política de seguridad a varias cuentas',
+			'investigar un hallazgo',
+		],
+	},
+	{
+		taskId: '3.1',
+		titulo: 'Define methods of deploying and operating in the AWS Cloud.',
+		dominioId: 'dominio-3',
+		dominioNumero: 3,
+		pesoDominio: 34,
+		queDebesPoder: [
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir consola, CLI, SDK/API e infraestructura como código según el requisito de repetición y automatización.',
+				objetivos: ['3.1#3', '3.1#4'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar CloudFormation cuando el requisito es declarar y reproducir infraestructura.',
+				objetivos: ['3.1#4'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir los modelos de despliegue cloud, híbrido y on-premises ante una restricción de latencia, regulación o inversión.',
+				objetivos: ['3.1#5', '3.1#6'],
+			},
+		],
+		senalesDeEscenario: [
+			'reproducir el mismo entorno varias veces',
+			'operar sin interfaz gráfica',
+			'mantener parte del sistema en el centro de datos',
+			'ejecutar tareas puntuales frente a procesos repetibles',
+		],
+	},
+	{
+		taskId: '3.2',
+		titulo: 'Define the AWS global infrastructure.',
+		dominioId: 'dominio-3',
+		dominioNumero: 3,
+		pesoDominio: 34,
+		queDebesPoder: [
+			{
+				verbo: 'distinguir',
+				capacidad: 'Distinguir Región, Availability Zone y ubicación de borde por su función.',
+				objetivos: ['3.2#5', '3.2#6'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el despliegue en varias AZ para alta disponibilidad y en varias Regiones para recuperación, latencia o residencia.',
+				objetivos: ['3.2#5', '3.2#8'],
+			},
+			{
+				verbo: 'explicar',
+				capacidad: 'Explicar por qué las AZ no comparten puntos únicos de fallo.',
+				objetivos: ['3.2#7'],
+			},
+		],
+		senalesDeEscenario: [
+			'continuidad del negocio',
+			'latencia para usuarios de otro continente',
+			'exigencia de que los datos no salgan del país',
+			'caché de contenidos cerca del usuario',
+		],
+	},
+	{
+		taskId: '3.3',
+		titulo: 'Identify AWS compute services.',
+		dominioId: 'dominio-3',
+		dominioNumero: 3,
+		pesoDominio: 34,
+		queDebesPoder: [
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el modelo de cómputo (instancia, contenedor, sin servidor) según el control, la escala y la carga de trabajo descritos.',
+				objetivos: ['3.3#3', '3.3#4'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir EC2 de Lambda, ECS/EKS de Fargate y Elastic Beanstalk de gestionar la infraestructura.',
+				objetivos: ['3.3#3', '3.3#4'],
+			},
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer el tipo de instancia adecuado (optimizada para cómputo, memoria, almacenamiento o GPU) por la carga.',
+				objetivos: ['3.3#2'],
+			},
+			{
+				verbo: 'explicar',
+				capacidad:
+					'Explicar que el auto scaling aporta elasticidad y que el balanceador reparte tráfico y mejora la disponibilidad.',
+				objetivos: ['3.3#5', '3.3#6'],
+			},
+		],
+		senalesDeEscenario: [
+			'subir y bajar de capacidad según la demanda',
+			'pagar solo cuando se ejecuta el código',
+			'no administrar servidores ni clústeres',
+			'necesidad de GPU o mucha memoria',
+		],
+	},
+	{
+		taskId: '3.4',
+		titulo: 'Identify AWS database services.',
+		dominioId: 'dominio-3',
+		dominioNumero: 3,
+		pesoDominio: 34,
+		queDebesPoder: [
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el motor de base de datos por el modelo de datos y el patrón de acceso (relacional, clave-valor, documento, grafo, en memoria).',
+				objetivos: ['3.4#4', '3.4#5', '3.4#6'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir RDS de Aurora, DynamoDB de ElastiCache y Redshift de una base de datos transaccional.',
+				objetivos: ['3.4#4', '3.4#5'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar la herramienta de migración correcta: DMS para mover datos, SCT para convertir esquema.',
+				objetivos: ['3.4#7'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar una base de datos autogestionada en EC2 cuando el requisito pide administración delegada.',
+				objetivos: ['3.4#3'],
+			},
+		],
+		senalesDeEscenario: [
+			'millones de operaciones por segundo con latencia de milisegundos',
+			'consultas analíticas sobre petabytes',
+			'caché para aliviar la base principal',
+			'cambiar de Oracle a PostgreSQL',
+		],
+	},
+	{
+		taskId: '3.5',
+		titulo: 'Identify AWS network services.',
+		dominioId: 'dominio-3',
+		dominioNumero: 3,
+		pesoDominio: 34,
+		queDebesPoder: [
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer los componentes de una VPC (subredes, puertas de enlace, tablas de rutas) y los controles de red (grupos de seguridad, ACL de red).',
+				objetivos: ['3.5#2', '3.5#3'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir grupo de seguridad (con estado, a nivel de recurso) de ACL de red (sin estado, a nivel de subred).',
+				objetivos: ['3.5#3'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar la conectividad adecuada: VPN sobre internet, Direct Connect dedicado, Transit Gateway para varias VPC.',
+				objetivos: ['3.5#5'],
+			},
+			{
+				verbo: 'reconocer',
+				capacidad: 'Reconocer el papel de Route 53 como DNS.',
+				objetivos: ['3.5#4'],
+			},
+		],
+		senalesDeEscenario: [
+			'ancho de banda y latencia estables',
+			'conectar decenas de VPC entre sí',
+			'resolver un nombre de dominio',
+			'aislar una subred pública de una privada',
+		],
+	},
+	{
+		taskId: '3.6',
+		titulo: 'Identify AWS storage services.',
+		dominioId: 'dominio-3',
+		dominioNumero: 3,
+		pesoDominio: 34,
+		queDebesPoder: [
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar entre objetos, bloque y archivos por cómo se accede al dato, no por su nombre.',
+				objetivos: ['3.6#1', '3.6#2', '3.6#4', '3.6#5', '3.6#6'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir Amazon EBS de instance store y de Amazon EFS, y Amazon FSx de AWS Storage Gateway.',
+				objetivos: ['3.6#4', '3.6#5', '3.6#6'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar la clase de Amazon S3 y la política de ciclo de vida por el patrón de acceso y la antigüedad.',
+				objetivos: ['3.6#3', '3.6#7'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar la transición de clase como copia de seguridad y elegir AWS Backup cuando se exige recuperación.',
+				objetivos: ['3.6#8'],
+			},
+		],
+		senalesDeEscenario: [
+			'conservar archivos que casi nunca se leen',
+			'volumen que sobrevive a la instancia',
+			'sistema de archivos compartido por varias máquinas',
+			'dato que debe seguir en la oficina pero guardarse en la nube',
+		],
+	},
+	{
+		taskId: '3.7',
+		titulo: 'Identify AWS artificial intelligence and machine learning (AI/ML) services and analytics services.',
+		dominioId: 'dominio-3',
+		dominioNumero: 3,
+		pesoDominio: 34,
+		queDebesPoder: [
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el servicio de IA por la tarea (imagen, texto, audio, voz, conversación) sin que se nombre el servicio.',
+				objetivos: ['3.7#3'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir Rekognition de Textract, Comprehend de Transcribe, Transcribe de Polly y SageMaker de los servicios de IA ya entrenados.',
+				objetivos: ['3.7#3', '3.7#4'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el servicio de analytics por el patrón: consultar en el lago, transformar (ETL), ingerir en tiempo real, buscar y visualizar.',
+				objetivos: ['3.7#4'],
+			},
+		],
+		senalesDeEscenario: [
+			'detectar objetos en imágenes',
+			'extraer texto de facturas escaneadas',
+			'transcribir llamadas de atención al cliente',
+			'consultar con SQL datos que ya están en un bucket',
+		],
+	},
+	{
+		taskId: '3.8',
+		titulo: 'Identify services from other in-scope AWS service categories.',
+		dominioId: 'dominio-3',
+		dominioNumero: 3,
+		pesoDominio: 34,
+		queDebesPoder: [
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el servicio de mensajería por el patrón: notificar a muchos (SNS), desacoplar con cola (SQS), enrutar por reglas (EventBridge), orquestar pasos (Step Functions).',
+				objetivos: ['3.8#8'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir AppStream 2.0 de WorkSpaces y de WorkSpaces Secure Browser por lo que se entrega al usuario.',
+				objetivos: ['3.8#11'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar las herramientas de desarrollo y despliegue (CodeBuild, CodePipeline, X-Ray) por su función.',
+				objetivos: ['3.8#9', '3.8#10'],
+			},
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer Amplify para frontend y AWS IoT Core para dispositivos conectados.',
+				objetivos: ['3.8#12', '3.8#13'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar un servicio de una categoría distinta cuando el requisito es de negocio (Amazon Connect) o de correo (Amazon SES).',
+				objetivos: ['3.8#5', '3.8#6'],
+			},
+		],
+		senalesDeEscenario: [
+			'avisar a varios equipos cuando ocurre un evento',
+			'procesar mensajes sin perderlos si el consumidor cae',
+			'publicar una app web y móvil',
+			'conectar miles de sensores',
+		],
+	},
+	{
+		taskId: '4.1',
+		titulo: 'Compare AWS pricing models.',
+		dominioId: 'dominio-4',
+		dominioNumero: 4,
+		pesoDominio: 12,
+		queDebesPoder: [
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar la opción de compra de cómputo por la previsibilidad de la carga y la tolerancia a interrupciones (On-Demand, Reserved, Savings Plans, Spot, Dedicated, Capacity Reservations).',
+				objetivos: ['4.1#3'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir Savings Plans de Reserved Instances y Spot de ambas por flexibilidad y compromiso.',
+				objetivos: ['4.1#3', '4.1#4'],
+			},
+			{
+				verbo: 'explicar',
+				capacidad:
+					'Explicar los costes de transferencia de datos (entrante gratuita, saliente y cruce de AZ/Región facturados).',
+				objetivos: ['4.1#6'],
+			},
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar la clase de almacenamiento por coste, latencia y tiempo de recuperación.',
+				objetivos: ['4.1#7'],
+			},
+		],
+		senalesDeEscenario: [
+			'carga estable durante un año',
+			'procesar en lote de madrugada y tolerar interrupciones',
+			'no hacer compromisos',
+			'gran volumen de datos entre dos zonas',
+		],
+	},
+	{
+		taskId: '4.2',
+		titulo: 'Understand resources for billing, budget, and cost management.',
+		dominioId: 'dominio-4',
+		dominioNumero: 4,
+		pesoDominio: 12,
+		queDebesPoder: [
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir AWS Budgets (alertas y presupuestos), Cost Explorer (analizar histórico), Cost and Usage Report (detalle para herramientas) y Pricing Calculator (estimar antes).',
+				objetivos: ['4.2#5', '4.2#6'],
+			},
+			{
+				verbo: 'explicar',
+				capacidad:
+					'Explicar la facturación consolidada de AWS Organizations y cómo se reparten los costes por cuenta.',
+				objetivos: ['4.2#7'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar las etiquetas de asignación de costes cuando el requisito es estimar antes de desplegar.',
+				objetivos: ['4.2#8'],
+			},
+		],
+		senalesDeEscenario: [
+			'anticipar la factura antes de crear recursos',
+			'recibir un aviso al superar un umbral',
+			'desglosar el gasto por equipo',
+			'analizar la tendencia de los últimos meses',
+		],
+	},
+	{
+		taskId: '4.3',
+		titulo: 'Identify AWS technical resources and AWS Support options.',
+		dominioId: 'dominio-4',
+		dominioNumero: 4,
+		pesoDominio: 12,
+		queDebesPoder: [
+			{
+				verbo: 'seleccionar',
+				capacidad:
+					'Seleccionar el plan de soporte adecuado según tiempo de respuesta y asesoramiento (Developer, Business, Enterprise On-Ramp, Enterprise).',
+				objetivos: ['4.3#7'],
+			},
+			{
+				verbo: 'distinguir',
+				capacidad:
+					'Distinguir Trusted Advisor (recomendaciones), Health Dashboard (estado de recursos y eventos) y Health API (consulta programática).',
+				objetivos: ['4.3#8'],
+			},
+			{
+				verbo: 'reconocer',
+				capacidad:
+					'Reconocer los recursos técnicos (re:Post, Knowledge Center, Prescriptive Guidance, whitepapers, blogs) y el papel del APN y de AWS Professional Services.',
+				objetivos: ['4.3#5', '4.3#6', '4.3#10', '4.3#13'],
+			},
+			{
+				verbo: 'descartar',
+				capacidad:
+					'Descartar AWS Trust and Safety cuando el requisito es soporte técnico y no denuncia de abuso.',
+				objetivos: ['4.3#9'],
+			},
+		],
+		senalesDeEscenario: [
+			'necesidad de un ingeniero de soporte con SLA corto',
+			'conocer el estado de un servicio en tu región',
+			'consultar buenas prácticas de arquitectura',
+			'reportar uso malintencionado de recursos',
+		],
+	},
+];
+
+export const evaluablesPorTask: Record<string, EvaluablesClfC02> = Object.fromEntries(
+	evaluablesClfC02.map((entrada) => [entrada.taskId, entrada]),
+);
+
+export function evaluablesDeDominio(dominioId: string): EvaluablesClfC02[] {
+	return evaluablesClfC02.filter((entrada) => entrada.dominioId === dominioId);
+}
+
+/** Comprueba que la capa cubre exactamente los tasks del blueprint. */
+export function tasksSinEvaluables(): string[] {
+	return taskStatementsClfC02
+		.filter((task) => !evaluablesPorTask[task.id])
+		.map((task) => task.id);
+}

@@ -55,7 +55,7 @@ export const gruposTask32: GrupoTematico[] = [
 			},
 			{
 				tipo: 'ejemplo',
-				md: '```text\nBase de datos en una sola AZ:\n  falla la AZ -> la base de datos no está disponible\n\nBase de datos en varias AZ (multi-AZ):\n  falla una AZ -> otra réplica atiende, el servicio continúa\n\nBalanceador de carga delante:\n  reparte el tráfico entre las instancias de varias AZ\n```',
+				md: '```text\nBase de datos en una sola AZ:\n  falla la AZ -> la base de datos no está disponible\n\nBase de datos con instancia en espera en otra AZ:\n  falla la AZ -> conmutación (failover) a la instancia en espera; sigue el servicio\n\nBalanceador de carga delante:\n  reparte el tráfico entre instancias de varias AZ\n```',
 			},
 			{
 				tipo: 'errorComun',

@@ -48,12 +48,27 @@ export const gruposTask11: GrupoTematico[] = [
 				md: 'La **infraestructura global** de AWS está formada por regiones, Availability Zones y edge locations repartidas por el mundo. De ella salen dos beneficios centrales:\n\n- **Velocidad de despliegue**: en minutos se crean recursos en cualquier región, sin esperar a comprar y montar centros de datos. Eso acorta el tiempo entre la idea y la producción.\n- **Alcance global**: el mismo servicio está disponible en muchas zonas geográficas, de modo que una aplicación puede servir a usuarios de otros continentes sin abrir infraestructura propia.\n\nLa infraestructura global actúa como plataforma común: se elige la región cercana a los usuarios para reducir la latencia y se distribuye el contenido con las edge locations para acercar la entrega. Todo ello sin gestionar el cableado ni los edificios.',
 			},
 			{
+				tipo: 'comparacion',
+				parId: 'velocidad-despliegue-vs-alcance-global',
+			},
+			{
 				tipo: 'escenario',
 				situacion:
 					'Una startup debe publicar su aplicación en un plazo de dos semanas para clientes de varios países. No tiene presupuesto para montar infraestructura fuera de su país y necesita que las descargas sean rápidas desde cualquier continente.',
 				analisis:
 					'La infraestructura global permite desplegar en minutos en la región adecuada y distribuir el contenido estático con **edge locations**, de modo que la entrega se acerca al usuario sin abrir centros de datos propios. La velocidad de despliegue atiende el plazo y el alcance global atiende a la audiencia internacional.',
 				servicio: 'Amazon CloudFront',
+			},
+			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa la infraestructura global cuando el plazo de puesta en producción sea corto: los recursos están disponibles en minutos.',
+					'Apóyate en las ubicaciones de borde cuando el contenido deba entregarse con baja latencia a usuarios de varios continentes.',
+				],
+				noUsar: [
+					'No confundas el alcance global con replicar todos los datos en cada región: la residencia y la replicación son decisiones de diseño aparte.',
+					'No esperes que la infraestructura global garantice por sí sola la continuidad: para tolerar fallos hay que diseñar la redundancia.',
+				],
 			},
 			{
 				tipo: 'clave',

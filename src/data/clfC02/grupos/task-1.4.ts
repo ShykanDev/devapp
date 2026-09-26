@@ -19,7 +19,7 @@ export const gruposTask14: GrupoTematico[] = [
 				situacion:
 					'Un equipo quiere dimensionar su infraestructura para el pico de Black Friday comprando servidores de más, de forma que el resto del año quede capacidad sin usar.',
 				analisis:
-					'Comprar para el pico convierte el sobredimensionamiento en un **coste fijo hundido**: se paga también los meses de baja demanda. En la nube se paga solo la capacidad consumida y el aprovisionamiento se ajusta con elasticidad, de modo que el pico no obliga a mantener recursos ociosos el resto del año.',
+					'Comprar para el pico convierte el sobredimensionamiento en un **coste fijo hundido**: se paga también los meses de baja demanda. En la nube el gasto se alinea con el consumo real y el aprovisionamiento se ajusta con elasticidad, de modo que el pico no obliga a mantener recursos ociosos el resto del año. Cuando la carga es estable sí conviene un compromiso (Reserved Instances o Savings Plans) para bajar la tarifa, pero el dimensionado sigue basándose en la necesidad real y no en comprar capacidad física para el peor día.',
 				servicio: 'AWS Auto Scaling',
 			},
 			{
@@ -56,6 +56,12 @@ export const gruposTask14: GrupoTematico[] = [
 			{
 				tipo: 'ejemplo',
 				md: '```text\nEstructura de coste al migrar\n\nOn-premises              Nube\ncapex alto               opex por consumo\ncapacidad para el pico   capacidad elastica\ncoste fijo alto          coste variable\n+ energia y espacio      tarifa de escala\n+ personal de sala       sin sala que mantener\n```',
+			},
+			{
+				tipo: 'errorComun',
+				error: 'Creer que migrar a la nube abarata la factura de forma automática por el simple hecho de usar AWS.',
+				correccion:
+					'El ahorro depende de ajustar el tamaño de los recursos, apagar lo que no se usa, aprovechar las economías de escala del proveedor y elegir el modelo de precio adecuado. Sin ese trabajo, la factura puede parecerse a la del centro de datos anterior.',
 			},
 			{
 				tipo: 'clave',

@@ -574,7 +574,7 @@ export const glosarioGeneralClfC02: TerminoClfC02[] = [
 		termino: 'AWS Health Dashboard',
 		definicion:
 			'Panel que informa del estado de los servicios de AWS y de eventos que afectan a los recursos de la propia cuenta.',
-		dominios: ['dominio-3'],
+		dominios: ['dominio-4'],
 		relacionados: ['trusted-advisor', 'support-center', 'cloudwatch'],
 	},
 	{
@@ -798,7 +798,7 @@ export const glosarioGeneralClfC02: TerminoClfC02[] = [
 		termino: 'AWS Organizations',
 		definicion:
 			'Servicio que agrupa varias cuentas de AWS para administrarlas de forma centralizada con políticas y facturación consolidada.',
-		dominios: ['dominio-2'],
+		dominios: ['dominio-2', 'dominio-4'],
 		relacionados: ['consolidated-billing', 'control-tower', 'iam-identity-center', 'service-control-policies'],
 	},
 	{
@@ -1021,7 +1021,7 @@ export const glosarioGeneralClfC02: TerminoClfC02[] = [
 		id: 's3-storage-classes',
 		termino: 'S3 storage classes («clases de almacenamiento de S3»)',
 		definicion:
-			'Niveles de S3 (Standard, Intelligent-Tiering, Standard-IA, One Zone-IA, Glacier) que equilibran coste, acceso y durabilidad.',
+			'Niveles de S3 —Standard, Intelligent-Tiering, Standard-IA, One Zone-IA y la familia Glacier (Instant Retrieval, Flexible Retrieval y Deep Archive)— que equilibran coste, latencia, disponibilidad y tiempo de recuperación. One Zone-IA almacena los datos en una sola Availability Zone y por eso ofrece menor durabilidad que las clases que replican entre varias zonas.',
 		dominios: ['dominio-3'],
 		relacionados: ['s3', 's3-glacier', 'cost-explorer'],
 	},
@@ -1294,7 +1294,7 @@ export const glosarioGeneralClfC02: TerminoClfC02[] = [
 		termino: 'AWS Trusted Advisor',
 		definicion:
 			'Herramienta que inspecciona la cuenta y ofrece recomendaciones sobre coste, seguridad, tolerancia a fallos, límites y rendimiento.',
-		dominios: ['dominio-3'],
+		dominios: ['dominio-2', 'dominio-4'],
 		relacionados: ['cost-explorer', 'security-hub', 'service-quotas', 'support-plans'],
 	},
 	{

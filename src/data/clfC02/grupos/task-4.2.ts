@@ -72,6 +72,19 @@ export const gruposTask42: GrupoTematico[] = [
 					'Consolidar agrupa el uso y los cargos en una factura, pero no atribuye el gasto por sí sola ni fusiona los recursos: cada cuenta conserva los suyos y sus propios límites. El reparto requiere etiquetas de asignación de costos e informes.',
 			},
 			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa AWS Organizations cuando necesites administrar muchas cuentas como una unidad de gobierno y una sola factura consolidada.',
+					'Usa la facturación consolidada para alcanzar antes los descuentos por volumen con el uso agregado de todas las cuentas.',
+					'Combina Organizations con etiquetas de asignación de costos para atribuir el gasto a cada equipo.',
+				],
+				noUsar: [
+					'No esperes que la facturación consolidada reparta el gasto por equipo ni fusione los recursos: cada cuenta conserva los suyos y sus límites.',
+					'No creas que consolidar exime del pago: agrupa la factura, no perdona el consumo de ninguna cuenta.',
+					'No uses Organizations como sustituto del control de acceso por persona: eso corresponde a IAM o IAM Identity Center.',
+				],
+			},
+			{
 				tipo: 'clave',
 				items: [
 					'AWS Organizations administra varias cuentas como una unidad.',
@@ -105,6 +118,19 @@ export const gruposTask42: GrupoTematico[] = [
 				error: 'Creer que basta con etiquetar los recursos: si la etiqueta no se activa como etiqueta de asignación de costos, no aparece en los informes de facturación.',
 				correccion:
 					'Primero se aplican las etiquetas a los recursos y después se activan como etiquetas de asignación de costos. Solo entonces se pueden usar para filtrar y agrupar en los informes; las etiquetas no activadas no se propagan a los datos de facturación.',
+			},
+			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa etiquetas de asignación de costos cuando necesites desglosar la factura por equipo, proyecto, entorno o centro de costo.',
+					'Activa la etiqueta como etiqueta de asignación de costos para que aparezca en los informes de facturación.',
+					'Usa el informe de costos y uso cuando necesites el detalle línea a línea con las etiquetas activadas.',
+				],
+				noUsar: [
+					'No esperes que activar una etiqueta cambie cargos ya facturados: la asignación no es retroactiva.',
+					'No uses etiquetas como control de seguridad: son metadatos de gestión, no permisos de acceso.',
+					'No trates el informe de costos y uso como un panel en tiempo real: es un informe detallado, con su propia latencia de entrega.',
+				],
 			},
 			{
 				tipo: 'clave',
@@ -148,6 +174,20 @@ export const gruposTask42: GrupoTematico[] = [
 				error: 'Usar AWS Cost Explorer como si fuera una calculadora de precios para estimar una arquitectura que todavía no existe.',
 				correccion:
 					'AWS Cost Explorer analiza el costo y el uso ya registrados; no proyecta arquitecturas futuras. Para estimar antes de desplegar se usa AWS Pricing Calculator. La estimación previa y el análisis histórico son funciones distintas.',
+			},
+			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa AWS Pricing Calculator para estimar el costo de una arquitectura que todavía no existe.',
+					'Usa AWS Cost Explorer para analizar el gasto ya realizado y ver tendencias por servicio, cuenta o etiqueta.',
+					'Usa AWS Budgets para vigilar un umbral y recibir alertas cuando el gasto real o previsto se acerque al límite.',
+				],
+				noUsar: [
+					'No esperes que AWS Budgets detenga el gasto por sí solo: alerta cuando se cruza el umbral, pero no bloquea recursos.',
+					'No uses AWS Cost Explorer para estimar una arquitectura futura: solo analiza lo ya registrado.',
+					'No uses AWS Pricing Calculator para auditar la factura real: es una estimación previa, no un historial.',
+					'No confundas la previsión de Cost Explorer con una garantía de la factura final.',
+				],
 			},
 			{
 				tipo: 'clave',

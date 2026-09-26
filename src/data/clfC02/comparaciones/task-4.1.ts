@@ -62,4 +62,94 @@ export const paresTask41: ParConfusionClfC02[] = [
 		preguntaIds: ['4.1-q3'],
 		objetivos: ['4.1#1', '4.1#3'],
 	},
+	{
+		id: 'clases-de-objetos-vs-bloques-y-archivos',
+		etiqueta: 'Clases de almacenamiento de objetos frente a bloques y archivos',
+		a: {
+			titulo: 'Clases y niveles del almacenamiento de objetos',
+			resumen:
+				'Dentro del almacenamiento de objetos, las clases ordenan el precio por frecuencia de acceso y latencia de recuperación: la clase de acceso frecuente es la más cara por GB, las de acceso poco frecuente abaratan el almacenamiento con cargo por recuperación y las de archivo lo minimizan con recuperación lenta.',
+		},
+		b: {
+			titulo: 'Almacenamiento de bloques y de archivos',
+			resumen:
+				'No son niveles de un mismo servicio. El almacenamiento de bloques se paga por capacidad aprovisionada aunque no se monte, y el de archivos compartidos se paga por datos almacenados. Cada tipo atiende un acceso distinto: volumen de una instancia frente a sistema de archivos compartido.',
+		},
+		diferenciaClave:
+			'Las clases de objetos son niveles de precio dentro de un mismo servicio de objetos; los bloques y los archivos son otros tipos de almacenamiento con su propio modelo de cobro. No se eligen como niveles entre sí, sino por la forma de acceso que necesita la carga.',
+		cuandoA: [
+			'Cuando el dato se accede como objeto y quieres ajustar el precio según la frecuencia de lectura.',
+			'Cuando necesitas retención prolongada de objetos con una política de ciclo de vida que baje de nivel de forma automática.',
+		],
+		cuandoB: [
+			'Cuando una instancia necesita un volumen de bloques o cuando varios recursos deben compartir un sistema de archivos.',
+			'Cuando el acceso no es por objeto sino por lectura y escritura a nivel de bloque o por montaje de un sistema de archivos.',
+		],
+		escenarioA:
+			'Una empresa conserva documentos que casi no se leen y los mueve con una política de ciclo de vida desde la clase de acceso frecuente a una clase de archivo, reduciendo el precio por GB almacenado.',
+		escenarioB:
+			'Un servidor de base de datos monta un volumen de bloques para sus datos y un clúster de análisis comparte un sistema de archivos para sus nodos de proceso.',
+		preguntaIds: ['4.1-q15'],
+		objetivos: ['4.1#2', '4.1#7'],
+	},
+	{
+		id: 'comparticion-de-descuento-activada-vs-desactivada',
+		etiqueta: 'Descuento por compromiso compartido por defecto frente a compartición desactivada',
+		a: {
+			titulo: 'Compartición activada (por defecto)',
+			resumen:
+				'En una organización, las RI y los Savings Plans se comparten por defecto: primero cubren el uso de la cuenta que los compró y el descuento sobrante se aplica al uso elegible de las demás cuentas, reduciendo la factura consolidada.',
+		},
+		b: {
+			titulo: 'Compartición desactivada',
+			resumen:
+				'La cuenta de administración puede desactivar la compartición, cuenta por cuenta, en las preferencias de facturación. A partir de ahí, el descuento queda limitado a la cuenta que lo compró y el sobrante no beneficia a las demás.',
+		},
+		diferenciaClave:
+			'No es una diferencia de producto sino de preferencia de la organización: activada, el descuento se reparte entre cuentas; desactivada, se retiene en la cuenta compradora. El comportamiento por defecto es la compartición.',
+		cuandoA: [
+			'Cuando varias cuentas comparten una organización y quieres que el descuento no usado en una reduzca la factura de las demás.',
+			'Cuando buscas maximizar el aprovechamiento del compromiso sobre el uso agregado.',
+		],
+		cuandoB: [
+			'Cuando necesitas que cada cuenta cargue su propio consumo sin que el descuento de otra la beneficie.',
+			'Cuando las cuentas se facturan a unidades distintas y quieres el descuento encerrado en la cuenta compradora.',
+		],
+		escenarioA:
+			'La cuenta de producción de un grupo compra un compromiso de cómputo que no consume entero; el descuento sobrante baja la factura de la cuenta de desarrollo, que pagaba todo a precio de referencia.',
+		escenarioB:
+			'Una empresa desactiva la compartición porque cada filial tiene presupuesto propio y quiere que el descuento solo reduzca el gasto de la cuenta que lo contrató.',
+		preguntaIds: ['4.1-q16'],
+		objetivos: ['4.1#5'],
+	},
+	{
+		id: 'transferencia-entrante-vs-saliente-y-cruce',
+		etiqueta: 'Transferencia entrante frente a saliente y cruce entre Availability Zones o regiones',
+		a: {
+			titulo: 'Transferencia entrante (incoming)',
+			resumen:
+				'La entrada de datos desde internet hacia AWS suele ser gratuita. Recibir datos en la nube no genera un cargo por GB de los que sí aparecen al sacarlos o al cruzar fronteras internas.',
+		},
+		b: {
+			titulo: 'Transferencia saliente y cruce entre AZ o regiones',
+			resumen:
+				'Sacar datos hacia internet se factura por GB con tramos decrecientes, y el tráfico que cruza entre Availability Zones o entre regiones también se cobra por GB en los extremos. El tráfico dentro de la misma AZ con direcciones privadas no genera ese cargo.',
+		},
+		diferenciaClave:
+			'Entrar a AWS suele ser gratis; salir y cruzar entre zonas o regiones se paga. Por eso el diseño de red importa: concentrar el tráfico intenso en la misma AZ o usar un endpoint privado reduce la factura sin eliminar la transferencia.',
+		cuandoA: [
+			'Cuando ingieres datos hacia AWS de forma masiva y quieres saber que esa dirección no genera cargo de transferencia.',
+			'Cuando planificas la carga inicial de datos y el coste relevante es el almacenamiento, no la entrada.',
+		],
+		cuandoB: [
+			'Cuando sirves contenido o resultados hacia internet y necesitas presupuestar la salida por GB.',
+			'Cuando el tráfico interno cruza Availability Zones o regiones y quieres evaluar si conviene reagruparlo en una sola zona.',
+		],
+		escenarioA:
+			'Una empresa sube cada noche millones de registros desde su centro de datos hacia AWS y comprueba que esa entrada no genera un cargo por GB de transferencia.',
+		escenarioB:
+			'Dos componentes en Availability Zones distintas intercambian grandes volúmenes de datos y el equipo compara el coste de cruce con el de concentrarlos en una misma zona.',
+		preguntaIds: ['4.1-q17'],
+		objetivos: ['4.1#6'],
+	},
 ];

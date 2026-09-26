@@ -29,23 +29,23 @@ export const paresTask36: ParConfusionClfC02[] = [
 		escenarioB:
 			'El equipo de la base de datos asocia un volumen de Amazon EBS a su instancia para los datos persistentes y monta un sistema de archivos Amazon EFS compartido para los ficheros que procesan varios servidores Linux.',
 		preguntaIds: ['3.6-q2', '3.6-q6'],
-		objetivos: ['3.6#2', '3.6#4'],
+		objetivos: ['3.6#1', '3.6#2', '3.6#4'],
 	},
 	{
 		id: 's3-storage-classes',
 		etiqueta: 'Clases de almacenamiento de Amazon S3',
 		a: {
-			titulo: 'Clases de acceso inmediato',
+			titulo: 'Clases de acceso inmediato (S3 Standard, Intelligent-Tiering)',
 			resumen:
-				'Priorizan la disponibilidad y la latencia baja: el objeto se lee al instante. Guardan datos calientes o de acceso impredecible y tienen el coste de almacenamiento más alto.',
+				'Priorizan la disponibilidad y la latencia baja: el objeto se lee al instante. S3 Standard guarda datos calientes y de acceso impredecible; Intelligent-Tiering mueve automáticamente los objetos entre niveles de acceso según su uso. Tienen el coste de almacenamiento más alto.',
 		},
 		b: {
-			titulo: 'Clases de acceso poco frecuente y de archivado',
+			titulo: 'Clases de acceso poco frecuente y de archivado (Standard-IA, One Zone-IA, familia S3 Glacier)',
 			resumen:
-				'Abaratan el almacenamiento a cambio de menor disponibilidad o de un tiempo de recuperación mayor, y algunas cobran por acceso. Se destinan a datos fríos, copias de largo plazo y archivos que rara vez se consultan.',
+				'Abaratan el almacenamiento a cambio de menor disponibilidad o de un tiempo de recuperación mayor, y algunas cobran por acceso. Standard-IA y One Zone-IA sirven datos fríos de acceso poco frecuente —One Zone-IA en una sola Availability Zone, con menor durabilidad— y la familia Glacier (Instant Retrieval, Flexible Retrieval y Deep Archive) cubre el archivado con recuperaciones de segundos a horas.',
 		},
 		diferenciaClave:
-			'Todas las clases guardan el mismo objeto; lo que cambia es el equilibrio entre coste de almacenamiento, latencia de acceso, disponibilidad y tiempo de recuperación. Las de acceso inmediato sirven datos vivos y las de archivado sirven datos que se consultan de forma excepcional.',
+			'Todas las clases guardan el mismo objeto; lo que cambia es el equilibrio entre coste de almacenamiento, latencia de acceso, disponibilidad, durabilidad y tiempo de recuperación. Las de acceso inmediato sirven datos vivos; las de acceso poco frecuente y archivado sirven datos que se consultan de forma excepcional, y Deep Archive es la de recuperación más lenta y menor coste.',
 		cuandoA: [
 			'Cuando los objetos se consultan con frecuencia o el patrón de acceso es desconocido y no puedes asumir latencia.',
 			'Cuando necesitas respuesta inmediata para servir contenido a los usuarios.',
@@ -59,7 +59,7 @@ export const paresTask36: ParConfusionClfC02[] = [
 		escenarioB:
 			'Los registros y facturas de más de un año se conservan en una clase de archivado; solo se recuperan ante una auditoría y una política de ciclo de vida se encarga de moverlos.',
 		preguntaIds: ['3.6-q4'],
-		objetivos: ['3.6#3'],
+		objetivos: ['3.6#2', '3.6#3'],
 	},
 	{
 		id: 'efs-vs-fsx-vs-storage-gateway',
@@ -90,5 +90,35 @@ export const paresTask36: ParConfusionClfC02[] = [
 			'Una oficina conserva su servidor de archivos local, pero los datos se respaldan en AWS a través de una puerta de enlace que mantiene en caché los documentos que se abren a diario.',
 		preguntaIds: ['3.6-q9'],
 		objetivos: ['3.6#5', '3.6#6'],
+	},
+	{
+		id: 'lifecycle-vs-aws-backup',
+		etiqueta: 'Políticas de ciclo de vida vs AWS Backup',
+		a: {
+			titulo: 'Políticas de ciclo de vida',
+			resumen:
+				'Reglas que mueven o eliminan objetos automáticamente según su antigüedad. En Amazon S3 transicionan el objeto entre clases de almacenamiento y lo expiran cuando deja de aportar. Optimizan el coste del dato vivo.',
+		},
+		b: {
+			titulo: 'AWS Backup',
+			resumen:
+				'Servicio centralizado que define, programa y supervisa copias de seguridad de varios servicios, como volúmenes de Amazon EBS o sistemas de archivos Amazon EFS y Amazon FSx, con políticas y retención. Protege contra pérdida o corrupción.',
+		},
+		diferenciaClave:
+			'La política de ciclo de vida abarata el dato moviéndolo entre clases o expirándolo; AWS Backup crea copias recuperables con una retención definida. Una transición de clase no es una copia de seguridad y AWS Backup no sustituye a la gestión del ciclo de vida.',
+		cuandoA: [
+			'Cuando el patrón de acceso de los objetos cambia con el tiempo y quieres abaratar el almacenamiento de forma automática.',
+			'Cuando necesitas expirar datos que ya no aportan valor sin operación manual.',
+		],
+		cuandoB: [
+			'Cuando necesitas recuperarte de un borrado accidental o de una corrupción con copias y retención.',
+			'Cuando debes cumplir una retención de copias de seguridad sobre varios servicios a la vez.',
+		],
+		escenarioA:
+			'Una plataforma mueve las fotos antiguas a una clase más fría y las expira al año con una regla automática, sin copias adicionales.',
+		escenarioB:
+			'La misma plataforma crea copias semanales de sus volúmenes y sistemas de archivos, con una retención de un año por cumplimiento y un almacén de respaldo centralizado.',
+		preguntaIds: ['3.6-q13'],
+		objetivos: ['3.6#7', '3.6#8'],
 	},
 ];

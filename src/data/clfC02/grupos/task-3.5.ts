@@ -8,11 +8,26 @@ export const gruposTask35: GrupoTematico[] = [
 		bloques: [
 			{
 				tipo: 'concepto',
-				md: 'La categoría de **redes y entrega de contenido** agrupa los servicios que conectan, aíslan y publican recursos: **Amazon VPC** para la red virtual privada, **Amazon Route 53** para DNS, **Amazon CloudFront** para entrega de contenido, **AWS Direct Connect** y **AWS VPN** para enlazar instalaciones propias, y **AWS Transit Gateway**, **AWS PrivateLink** o **AWS Global Accelerator** para interconectar redes y acercar el tráfico.\n\n**Amazon VPC** es una red virtual aislada dentro de una región, con el rango de direcciones IP que tú defines. Sus componentes principales son:\n\n- **Subnet**: división del rango de la VPC confinada a una sola Availability Zone; puede ser pública o privada.\n- **Route table**: reglas que deciden por dónde sale cada paquete.\n- **Internet gateway**: puerta de entrada y salida hacia internet para las subredes públicas.\n- **NAT gateway**: salida a internet para subredes privadas, sin exponerlas a conexiones entrantes.\n- **VPC endpoint**: acceso privado a servicios de AWS sin salir a internet.',
+				md: 'La categoría de **redes y entrega de contenido** agrupa los servicios que conectan, aíslan y publican recursos: **Amazon VPC** para la red virtual privada, **Amazon Route 53** para DNS, **Amazon CloudFront** para entrega de contenido, **AWS Direct Connect** y **AWS VPN** para enlazar instalaciones propias, **AWS Transit Gateway** y **AWS PrivateLink** para interconectar redes y servicios, y **AWS Global Accelerator** para dirigir el tráfico de red por la infraestructura global de AWS.\n\n**Amazon VPC** es una red virtual aislada dentro de una región, con el rango de direcciones IP que tú defines. Sus componentes principales son:\n\n- **Subnet**: división del rango de la VPC confinada a una sola Availability Zone; puede ser pública o privada.\n- **Route table**: reglas que deciden por dónde sale cada paquete.\n- **Internet gateway**: puerta de entrada y salida hacia internet para las subredes públicas.\n- **NAT gateway**: salida a internet para subredes privadas, sin exponerlas a conexiones entrantes.\n- **VPC endpoint**: acceso privado a servicios de AWS sin salir a internet.',
 			},
 			{
 				tipo: 'ejemplo',
 				md: '```text\nDiseño habitual de una VPC:\n- Subred pública:  internet gateway + route table 0.0.0.0/0 hacia el gateway\n- Subred privada:  NAT gateway para la salida, sin entrada desde internet\n- Un par de subredes por Availability Zone para tolerar el fallo de una\n```',
+			},
+			{
+				tipo: 'cuandoUsar',
+				usar: [
+					'Usa Amazon CloudFront cuando el requisito sea cachear y entregar contenido cerca del usuario.',
+					'Usa Amazon Route 53 cuando el requisito sea resolver nombres de dominio y enrutar por políticas.',
+					'Usa AWS Global Accelerator cuando el requisito sea mejorar la latencia de tráfico dinámico aprovechando la red global.',
+					'Usa AWS Transit Gateway o AWS PrivateLink cuando el requisito sea conectar redes o exponer servicios de forma privada.',
+				],
+				noUsar: [
+					'No uses Route 53 para cachear ni servir contenido: solo resuelve nombres.',
+					'No uses CloudFront para conectar redes o para dirigir tráfico dinámico no cacheable.',
+					'No uses AWS Global Accelerator para interconectar VPC ni como CDN: dirige rutas de tráfico, no almacena contenido ni une redes.',
+					'No uses AWS PrivateLink para llegar a internet: expone servicios de forma privada entre redes.',
+				],
 			},
 			{
 				tipo: 'errorComun',
@@ -34,7 +49,7 @@ export const gruposTask35: GrupoTematico[] = [
 		bloques: [
 			{
 				tipo: 'concepto',
-				md: 'La seguridad de una VPC se aplica en capas que conviene no mezclar.\n\n- **Security group**: cortafuegos **con estado** (stateful) asociado a recursos como instancias. Solo admite reglas de permiso (allow); la respuesta de una conexión permitida vuelve sola, sin regla inversa. Actúa a nivel de instancia o recurso.\n- **Network ACL**: cortafuegos **sin estado** (stateless) asociado a una subred. Admite reglas de permiso y de denegación, se evalúa por orden de número de regla y obliga a definir explícitamente el tráfico de respuesta. Actúa a nivel de subred.\n\nAdemás, **Amazon Inspector** evalúa de forma continua las instancias para detectar vulnerabilidades conocidas y exposiciones de red no deseadas, mientras que **AWS Shield** y **AWS WAF** protegen frente a ataques en la capa de aplicación.',
+				md: 'La seguridad de una VPC se aplica en capas que conviene no mezclar.\n\n- **Security group**: cortafuegos **con estado** (stateful) asociado a recursos como instancias. Solo admite reglas de permiso (allow); la respuesta de una conexión permitida vuelve sola, sin regla inversa. Actúa a nivel de instancia o recurso.\n- **Network ACL**: cortafuegos **sin estado** (stateless) asociado a una subred. Admite reglas de permiso y de denegación, se evalúa por orden de número de regla y obliga a definir explícitamente el tráfico de respuesta. Actúa a nivel de subred.\n\nAdemás, **Amazon Inspector** evalúa de forma continua las instancias para detectar vulnerabilidades conocidas y exposiciones de red no deseadas, mientras que **AWS Shield** mitiga ataques de denegación de servicio distribuido (DDoS) de red y volumen, y **AWS WAF** filtra peticiones HTTP(S) en la capa de aplicación.',
 			},
 			{
 				tipo: 'comparacion',

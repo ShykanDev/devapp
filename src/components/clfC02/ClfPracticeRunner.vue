@@ -29,22 +29,26 @@
 					class="clf-runner__option"
 					:class="claseOpcion(opcionIndice)"
 					:disabled="bloqueada"
-					:aria-pressed="respuestas[actual.id] === opcionIndice"
+					:aria-pressed="esElegida(opcionIndice)"
 					@click="seleccionar(opcionIndice)"
 				>
 					<span class="clf-runner__letter">{{ letra(opcionIndice) }}</span>
 					<span class="clf-runner__option-text">{{ opcion }}</span>
 					<AppIcon
-						v-if="revelado && opcionIndice === actual.correctAnswer"
+						v-if="revelado && esCorrectaOpcion(opcionIndice)"
 						class="clf-runner__mark clf-runner__mark--ok"
 						:icon="checkmark"
 					/>
 					<AppIcon
-						v-else-if="revelado && opcionIndice === respuestas[actual.id]"
+						v-else-if="revelado && esElegida(opcionIndice)"
 						class="clf-runner__mark clf-runner__mark--bad"
 						:icon="close"
 					/>
 				</button>
+			</div>
+
+			<div v-if="esMultiple && modo === 'practica' && !revelado" class="clf-runner__check">
+				<AppButton :disabled="!respondida" @click="comprobar">Comprobar selección</AppButton>
 			</div>
 
 			<div
@@ -56,6 +60,26 @@
 					{{ esCorrecta ? 'Correcto' : 'Incorrecto' }}
 				</p>
 				<p class="clf-runner__feedback-text">{{ actual.explanation }}</p>
+				<div v-if="actual.porQueOpcion" class="clf-runner__why">
+					<p
+						v-for="(motivo, opcionIndice) in actual.porQueOpcion"
+						:key="opcionIndice"
+						class="clf-runner__why-item"
+						:class="{ 'clf-runner__why-item--ok': esCorrectaOpcion(opcionIndice) }"
+					>
+						<strong>{{ letra(opcionIndice) }}.</strong> {{ motivo }}
+					</p>
+				</div>
+				<p v-if="actual.fuentes && actual.fuentes.length > 0" class="clf-runner__fuentes">
+					<span>Más información:</span>
+					<a
+						v-for="(url, fuenteIndice) in actual.fuentes"
+						:key="fuenteIndice"
+						:href="url"
+						target="_blank"
+						rel="noopener noreferrer"
+					>{{ fuenteIndice + 1 }}</a>
+				</p>
 			</div>
 
 			<div class="clf-runner__nav">
@@ -97,7 +121,13 @@ import {
 	timeOutline,
 } from 'ionicons/icons';
 import type { PreguntaBaseClfC02 } from '@/data/clfC02/types';
-import { puntuarIntento, type FinalizacionPractica } from '@/lib/clfC02Practice';
+import { esPreguntaMultiple, respuestasCorrectas } from '@/data/clfC02/types';
+import {
+	esRespuestaCorrecta,
+	puntuarIntento,
+	type FinalizacionPractica,
+	type RespuestaClfC02,
+} from '@/lib/clfC02Practice';
 import AppButton from '@/components/ui/AppButton.vue';
 import AppIcon from '@/components/ui/AppIcon.vue';
 import ClfProgressBar from './ClfProgressBar.vue';
@@ -121,7 +151,8 @@ const props = withDefaults(
 const emit = defineEmits<{ finalizado: [resultado: FinalizacionPractica] }>();
 
 const indice = ref(0);
-const respuestas = ref<Record<string, number>>({});
+const respuestas = ref<Record<string, RespuestaClfC02>>({});
+const comprobados = ref<Set<string>>(new Set());
 const iniciadoEn = ref(Date.now());
 const segundosRestantes = ref(0);
 const enviado = ref(false);
@@ -130,12 +161,28 @@ let temporizador: ReturnType<typeof setInterval> | null = null;
 const actual = computed(
 	() => props.preguntas[Math.min(indice.value, props.preguntas.length - 1)]
 );
-const respondida = computed(() => respuestas.value[actual.value?.id] !== undefined);
+const esMultiple = computed(() => Boolean(actual.value && esPreguntaMultiple(actual.value)));
+const seleccionActual = computed<number[]>(() => {
+	const valor = actual.value ? respuestas.value[actual.value.id] : undefined;
+	if (Array.isArray(valor)) return valor;
+	if (typeof valor === 'number') return [valor];
+	return [];
+});
+const respondida = computed(() => {
+	if (!actual.value) return false;
+	if (esMultiple.value) return seleccionActual.value.length > 0;
+	return respuestas.value[actual.value.id] !== undefined;
+});
 const esUltima = computed(() => indice.value >= props.preguntas.length - 1);
 const requiereRespuesta = computed(() => props.modo === 'practica');
-const revelado = computed(() => props.modo === 'practica' && respondida.value);
-const esCorrecta = computed(
-	() => respuestas.value[actual.value?.id] === actual.value?.correctAnswer
+const revelado = computed(
+	() =>
+		props.modo === 'practica' &&
+		respondida.value &&
+		(!esMultiple.value || comprobados.value.has(actual.value.id)),
+);
+const esCorrecta = computed(() =>
+	actual.value ? esRespuestaCorrecta(actual.value, respuestas.value[actual.value.id]) : false,
 );
 const bloqueada = computed(() => revelado.value);
 
@@ -145,7 +192,11 @@ const cuentaAtras = computed(() =>
 
 const porcentajeRespondido = computed(() => {
 	if (props.preguntas.length === 0) return 0;
-	return Math.round((Object.keys(respuestas.value).length / props.preguntas.length) * 100);
+	const contestadas = props.preguntas.filter((pregunta) => {
+		const valor = respuestas.value[pregunta.id];
+		return Array.isArray(valor) ? valor.length > 0 : valor !== undefined;
+	}).length;
+	return Math.round((contestadas / props.preguntas.length) * 100);
 });
 
 const tiempoFormateado = computed(() => {
@@ -157,17 +208,42 @@ const tiempoFormateado = computed(() => {
 
 const letra = (posicion: number) => String.fromCharCode(65 + posicion);
 
+function esCorrectaOpcion(opcionIndice: number): boolean {
+	return Boolean(actual.value && respuestasCorrectas(actual.value).includes(opcionIndice));
+}
+
+function esElegida(opcionIndice: number): boolean {
+	return seleccionActual.value.includes(opcionIndice);
+}
+
 function claseOpcion(opcionIndice: number) {
-	const elegida = respuestas.value[actual.value?.id] === opcionIndice;
+	const elegida = esElegida(opcionIndice);
 	if (!revelado.value) return elegida ? 'clf-runner__option--elegida' : '';
-	if (opcionIndice === actual.value.correctAnswer) return 'clf-runner__option--correcta';
+	if (esCorrectaOpcion(opcionIndice)) return 'clf-runner__option--correcta';
 	if (elegida) return 'clf-runner__option--incorrecta';
 	return 'clf-runner__option--apagada';
 }
 
 function seleccionar(opcionIndice: number) {
 	if (bloqueada.value || !actual.value) return;
+	if (esMultiple.value) {
+		const seleccion = new Set(seleccionActual.value);
+		if (seleccion.has(opcionIndice)) seleccion.delete(opcionIndice);
+		else seleccion.add(opcionIndice);
+		respuestas.value = {
+			...respuestas.value,
+			[actual.value.id]: [...seleccion].sort((a, b) => a - b),
+		};
+		return;
+	}
 	respuestas.value = { ...respuestas.value, [actual.value.id]: opcionIndice };
+}
+
+function comprobar() {
+	if (!actual.value || !respondida.value) return;
+	const siguientes = new Set(comprobados.value);
+	siguientes.add(actual.value.id);
+	comprobados.value = siguientes;
 }
 
 function anterior() {
@@ -219,6 +295,7 @@ watch(
 	() => {
 		indice.value = 0;
 		respuestas.value = {};
+		comprobados.value = new Set();
 		enviado.value = false;
 		iniciadoEn.value = Date.now();
 		reiniciarTemporizador();
@@ -432,6 +509,47 @@ onBeforeUnmount(detenerTemporizador);
 	font-size: 13px;
 	line-height: 1.6;
 	color: var(--mt-ink-2);
+}
+
+.clf-runner__check {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.clf-runner__why {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin-top: 9px;
+	padding-top: 8px;
+	border-top: 1px dashed var(--mt-line);
+}
+
+.clf-runner__why-item {
+	margin: 0;
+	font-size: 12.5px;
+	line-height: 1.5;
+	color: var(--mt-ink-2);
+}
+
+.clf-runner__why-item--ok {
+	color: var(--mt-success);
+}
+
+.clf-runner__fuentes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	align-items: center;
+	margin: 9px 0 0;
+	font-size: 12px;
+	color: var(--mt-ink-3);
+}
+
+.clf-runner__fuentes a {
+	color: var(--mt-accent);
+	text-decoration: none;
+	font-weight: 600;
 }
 
 .clf-runner__nav {

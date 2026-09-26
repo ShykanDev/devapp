@@ -17,8 +17,12 @@ import type {
 	PreguntaClfC02,
 	TarjetaClfC02,
 } from '@/data/clfC02/types';
+import { esPreguntaMultiple } from '@/data/clfC02/types';
 
 export type Aleatorio = () => number;
+
+/** Respuesta del usuario: índice en opción única, conjunto de índices en múltiple. */
+export type RespuestaClfC02 = number | number[];
 
 export interface OpcionesPractica {
 	n?: number;
@@ -75,7 +79,7 @@ export interface PuntajeObjetivo {
 
 export interface FinalizacionPractica {
 	puntaje: PuntajeIntento;
-	respuestas: Record<string, number>;
+	respuestas: Record<string, RespuestaClfC02>;
 	duracionMs: number;
 }
 
@@ -84,6 +88,8 @@ export interface PuntajeIntento {
 	correctas: number;
 	porcentaje: number;
 	falladas: string[];
+	/** Respuestas múltiples con subconjunto no vacío: diagnóstico, no suman acierto. */
+	parciales: string[];
 	porDominio: PuntajeDominio[];
 	porObjetivo: PuntajeObjetivo[];
 	orientativo: string;
@@ -110,6 +116,69 @@ export function mezclar<T>(elementos: T[], rng: Aleatorio = Math.random): T[] {
 		[copia[i], copia[j]] = [copia[j], copia[i]];
 	}
 	return copia;
+}
+
+/**
+ * Opciones cuya posición es parte del significado (referencias a «anterior»,
+ * «todas las anteriores», listas numeradas, etc.). Si una pregunta las usa, su
+ * orden no se permuta para no romper el enunciado.
+ */
+const PATRONES_ORDEN_SENSIBLE: RegExp[] = [
+	/\btodas las anteriores\b/i,
+	/\bninguna de las anteriores\b/i,
+	/\btodo lo anterior\b/i,
+	/\bambas\b/i,
+	/\bla opci[oó]n\b/i,
+	/\bopciones [a-d]\b/i,
+	/^\s*\d+\s*[.)]/,
+];
+
+export function esOrdenSensible(opciones: string[]): boolean {
+	return opciones.some((opcion) =>
+		PATRONES_ORDEN_SENSIBLE.some((patron) => patron.test(opcion)),
+	);
+}
+
+/**
+ * Devuelve una copia de la pregunta con las opciones permutadas de forma
+ * determinista y `correctAnswer` (y `porQueOpcion` si existe) remapeados. Esto
+ * elimina la pista posicional: hoy el 64% de las respuestas correctas están en
+ * la posición B, lo que permite aprobar sin comprender. Si las opciones son
+ * sensibles al orden, se devuelve la pregunta tal cual.
+ */
+export function permutarOpciones<T extends PreguntaBaseClfC02>(pregunta: T, rng: Aleatorio): T {
+	if (pregunta.options.length < 2 || esOrdenSensible(pregunta.options)) return pregunta;
+	const orden = mezclar(
+		pregunta.options.map((_, indice) => indice),
+		rng,
+	);
+	const options = orden.map((indice) => pregunta.options[indice]);
+	const correctAnswer = orden.indexOf(pregunta.correctAnswer);
+	if (correctAnswer < 0) return pregunta;
+	const conJustificacion = pregunta as T & { porQueOpcion?: string[]; correctAnswers?: number[] };
+	const permutada: T & { porQueOpcion?: string[]; correctAnswers?: number[] } = {
+		...pregunta,
+		options,
+		correctAnswer,
+	};
+	if (Array.isArray(conJustificacion.porQueOpcion)) {
+		permutada.porQueOpcion = orden.map((indice) => conJustificacion.porQueOpcion?.[indice] ?? '');
+	}
+	if (Array.isArray(conJustificacion.correctAnswers)) {
+		permutada.correctAnswers = conJustificacion.correctAnswers
+			.map((indice) => orden.indexOf(indice))
+			.filter((indice) => indice >= 0)
+			.sort((a, b) => a - b);
+	}
+	return permutada;
+}
+
+/** Permuta las opciones de toda una sesión para neutralizar la pista posicional. */
+export function prepararSesion<T extends PreguntaBaseClfC02>(
+	preguntas: T[],
+	rng: Aleatorio = Math.random,
+): T[] {
+	return preguntas.map((pregunta) => permutarOpciones(pregunta, rng));
 }
 
 export function cuotaExamenFinal(
@@ -159,7 +228,7 @@ function construirDesde(
 	const seleccion = mezclar(pool, rng).slice(0, solicitadas);
 	return {
 		ok: true,
-		preguntas: seleccion,
+		preguntas: prepararSesion(seleccion, rng),
 		avisos: avisos.length > 0 ? avisos : [AVISO_ORIENTATIVO],
 	};
 }
@@ -228,7 +297,7 @@ export function construirExamenFinal(opciones: OpcionesPractica = {}): Resultado
 
 	return {
 		ok: true,
-		preguntas: seleccion,
+		preguntas: prepararSesion(seleccion, rng),
 		avisos: [
 			`Examen de ${seleccion.length} preguntas ponderado por peso oficial (${dominiosClfC02
 				.map((dominio) => `${dominio.numero}: ${CUOTAS_EXAMEN_FINAL[dominio.id]}`)
@@ -266,7 +335,7 @@ export function construirExamenProfesional(opciones: OpcionesPractica = {}): Res
 
 	return {
 		ok: true,
-		preguntas: seleccion,
+		preguntas: prepararSesion(seleccion, rng),
 		avisos: [
 			`Examen profesional de ${seleccion.length} preguntas con cuota oficial (${dominiosClfC02
 				.map((dominio) => `${dominio.numero}: ${CUOTAS_PROFESIONAL[dominio.id]}`)
@@ -299,7 +368,7 @@ export function construirPracticaDebil(
 	const seleccion = [...primeras, ...resto].slice(0, solicitadas);
 	return {
 		ok: true,
-		preguntas: seleccion,
+		preguntas: prepararSesion(seleccion, rng),
 		avisos: [
 			`Sesión centrada en ${objetivoIds.length} objective${objetivoIds.length === 1 ? '' : 's'} con debilidades.`,
 			AVISO_ORIENTATIVO,
@@ -324,20 +393,53 @@ export function construirSesionRepaso(
 	};
 }
 
+/**
+ * Acierto por conjunto exacto. En opción múltiple, seleccionar un subconjunto
+ * —incluido «seleccionar todo»— no es acierto; solo coincide el conjunto exacto.
+ */
+export function esRespuestaCorrecta(
+	pregunta: PreguntaBaseClfC02,
+	respuesta: RespuestaClfC02 | null | undefined,
+): boolean {
+	if (esPreguntaMultiple(pregunta)) {
+		const correctas = new Set(pregunta.correctAnswers ?? [pregunta.correctAnswer]);
+		const elegidas = new Set(Array.isArray(respuesta) ? respuesta : []);
+		if (elegidas.size !== correctas.size) return false;
+		for (const indice of correctas) if (!elegidas.has(indice)) return false;
+		return true;
+	}
+	return respuesta === pregunta.correctAnswer;
+}
+
+/** Subconjunto propio no vacío de una respuesta múltiple (diagnóstico). */
+export function esRespuestaParcial(
+	pregunta: PreguntaBaseClfC02,
+	respuesta: RespuestaClfC02 | null | undefined,
+): boolean {
+	if (!esPreguntaMultiple(pregunta)) return false;
+	const elegidas = Array.isArray(respuesta) ? respuesta : [];
+	if (elegidas.length === 0) return false;
+	const correctas = new Set(pregunta.correctAnswers ?? [pregunta.correctAnswer]);
+	if (elegidas.some((indice) => !correctas.has(indice))) return false;
+	return elegidas.length < correctas.size;
+}
+
 export function puntuarIntento(
 	preguntas: PreguntaBaseClfC02[],
-	respuestas: Record<string, number | null | undefined>,
+	respuestas: Record<string, RespuestaClfC02 | null | undefined>,
 ): PuntajeIntento {
 	const falladas: string[] = [];
+	const parciales: string[] = [];
 	const porDominio = new Map<string, { total: number; correctas: number }>();
 	const porObjetivo = new Map<string, { total: number; correctas: number }>();
 	let correctas = 0;
 
 	for (const pregunta of preguntas) {
 		const respuesta = respuestas[pregunta.id];
-		const acierto = respuesta === pregunta.correctAnswer;
+		const acierto = esRespuestaCorrecta(pregunta, respuesta);
 		if (acierto) correctas += 1;
 		else falladas.push(pregunta.id);
+		if (esRespuestaParcial(pregunta, respuesta)) parciales.push(pregunta.id);
 
 		const dominioId = dominioDeTaskId(pregunta.taskId);
 		const acumuladoDominio = porDominio.get(dominioId) ?? { total: 0, correctas: 0 };
@@ -383,6 +485,7 @@ export function puntuarIntento(
 		correctas,
 		porcentaje: total === 0 ? 0 : Math.round((correctas / total) * 100),
 		falladas,
+		parciales,
 		porDominio: desgloseDominio,
 		porObjetivo: desgloseObjetivo,
 		orientativo: AVISO_ORIENTATIVO,

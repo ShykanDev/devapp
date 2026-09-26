@@ -143,6 +143,7 @@ import { TAREAS_CON_CONTENIDO } from '@/data/clfC02/registroContenido';
 import type { PreguntaClfC02 } from '@/data/clfC02/types';
 import {
 	construirSesionRepaso,
+	esRespuestaCorrecta,
 	type FinalizacionPractica,
 	type PuntajeIntento,
 	type ResultadoRepaso,
@@ -212,7 +213,7 @@ function siguienteFase() {
 
 function alFinalizarPreguntas(payload: FinalizacionPractica) {
 	for (const pregunta of preguntasActivas.value) {
-		const correcto = payload.respuestas[pregunta.id] === pregunta.correctAnswer;
+		const correcto = esRespuestaCorrecta(pregunta, payload.respuestas[pregunta.id]);
 		for (const objetivoId of pregunta.objetivos) {
 			registrarRespuesta(objetivoId, correcto);
 		}
