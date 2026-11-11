@@ -1,0 +1,1 @@
+System.register(["./index-legacy-DxLAGMqE.js"],function(e,t){"use strict";var s,n,r,c;return{setters:[e=>{s=e._,n=e.i,r=e.k,c=e.al}],execute:function(){const t={class:"app-page"};e("A",s({},[["render",function(e,s){return n(),r("div",t,[c(e.$slots,"default")])}]]))}}});
